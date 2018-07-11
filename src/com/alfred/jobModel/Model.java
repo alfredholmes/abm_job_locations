@@ -1,7 +1,11 @@
+package com.alfred.jobModel;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import com.alfred.utility.CSVReader;
 
 public class Model {
 	public ArrayList<Agent> agents = new ArrayList<Agent>(); 
@@ -10,11 +14,38 @@ public class Model {
 	double[][] transport_costs; // Slippage, IE 1 = no transport costs, 0 = infinite transport costs
 	
 	
-	public Model(int n_cities, int n_agents) {
+	public Model(int n_agents) {
+		
+		//loading data
+		
+		CSVReader location_data = new CSVReader("data/Local_Authority_Districts_December_2017_Full_Clipped_Boundaries_in_Great_Britain.csv");
+	
+		int n_cities = location_data.get_num_rows();
+		
+		ArrayList<Double> lats = new ArrayList<Double>();
+		ArrayList<Double> lons = new ArrayList<Double>();
+		
+		ArrayList<String> lats_string = location_data.get_column("lat" );
+		ArrayList<String> lons_string = location_data.get_column("long");
+		
+		//lon - East  West,  0 - 2PI
+		//lat - North South, 0 -  PI
+		
+		//System.out.println(lats_string);
+		
+		for(String s : lats_string) {
+			lats.add(Double.parseDouble(s));
+		}
+		
+		for(String s : lons_string) {
+			lons.add(Double.parseDouble(s));
+		}
+		
 		
 
 		for(int i = 0; i < n_cities; i++)
-			cities.add(new City(i, cities));
+			cities.add(new City(i, cities, lats.get(i), lons.get(i)));
+		
 		
 		//generate distances
 		transport_costs = least_distance_matrix(cities, n_cities);
@@ -29,7 +60,7 @@ public class Model {
 		
 		long then = System.currentTimeMillis();
 		double previous_moves = 0;
-		Model m = new Model(100, 2000);
+		Model m = new Model(10000);
 		Plot p = new Plot(m, 0);
 		//Plot q = new Plot(m, 1);
 		for(int i = 0; i < 100; i++) {
@@ -92,53 +123,19 @@ public class Model {
 		}
 	}
 	
-	private boolean matricies_equal(double[][] A, double[][] B) {
-		if (A.length != B.length)
-			return false;
-		for (int i = 0; i < A.length; i++) {
-			for(int j = 0; j < A[i].length; j++) {
-				try {
-				if (A[i][j] != B[i][j])
-					return false;
-				} catch(ArrayIndexOutOfBoundsException e) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+
 	
 	private double[][] least_distance_matrix(ArrayList<City> cities, int n_cities){
-		//Random r = new Random();
 		transport_costs = new double[n_cities][n_cities];
 		for(int i = 0; i < n_cities; i++) {
 			transport_costs[i][i] = 1;
-			System.out.print(1);
 			for(int j = i + 1; j < n_cities; j++) {
 				double euclidian_distance = cities.get(i).distance_to(cities.get(j));
-				System.out.print(euclidian_distance);
-				transport_costs[i][j] = transport_costs[j][i] = Math.exp(-euclidian_distance * 5);
+				transport_costs[i][j] = transport_costs[j][i] = Math.exp(-euclidian_distance / 100);
 				
 				}
-			System.out.println();
+			
 		}
-		//check to see matrix makes sense - ie triangle law holds
-		//double[][] bak = new double[n_cities][n_cities];
-		
-		/*while(!matricies_equal(bak, transport_costs)) {
-			bak = transport_costs.clone();
-			//for each non diagonal element of the array, if the transport costs do not make sense change them
-			for(int i = 0; i < n_cities; i++) {
-				for(int j = i+1; j < n_cities; j++) {
-					//inspecting transport_costs[i][j]
-					for(int k = i+1; k < n_cities; k++) {
-						if(k != j && transport_costs[i][k] * transport_costs[k][j] > transport_costs[i][j]) {
-							transport_costs[i][j]  = transport_costs[j][i] = transport_costs[i][k] * transport_costs[k][j];
-						}
-					}
-				}
-			}
-		}*/
 		
 		return transport_costs;
 	}

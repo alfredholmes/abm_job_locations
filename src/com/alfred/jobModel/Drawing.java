@@ -1,3 +1,5 @@
+package com.alfred.jobModel;
+
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -22,7 +24,7 @@ public class Drawing extends Canvas{
 	public void paint(Graphics g) {
 		//System.out.println("Call");
 		if(model.cities.size() != 0) {
-			for(int i = 0; i < model.transport_costs.length; i++) {
+			/*for(int i = 0; i < model.transport_costs.length; i++) {
 				for(int j = i+1; j < model.transport_costs[i].length; j++) {
 					g.setColor(new Color((float)(1 - model.transport_costs[i][j]), (float)(1 - model.transport_costs[i][j]), (float)(1 - model.transport_costs[i][j])));
 					int x1 = (int)(model.cities.get(i).location[0] * width);
@@ -32,7 +34,7 @@ public class Drawing extends Canvas{
 					int y2 = (int)(model.cities.get(j).location[1] * height);
 					g.drawLine(x1, y1, x2, y2);
 				}
-			}
+			}*/
 			
 			for(City c : model.cities) {
 				g.setColor(new Color((float)c.average_industry(), (float)c.industry_variance(model.agents), 1.0f - (float)c.average_industry()));

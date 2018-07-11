@@ -1,3 +1,6 @@
+package com.alfred.jobModel;
+
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -5,8 +8,8 @@ public class Agent {
 	private double industry;
 	private double consumer_dependence;
 	private double k = 1; //parameter for the activation function
-	private double a = 2; //immobility factor
-	private double b = 2; //centripetal vs centrifugal 
+	private double a = 1; //immobility factor
+	private double b = 1; //centripetal vs centrifugal 
 	
 	
 	//private double target;
@@ -16,10 +19,10 @@ public class Agent {
 	public Agent(ArrayList<City> cities) {
 		Random r = new Random();
 		industry = r.nextDouble();
-		consumer_dependence = (1.0 - industry);
+		//consumer_dependence = (1.0 - industry);
 		//consumer_dependence = industry;
 		//consumer_dependence = industry + r.nextGaussian() * 0.01;
-		//consumer_dependence = 0;
+		consumer_dependence = r.nextDouble();
 		city = cities.get((int)(cities.size() * r.nextDouble()));
 		city.add_agent(industry);
 		

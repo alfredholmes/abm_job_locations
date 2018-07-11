@@ -1,3 +1,5 @@
+package com.alfred.jobModel;
+
 
 import javax.swing.JFrame;
 

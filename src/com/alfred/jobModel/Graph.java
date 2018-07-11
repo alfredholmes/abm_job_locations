@@ -1,3 +1,5 @@
+package com.alfred.jobModel;
+
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;

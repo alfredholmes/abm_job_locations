@@ -1,0 +1,1 @@
+Local_Authority_Districts_December_2017_Full_Clipped_Boundaries_in_Great_Britain.csv,http://geoportal.statistics.gov.uk/datasets/local-authority-districts-december-2017-full-clipped-boundaries-in-great-britain?selectedAttribute=long
