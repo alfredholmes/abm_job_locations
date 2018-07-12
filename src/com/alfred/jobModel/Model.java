@@ -9,10 +9,7 @@ import com.alfred.utility.CSVReader;
 
 public class Model {
 	public ArrayList<Agent> agents = new ArrayList<Agent>(); 
-	public ArrayList<City> cities = new ArrayList<City>();
-	
-	double[][] transport_costs; // Slippage, IE 1 = no transport costs, 0 = infinite transport costs
-	
+	public ArrayList<City> cities = new ArrayList<City>();	
 	
 	public Model(int n_agents) {
 		
@@ -22,16 +19,13 @@ public class Model {
 	
 		int n_cities = location_data.get_num_rows();
 		
-		ArrayList<Double> lats = new ArrayList<Double>();
-		ArrayList<Double> lons = new ArrayList<Double>();
+		ArrayList<Double> lats  = new ArrayList<Double>();
+		ArrayList<Double> lons  = new ArrayList<Double>();
+		ArrayList<Double> areas = new ArrayList<Double>();
 		
-		ArrayList<String> lats_string = location_data.get_column("lat" );
-		ArrayList<String> lons_string = location_data.get_column("long");
-		
-		//lon - East  West,  0 - 2PI
-		//lat - North South, 0 -  PI
-		
-		//System.out.println(lats_string);
+		ArrayList<String> lats_string  = location_data.get_column("lat" );
+		ArrayList<String> lons_string  = location_data.get_column("long");
+		ArrayList<String> areas_string = location_data.get_column("st_areashape");
 		
 		for(String s : lats_string) {
 			lats.add(Double.parseDouble(s));
@@ -41,14 +35,17 @@ public class Model {
 			lons.add(Double.parseDouble(s));
 		}
 		
+		for(String s : areas_string) {
+			areas.add(Double.parseDouble(s));
+		}
+		
 		
 
 		for(int i = 0; i < n_cities; i++)
-			cities.add(new City(i, cities, lats.get(i), lons.get(i)));
+			cities.add(new City(i, cities, lats.get(i), lons.get(i), areas.get(i)));
 		
 		
-		//generate distances
-		transport_costs = least_distance_matrix(cities, n_cities);
+		
 		
 
 		//generate agents
@@ -60,7 +57,7 @@ public class Model {
 		
 		long then = System.currentTimeMillis();
 		double previous_moves = 0;
-		Model m = new Model(10000);
+		Model m = new Model(4000);
 		Plot p = new Plot(m, 0);
 		//Plot q = new Plot(m, 1);
 		for(int i = 0; i < 100; i++) {
@@ -85,7 +82,7 @@ public class Model {
 	
 	public void dump_cities() {
 		for(City c: cities) {
-			System.out.println(c.population_rank() + " \t" + c.average_industry() + " \t" + Math.pow(c.industry_variance(agents), 0.5) + "\t " + transport_cost_to_largest_city(c));
+			System.out.println(c.population_size() + " \t" + c.average_industry() + " \t" + Math.pow(c.industry_variance(), 0.5) + "\t " + transport_cost_to_largest_city(c));
 		}
 	}
 	
@@ -107,36 +104,21 @@ public class Model {
 			}
 		}
 		
-		return transport_costs[city.get_id()][capital.get_id()];
-		
+		return capital.get_transport_cost_to(city);
 		
 	}
 	
 	public void update() {
 		Map<Agent, City> movements = new HashMap<Agent, City>();
 		for(Agent a : agents) {			
-			movements.put(a, a.get_next_city(agents, cities, transport_costs));
+			movements.put(a, a.get_next_city(agents, cities));
 		}
 		//do the actual updates after all the agents have made their decisions
 		for(Map.Entry<Agent, City> m : movements.entrySet()) {
 			m.getKey().set_city(m.getValue());
 		}
-	}
-	
-
-	
-	private double[][] least_distance_matrix(ArrayList<City> cities, int n_cities){
-		transport_costs = new double[n_cities][n_cities];
-		for(int i = 0; i < n_cities; i++) {
-			transport_costs[i][i] = 1;
-			for(int j = i + 1; j < n_cities; j++) {
-				double euclidian_distance = cities.get(i).distance_to(cities.get(j));
-				transport_costs[i][j] = transport_costs[j][i] = Math.exp(-euclidian_distance / 100);
-				
-				}
-			
-		}
 		
-		return transport_costs;
+		for(City c : cities)
+			c.clear_cache();
 	}
 }

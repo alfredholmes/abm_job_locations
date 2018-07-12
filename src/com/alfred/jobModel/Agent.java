@@ -10,6 +10,8 @@ public class Agent {
 	private double k = 1; //parameter for the activation function
 	private double a = 1; //immobility factor
 	private double b = 1; //centripetal vs centrifugal 
+	int previous_to_check = 5;
+	ArrayList<City> previous_top_cities;
 	
 	
 	//private double target;
@@ -19,12 +21,9 @@ public class Agent {
 	public Agent(ArrayList<City> cities) {
 		Random r = new Random();
 		industry = r.nextDouble();
-		//consumer_dependence = (1.0 - industry);
-		//consumer_dependence = industry;
-		//consumer_dependence = industry + r.nextGaussian() * 0.01;
 		consumer_dependence = r.nextDouble();
 		city = cities.get((int)(cities.size() * r.nextDouble()));
-		city.add_agent(industry);
+		city.add_agent(this);
 		
 	}
 	
@@ -32,41 +31,51 @@ public class Agent {
 		return 1.0 / (1.0 + Math.exp(-x));
 	}
 	
-	public double rating(ArrayList<Agent> agents, City city, double[][] transport_costs) {
+	public double rating(ArrayList<Agent> agents, City city) {
 		if(city.equals(this.city))
 			return 0.0;
 		
 		double current_market   = 0;
 		double potential_market = 0;
-		double consumer_market   = 0;
-		double potential_consumer_market = 0;
+		//double consumer_market   = 0;
+		//double potential_consumer_market = 0;
 		
-		for(Agent a : agents) {
-			double industry_difference = Math.pow(industry - a.industry, 2);
-			current_market   += transport_costs[a.city.get_id()][this.city.get_id()] * (1.0 - industry_difference);
-			potential_market += transport_costs[a.city.get_id()][city.get_id()] * (1.0 - industry_difference);
-			
-			consumer_market  += transport_costs[a.city.get_id()][this.city.get_id()];
-			potential_consumer_market += transport_costs[a.city.get_id()][this.city.get_id()];
+		
+		
+		if(city.cached(industry, this.city, city)) {
+			current_market = 1.0;
+			potential_market = city.get_from_cache(industry, this.city, city);
+		}else {
+		
+			for(Agent a : agents) {
+				//cache this
+				double industry_difference = Math.abs(industry - a.industry);
+				current_market   += this.city.get_transport_cost_to(a.city) * (1.0 - industry_difference);
+				potential_market +=      city.get_transport_cost_to(a.city) * (1.0 - industry_difference);
+				
+				//consumer_market      += this.city.get_transport_cost_to(a.city);
+				//potential_consumer_market += city.get_transport_cost_to(a.city);
+			}
+			city.store_in_cache(potential_market  / current_market, industry, this.city, city);
 		}
 		
 		
-		
 		double market_gain   = potential_market / current_market;
-		double consumer_gain = potential_consumer_market / consumer_market;
+		//double consumer_gain = potential_consumer_market / consumer_market;
 		
-		double centripetal = (1.0 - industry) * Math.log(market_gain) + consumer_dependence * Math.log(consumer_gain);
+		double centripetal = (1.0 - industry) * Math.log(market_gain) /*+ consumer_dependence * Math.log(consumer_gain)*/;
 		
-		double rent_ratio = (0.5 + city.population_rank()) / (0.5 + this.city.population_rank()); //will use the actual rents in the housing model
-		double immobility = a * (1.0 - transport_costs[city.get_id()][this.city.get_id()]);
+		double rent_ratio = (0.5 + city.population_size()) / (0.5 + this.city.population_size()); //will use the actual rents in the housing model
+		double density_ratio = (1.0 + city.population_density()) / (1.0 + this.city.population_density());
+		double immobility = a * (1.0 - this.city.get_transport_cost_to(city));
 		
-		double centrifugal = industry * (Math.log(rent_ratio) + immobility);
+		double centrifugal = industry * (/*Math.log(rent_ratio)*/ + Math.log(immobility) + Math.log(density_ratio));
 		
-		return b * centripetal - centrifugal;
+		return centripetal - centrifugal;
 		//return (1.0 - industry) * Math.log(market_gain) - (industry) * Math.log(rent_ratio) + consumer_dependence * Math.log(consumer_gain);
 	}
 	
-	public City get_next_city(ArrayList<Agent> agents, ArrayList<City> cities, double[][] transport_costs) {
+	public City get_next_city(ArrayList<Agent> agents, ArrayList<City> cities) {
 		Random rand = new Random();
 		
 		
@@ -77,14 +86,14 @@ public class Agent {
 		City best = city;
 		double current_rating = 0.0;
 		double best_rating = current_rating;
-		for(City c: cities) {
-			double r = rating(agents, c, transport_costs);
+		for(City c : cities) {
+			double r = rating(agents, c);
 			if(r > best_rating) {
 				best = c;
 				best_rating = r;
 			}
 		}
-		//System.out.println(best_rating - current_rating);
+		
 		if(rand.nextDouble() < activation(k * (best_rating - current_rating))) {
 			return city; //don't move
 		}else {
@@ -95,9 +104,9 @@ public class Agent {
 	public void set_city(City c) {
 		if (city.equals(c))
 			return;
-		city.remove_agent(industry);
+		city.remove_agent(this);
 		city = c;
-		c.add_agent(industry);
+		c.add_agent(this);
 		moves++;
 	}
 	

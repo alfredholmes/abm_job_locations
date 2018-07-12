@@ -12,6 +12,7 @@ public class Drawing extends Canvas{
 	Model model;
 	int n_cities;
 	int width, height;
+	double min_x, max_x, min_y, max_y;
 	public Drawing(int width, int height, Model m) {
 		this.width = width;
 		this.height = height;
@@ -19,28 +20,40 @@ public class Drawing extends Canvas{
 		setBackground(Color.white);
 		model = m;
 		n_cities = m.cities.size(); //need to be careful this is done post init
+		boolean first = true;
+		for(City c : model.cities) {
+			if(first) {
+				min_x = max_x = c.location[0];
+				min_y = max_y = c.location[1];
+				first = false;
+			}else {
+				if(c.location[1] < min_x) {
+					min_x = c.location[1];
+				}
+				if(c.location[1] > max_x) {
+					max_x = c.location[1];
+				}
+				if(c.location[0] < min_y) {
+					min_y = c.location[0];
+				}
+				if(c.location[0] > max_y) {
+					max_y = c.location[0];
+				}
+			}
+		}
 	}
 	
 	public void paint(Graphics g) {
 		//System.out.println("Call");
-		if(model.cities.size() != 0) {
-			/*for(int i = 0; i < model.transport_costs.length; i++) {
-				for(int j = i+1; j < model.transport_costs[i].length; j++) {
-					g.setColor(new Color((float)(1 - model.transport_costs[i][j]), (float)(1 - model.transport_costs[i][j]), (float)(1 - model.transport_costs[i][j])));
-					int x1 = (int)(model.cities.get(i).location[0] * width);
-					int y1 = (int)(model.cities.get(i).location[1] * height);
-					
-					int x2 = (int)(model.cities.get(j).location[0] * width);
-					int y2 = (int)(model.cities.get(j).location[1] * height);
-					g.drawLine(x1, y1, x2, y2);
-				}
-			}*/
-			
+		if(model.cities.size() != 0) {			
 			for(City c : model.cities) {
-				g.setColor(new Color((float)c.average_industry(), (float)c.industry_variance(model.agents), 1.0f - (float)c.average_industry()));
+				g.setColor(new Color((float)c.average_industry(), (float)c.industry_variance(), 1.0f - (float)c.average_industry()));
 				//g.fillOval(, (int)(250 * Math.sin(2*Math.PI / 10 * c.get_id())) + 500, (int)(c.get_population() / 5), (int)(c.get_population() / 5));
-				int x = (int)(c.location[0] * width);
-				int y = (int)(c.location[1] * height);
+				//int x = (int)(c.location[0] * width);
+				//int y = (int)(c.location[1] * height);
+				int x = (int)((c.location[1] - min_x) * width / (10.0 - min_x)) + 150;
+				int y = (int)((-c.location[0] + max_y) * 5 * height / (max_y - min_y)) + 100;
+				//System.out.println(min_x + " " + min_y + " " + max_x + " " + 10.0);
 				circle(g, x, y, 2 * (int)Math.sqrt(c.get_population()));
 			}
 

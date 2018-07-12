@@ -25,17 +25,17 @@ public class Graph extends Canvas{
 	public void paint(Graphics g) {
 		Double min_rank = 1.0;
 		for(City c : model.cities) {
-			if(c.population_rank() < min_rank) {
-				min_rank = c.population_rank();
+			if(c.population_size() < min_rank && c.population_size() != 0) {
+				min_rank = c.population_size();
 				
 			}
 				
 		}
 		
 		for(City c: model.cities) {
-			g.setColor(new Color((float)c.average_industry(), (float)c.industry_variance(model.agents), 1.0f - (float)c.average_industry()));
+			g.setColor(new Color((float)c.average_industry(), (float)c.industry_variance() < 1.0f ? (float)c.industry_variance() : 1.0f , 1.0f - (float)c.average_industry()));
 			//System.out.println(c.population_position());
-			circle(g, (int)(Math.log(c.population_position()) / Math.log(model.cities.size()) * width), (int)((Math.log(c.population_rank()) /  Math.log(min_rank)) * height), 9);
+			circle(g, (int)(Math.log(c.population_rank()) / Math.log(model.cities.size()) * width), (int)((Math.log(c.population_size()) /  Math.log(min_rank)) * height), 9);
 		}
 		
 		//draw line with unit gradient

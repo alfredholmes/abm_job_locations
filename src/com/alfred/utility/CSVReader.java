@@ -68,7 +68,6 @@ public class CSVReader {
 	public ArrayList<String> get_column(String head){
 		ArrayList<String> r = new ArrayList<String>();
 		for(Map<String, String> line : data) {
-			System.out.println(line);
 			r.add(line.get(head));
 		}
 		
