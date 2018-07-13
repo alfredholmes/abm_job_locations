@@ -7,12 +7,12 @@ import java.util.Random;
 public class Agent {
 	private double industry;
 	private double consumer_dependence;
-	private double k = 2; //parameter for the activation function
-	private double a = 3; //immobility factor
-	private double b = 1; //centripetal vs centrifugal 
-	int previous_to_check = 5;
-	ArrayList<City> previous_top_cities;
+	private double k = 10; //parameter for the activation function
 	
+	private double a = 1; //industry
+	private double b = 1; //consumer
+	private double c = 1; //rent / population density
+	private double d = 10; //immobility
 	
 	//private double target;
 	private City city;
@@ -21,10 +21,25 @@ public class Agent {
 	public Agent(ArrayList<City> cities) {
 		Random r = new Random();
 		industry = r.nextDouble();
-		consumer_dependence = r.nextDouble();
+		
+		consumer_dependence = 1.0 - industry;
+		
+		//consumer_dependence = r.nextDouble();
+		
 		city = cities.get((int)(cities.size() * r.nextDouble()));
 		city.add_agent(this);
 		
+	}
+	
+	public Agent(City city) {
+		Random r = new Random();
+		
+		industry = r.nextDouble();
+		consumer_dependence = 1.0 - industry;
+		
+		//consumer_dependence = r.nextDouble();
+		this.city = city;
+		city.add_agent(this);
 	}
 	
 	public double activation(double x) {
@@ -52,15 +67,16 @@ public class Agent {
 		double market_gain   = potential_market / current_market;
 		double consumer_gain = potential_consumer_market / consumer_market;
 		
-		double centripetal = (1.0 - industry) * Math.log(market_gain) + consumer_dependence * Math.log(consumer_gain);
+		double centripetal = a * (1.0 - industry) * Math.log(market_gain) + b * consumer_dependence * Math.log(consumer_gain);
 		
 		double rent_ratio = (0.5 + city.population_size()) / (0.5 + this.city.population_size()); //will use the actual rents in the housing model
-		double density_ratio = (city.population_density()) / (this.city.population_density());
-		double immobility = (1.0 - this.city.get_transport_cost_to(city));
+		double density_ratio = (0.5 + city.population_density()) / (0.5 + this.city.population_density());
+		double immobility = (1.0 / this.city.get_transport_cost_to(city));
 		
-		double centrifugal = industry * (Math.log(rent_ratio) + Math.log(density_ratio) * Math.log(immobility));
+		double centrifugal = industry * (/*c * Math.log(rent_ratio)*/ + c * Math.log(density_ratio) +  d * Math.log(immobility));
 		
-		return b * centripetal - centrifugal;
+		
+		return centripetal - centrifugal;
 		//return (1.0 - industry) * Math.log(market_gain) - (industry) * Math.log(rent_ratio) + consumer_dependence * Math.log(consumer_gain);
 	}
 	
@@ -90,24 +106,25 @@ public class Agent {
 				if(r > best_rating) {
 					best = c;
 					best_rating = r;
+					
 				}
 			}
 		}
 		
-		if(rand.nextDouble() < activation(k * (best_rating))) {
-			return city; //don't move
-		}else {
+		if(rand.nextDouble() < activation(k * (best_rating)) && best_rating > -1000) {
 			return best; //move
+		}else {
+			return city; //don't move
 		}
 	}
 	
 	public void set_city(City c) {
-		if (city.equals(c))
-			return;
-		city.remove_agent(this);
-		city = c;
-		c.add_agent(this);
-		moves++;
+		if (!city.equals(c)){
+			city.remove_agent(this);		
+			city = c;
+			c.add_agent(this);
+			moves++;
+		}
 	}
 	
 	public City get_city() {

@@ -50,6 +50,8 @@ public class City {
 	}
 	
 	public double distance_to(City city) {
+		
+		
 		double lat_1 = (     location[0] / 180) * Math.PI;
 		double lat_2 = (city.location[0] / 180) * Math.PI;
 		
@@ -158,9 +160,9 @@ public class City {
 	
 	public void refresh_transport_costs() {
 		transport_costs = new double[cities.size()];
-		for(int i = 0; i < cities.size(); i++) {
-			double distance = distance_to(cities.get(i));
-			transport_costs[i] = Math.exp(- k * distance);
+		for(City c : cities) {
+			double distance = distance_to(c);
+			transport_costs[c.get_id()] = Math.exp(- k * distance);
 		}
 	}	
 	

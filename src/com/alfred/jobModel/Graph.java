@@ -23,7 +23,7 @@ public class Graph extends Canvas{
 	}
 	
 	public void paint(Graphics g) {
-		Double min_rank = 1.0;
+		double min_rank = 1.0;
 		for(City c : model.cities) {
 			if(c.population_size() < min_rank && c.population_size() != 0) {
 				min_rank = c.population_size();
@@ -31,19 +31,14 @@ public class Graph extends Canvas{
 			}
 				
 		}
-		
 		for(City c: model.cities) {
 			g.setColor(new Color((float)c.average_industry(), (float)c.industry_variance() < 1.0f ? (float)c.industry_variance() : 1.0f , 1.0f - (float)c.average_industry()));
 			//System.out.println(c.population_position());
 			circle(g, (int)(Math.log(c.population_rank()) / Math.log(model.cities.size()) * width), (int)((Math.log(c.population_size()) /  Math.log(min_rank)) * height), 9);
 		}
 		
-		//draw line with unit gradient
 		
-		g.setColor(Color.black);
-		
-		//System.out.println((int)(width * (1 / Math.log(model.cities.size()))) + " " + - 5 * (int)(height * (1 / Math.log(min_rank))));
-		
+		g.setColor(Color.black);	
 		g.drawLine(0, 0, 5 * (int)(width * (1 / Math.log(model.cities.size()))), - 5 * (int)(height * (1 / Math.log(min_rank))));
 		
 	}

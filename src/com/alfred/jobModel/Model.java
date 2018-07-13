@@ -23,13 +23,18 @@ public class Model {
 		ArrayList<Double> lats  = new ArrayList<Double>();
 		ArrayList<Double> lons  = new ArrayList<Double>();
 		ArrayList<Double> areas = new ArrayList<Double>();
+		ArrayList<Double> employment = new ArrayList<Double>();
 		
 		ArrayList<String> lats_string  = location_data.get_column("lat" );
 		ArrayList<String> lons_string  = location_data.get_column("long");
 		ArrayList<String> areas_string = location_data.get_column("st_areashape");
 		
+		
+		
+		
 		ArrayList<String> location_names_geographic = location_data.get_column("lad17nm"); 
 		ArrayList<String> location_names_employment = employment_data.get_column("name");
+		ArrayList<String> employment_string = employment_data.get_column("employment");
 		
 		for(String s : lats_string) {
 			lats.add(Double.parseDouble(s));
@@ -43,11 +48,16 @@ public class Model {
 			areas.add(Double.parseDouble(s));
 		}
 		
+		for(String s : employment_string) {
+			System.out.println(s);
+			employment.add(Double.parseDouble(s) / 25.0);
+		}
+		
 		 
 		
-		for(String s : location_names_employment) {
+		for(String s : location_names_geographic) {
 			boolean found = false;
-			for(String t : location_names_geographic) {
+			for(String t : location_names_employment) {
 				if(t.equals(s)) {
 					found = true;
 					
@@ -62,16 +72,29 @@ public class Model {
 		
 		
 
-		for(int i = 0; i < n_cities; i++)
+		for(int i = 0; i < n_cities; i++) {
 			cities.add(new City(i, cities, lats.get(i), lons.get(i), areas.get(i)));
-		
+			String name = location_names_geographic.get(i);
+			//get_id in employment column
+			int j;
+			for(j = 0; j < location_names_employment.size(); j++) {
+				if(name.equals(location_names_employment.get(j)))
+					break;
+			}
+			if(j != location_names_employment.size()) {
+				for(int k = 0; k < employment.get(j); k++)
+					agents.add(new Agent(cities.get(i)));
+			}
+		}
 		
 		
 		
 
 		//generate agents
-		for(int i = 0; i < n_agents; i++)
-			agents.add(new Agent(cities));
+		//for(int i = 0; i < n_agents; i++)
+		//	agents.add(new Agent(cities));
+
+		
 	}
 	
 	public static void main(String[] argv) {

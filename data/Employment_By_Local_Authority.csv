@@ -1,4 +1,4 @@
-name, employment
+name,employment
 Gateshead,96.2
 Newcastle upon Tyne,181.8
 North Tyneside,81.9
@@ -66,7 +66,7 @@ Calderdale,98.2
 Kirklees,158.1
 Leeds,443.4
 Wakefield,151.4
-"Kingston upon Hull, City of",122.5
+"Kingston upon Hull City of",122.5
 East Riding of Yorkshire,126.7
 North East Lincolnshire,68.9
 North Lincolnshire,71.7
@@ -137,7 +137,7 @@ Sandwell,132.3
 Solihull,119.2
 Walsall,107.2
 Wolverhampton,100.7
-"Herefordshire, County of",76.4
+"Herefordshire County of",76.4
 Telford and Wrekin,84.8
 Shropshire,117.3
 Stoke-on-Trent,124.8
@@ -314,7 +314,7 @@ South Somerset,68.7
 Taunton Deane,57.4
 West Somerset,12.5
 Bath and North East Somerset,87.2
-"Bristol, City of",265.3
+"Bristol City of",265.3
 North Somerset,85.8
 South Gloucestershire,149.2
 Cornwall,219.6
