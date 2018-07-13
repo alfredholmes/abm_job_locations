@@ -54,7 +54,7 @@ public class Drawing extends Canvas{
 				int x = (int)((c.location[1] - min_x) * width / (10.0 - min_x)) + 150;
 				int y = (int)((-c.location[0] + max_y) * 5 * height / (max_y - min_y)) + 100;
 				//System.out.println(min_x + " " + min_y + " " + max_x + " " + 10.0);
-				circle(g, x, y, 2 * (int)Math.sqrt(c.get_population()));
+				circle(g, x, y, 3 * (int)Math.sqrt(c.get_population()));
 			}
 
 		}

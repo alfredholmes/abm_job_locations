@@ -16,6 +16,7 @@ public class Model {
 		//loading data
 		
 		CSVReader location_data = new CSVReader("data/Local_Authority_Districts_December_2017_Full_Clipped_Boundaries_in_Great_Britain.csv");
+		CSVReader employment_data = new CSVReader("data/Employment_By_Local_Authority.csv");
 	
 		int n_cities = location_data.get_num_rows();
 		
@@ -27,6 +28,9 @@ public class Model {
 		ArrayList<String> lons_string  = location_data.get_column("long");
 		ArrayList<String> areas_string = location_data.get_column("st_areashape");
 		
+		ArrayList<String> location_names_geographic = location_data.get_column("lad17nm"); 
+		ArrayList<String> location_names_employment = employment_data.get_column("name");
+		
 		for(String s : lats_string) {
 			lats.add(Double.parseDouble(s));
 		}
@@ -37,6 +41,23 @@ public class Model {
 		
 		for(String s : areas_string) {
 			areas.add(Double.parseDouble(s));
+		}
+		
+		 
+		
+		for(String s : location_names_employment) {
+			boolean found = false;
+			for(String t : location_names_geographic) {
+				if(t.equals(s)) {
+					found = true;
+					
+				}
+				
+			}
+			if(!found) {
+				System.out.println(s);
+				
+			}
 		}
 		
 		
@@ -57,11 +78,11 @@ public class Model {
 		
 		long then = System.currentTimeMillis();
 		double previous_moves = 0;
-		Model m = new Model(4000);
+		Model m = new Model(1000);
 		Plot p = new Plot(m, 0);
 		//Plot q = new Plot(m, 1);
-		for(int i = 0; i < 100; i++) {
-			m.dump_cities();
+		for(int i = 0; i < 200; i++) {
+			//m.dump_cities();
 			m.update();
 			
 			double moves = m.average_number_of_moves();
@@ -103,9 +124,7 @@ public class Model {
 				capital = c;
 			}
 		}
-		
 		return capital.get_transport_cost_to(city);
-		
 	}
 	
 	public void update() {
@@ -117,8 +136,5 @@ public class Model {
 		for(Map.Entry<Agent, City> m : movements.entrySet()) {
 			m.getKey().set_city(m.getValue());
 		}
-		
-		for(City c : cities)
-			c.clear_cache();
 	}
 }

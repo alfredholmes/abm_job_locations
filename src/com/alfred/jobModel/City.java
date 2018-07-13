@@ -19,11 +19,8 @@ public class City {
 	boolean average_industry_cache = false;
 	double last_average_industry = 0;
 	
-	double industry_step = 0.01;
 	
-	Map<Double, Map<City, Map<City, Double>>> cache = new HashMap<Double, Map<City, Map<City, Double>>>();
-	
-	double k = 1.0 / 50; //parameter in transport costs - if k changes through time then could see better development of cities
+	double k = 1.0 / 100.0; //parameter in transport costs - if k changes through time then could see better development of cities
 	
 	public static final int RADIUS = 6371; //not really relevant, could be put the parameter k, just a scaling factor but means distances are in KM
 	
@@ -41,9 +38,6 @@ public class City {
 		this.location[0] = r.nextDouble();
 		this.location[1] = r.nextDouble();
 		this.area = r.nextDouble();
-		//location[0] = r.nextGaussian() * 0.15 + 0.5;
-		//location[1] = r.nextGaussian() * 0.15 + 0.5;
-		//this(id, cities, lat, lon);
 	}
 	
 
@@ -142,7 +136,7 @@ public class City {
 			s += Math.pow((a.get_industry() - m), 2);
 		}
 		//System.out.println(s);
-		return s / (agents.size() - 1);
+		return agents.size() > 1 ? s / (agents.size() - 1) : 0;
 		
 	}
 	
@@ -168,69 +162,7 @@ public class City {
 			double distance = distance_to(cities.get(i));
 			transport_costs[i] = Math.exp(- k * distance);
 		}
-	}
-	
-	public boolean cached(double industry, City c1, City c2) {
-		industry = industry_step * (int)(industry / industry_step);
-		
-		if(cache.containsKey(industry)) {
-			if(cache.get(industry).containsKey(c1)) {
-				if(cache.get(industry).get(c1).containsKey(c2)) {
-					return true;
-				}
-			}else if(cache.get(industry).containsKey(c2)) {
-				if(cache.get(industry).get(c2).containsKey(c1)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	public double get_from_cache(double industry, City c1, City c2) {
-		industry = industry_step * (int)(industry / industry_step);
-		
-		if(cache.containsKey(industry)) {
-			if(cache.get(industry).containsKey(c1)) {
-				if(cache.get(industry).get(c1).containsKey(c2)) {
-					return cache.get(industry).get(c1).get(c2);
-				}
-			}else if(cache.get(industry).containsKey(c2)) {
-				if(cache.get(industry).get(c2).containsKey(c1)) {
-					return 1.0 / cache.get(industry).get(c2).get(c1);
-				}
-			}
-		}
-		return -1; //not found
-	}
-
-	public void   store_in_cache(double value, double industry, City c1, City c2) {
-		industry = industry_step * (int)(industry / industry_step); //could be error prone since values could vary up to 2 * industry_step
-		
-		if(cache.containsKey(industry)) {
-			if(cache.get(industry).containsKey(c1)) {
-				cache.get(industry).get(c1).put(c2, value);
-			}else {
-				Map<City, Double> m = new HashMap<City, Double>();
-				m.put(c2, value);
-				cache.get(industry).put(c1, m);
-			}
-		}else {
-			Map<City, Double> m = new HashMap<City, Double>();
-			Map<City, Map<City, Double>> n = new HashMap<City, Map<City, Double>>();
-			m.put(c2, value);
-			n.put(c1, m);
-			cache.put(industry, n);
-		}
-	}
-	
-	public void clear_cache() {
-		cache = new HashMap<Double, Map<City, Map<City, Double>>>();
-	}
-	
-
-	
-	
+	}	
 	
 	
 }
