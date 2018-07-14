@@ -22,9 +22,9 @@ public class Agent {
 		Random r = new Random();
 		industry = r.nextDouble();
 		
-		consumer_dependence = 1.0 - industry;
+		//consumer_dependence = 1.0 - industry;
 		
-		//consumer_dependence = r.nextDouble();
+		consumer_dependence = r.nextDouble();
 		
 		city = cities.get((int)(cities.size() * r.nextDouble()));
 		city.add_agent(this);
@@ -66,14 +66,15 @@ public class Agent {
 		
 		double market_gain   = potential_market / current_market;
 		double consumer_gain = potential_consumer_market / consumer_market;
+		double resource_match = Math.pow(city.get_resource() - this.industry, 2) / Math.pow(this.city.get_resource() - this.industry, 2);
 		
-		double centripetal = a * (1.0 - industry) * Math.log(market_gain) + b * consumer_dependence * Math.log(consumer_gain);
+		double centripetal = a * (1.0 - industry) * Math.log(market_gain) + b * consumer_dependence * Math.log(consumer_gain) + (1.0 - consumer_dependence) * Math.log(resource_match);
 		
 		double rent_ratio = (0.5 + city.population_size()) / (0.5 + this.city.population_size()); //will use the actual rents in the housing model
 		double density_ratio = (0.5 + city.population_density()) / (0.5 + this.city.population_density());
 		double immobility = (1.0 / this.city.get_transport_cost_to(city));
 		
-		double centrifugal = industry * (/*c * Math.log(rent_ratio)*/ + c * Math.log(density_ratio) +  d * Math.log(immobility));
+		double centrifugal = industry * (/*c * Math.log(rent_ratio)*/ + c * Math.log(density_ratio)) +  d * Math.log(immobility);
 		
 		
 		return centripetal - centrifugal;

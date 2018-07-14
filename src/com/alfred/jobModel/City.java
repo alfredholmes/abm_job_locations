@@ -19,6 +19,8 @@ public class City {
 	boolean average_industry_cache = false;
 	double last_average_industry = 0;
 	
+	double resource;
+	
 	
 	double k = 1.0 / 100.0; //parameter in transport costs - if k changes through time then could see better development of cities
 	
@@ -38,15 +40,18 @@ public class City {
 		this.location[0] = r.nextDouble();
 		this.location[1] = r.nextDouble();
 		this.area = r.nextDouble();
+		this.resource = r.nextDouble();
 	}
 	
 
 	public City(int id, ArrayList<City> cities, double lat, double lon, double area) {
+		r = new Random();
 		this.id = id;
 		this.cities = cities;
 		this.location[0] = lat;
 		this.location[1] = lon;
 		this.area = area;
+		this.resource = r.nextDouble();
 	}
 	
 	public double distance_to(City city) {
@@ -85,6 +90,10 @@ public class City {
 	
 	public int get_id() {
 		return id;
+	}
+	
+	public double get_resource() {
+		return resource;
 	}
 	
 	public void add_agent(Agent a) {
