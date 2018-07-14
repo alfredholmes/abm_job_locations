@@ -12,7 +12,7 @@ public class Agent {
 	private double a = 1; //industry
 	private double b = 1; //consumer
 	private double c = 1; //rent / population density
-	private double d = 10; //immobility
+	private double d = 1; //immobility
 	
 	//private double target;
 	private City city;
@@ -73,7 +73,7 @@ public class Agent {
 		double density_ratio = (0.5 + city.population_density()) / (0.5 + this.city.population_density());
 		double immobility = (1.0 / this.city.get_transport_cost_to(city));
 		
-		double centrifugal = industry * (/*c * Math.log(rent_ratio)*/ + c * Math.log(density_ratio) +  d * Math.log(immobility));
+		double centrifugal = industry * (/*c * Math.log(rent_ratio)*/ + c * Math.log(density_ratio)) +  d * Math.log(immobility);
 		
 		
 		return centripetal - centrifugal;
