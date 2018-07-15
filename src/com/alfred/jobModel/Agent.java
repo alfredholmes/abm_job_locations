@@ -9,10 +9,12 @@ public class Agent {
 	private double consumer_dependence;
 	private static double k = 3; //parameter for the activation function
 	
+
 	private static double a = 1; //industry
 	private static double b = 1; //consumer
 	private static double c = 1; //rent / population density
 	private static double d = 10; //immobility
+
 	
 	//private double target;
 	private City city;
