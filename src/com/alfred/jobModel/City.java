@@ -19,6 +19,10 @@ public class City {
 	boolean average_industry_cache = false;
 	double last_average_industry = 0;
 	
+	double resource;
+	
+	private static boolean update_consumer_markets = true;
+	private static ArrayList<Double> consumer_markets = new ArrayList();
 	
 	double k = 1.0 / 100.0; //parameter in transport costs - if k changes through time then could see better development of cities
 	
@@ -38,15 +42,19 @@ public class City {
 		this.location[0] = r.nextDouble();
 		this.location[1] = r.nextDouble();
 		this.area = r.nextDouble();
+		this.resource = r.nextDouble();
+		//this.resource = 0.5;
 	}
 	
 
 	public City(int id, ArrayList<City> cities, double lat, double lon, double area) {
+		r = new Random();
 		this.id = id;
 		this.cities = cities;
 		this.location[0] = lat;
 		this.location[1] = lon;
 		this.area = area;
+		this.resource = r.nextDouble();
 	}
 	
 	public double distance_to(City city) {
@@ -87,16 +95,22 @@ public class City {
 		return id;
 	}
 	
+	public double get_resource() {
+		return resource;
+	}
+	
 	public void add_agent(Agent a) {
 		population++;
 		agents.add(a);
 		average_industry_cache = false;
+		update_consumer_markets = true;
 	}
 	
 	public void remove_agent(Agent a) {
 		population--;
 		agents.remove(a);
 		average_industry_cache = false;
+		update_consumer_markets = true;
 	}
 	
 	public double population_size() {
@@ -164,7 +178,22 @@ public class City {
 			double distance = distance_to(c);
 			transport_costs[c.get_id()] = Math.exp(- k * distance);
 		}
-	}	
+	}
+	
+	public double get_consumer_market(ArrayList<Agent> agents) {
+		if(update_consumer_markets) {
+			consumer_markets = new ArrayList<Double>();
+			for(City c : cities) {
+				double s = 0;
+				for(Agent a : agents) {
+					s += c.get_transport_cost_to(a.get_city());
+				}
+				consumer_markets.add(s);
+			}
+			update_consumer_markets = false;
+		}
+		return consumer_markets.get(id);
+	}
 	
 	
 }

@@ -7,12 +7,14 @@ import java.util.Random;
 public class Agent {
 	private double industry;
 	private double consumer_dependence;
-	private double k = 10; //parameter for the activation function
+	private static double k = 3; //parameter for the activation function
 	
-	private double a = 1; //industry
-	private double b = 1; //consumer
-	private double c = 1; //rent / population density
-	private double d = 1; //immobility
+
+	private static double a = 1; //industry
+	private static double b = 1; //consumer
+	private static double c = 1; //rent / population density
+	private static double d = 10; //immobility
+
 	
 	//private double target;
 	private City city;
@@ -22,9 +24,9 @@ public class Agent {
 		Random r = new Random();
 		industry = r.nextDouble();
 		
-		consumer_dependence = 1.0 - industry;
+		//consumer_dependence = 1.0 - industry;
 		
-		//consumer_dependence = r.nextDouble();
+		consumer_dependence = r.nextDouble();
 		
 		city = cities.get((int)(cities.size() * r.nextDouble()));
 		city.add_agent(this);
@@ -60,14 +62,17 @@ public class Agent {
 			current_market   += this.city.get_transport_cost_to(a.city) * (1.0 - industry_difference);
 			potential_market +=      city.get_transport_cost_to(a.city) * (1.0 - industry_difference);
 				
-			consumer_market      += this.city.get_transport_cost_to(a.city);
-			potential_consumer_market += city.get_transport_cost_to(a.city);
+
 		}
+		
+		consumer_market = this.city.get_consumer_market(agents);
+		potential_consumer_market = city.get_consumer_market(agents);
 		
 		double market_gain   = potential_market / current_market;
 		double consumer_gain = potential_consumer_market / consumer_market;
+		double resource_match = (1.0 - Math.pow(city.get_resource() - this.industry, 2)) / (1.0 - Math.pow(this.city.get_resource() - this.industry, 2));
 		
-		double centripetal = a * (1.0 - industry) * Math.log(market_gain) + b * consumer_dependence * Math.log(consumer_gain);
+		double centripetal = a * (1.0 - industry) * Math.log(market_gain) + b * consumer_dependence * Math.log(consumer_gain) + b * (1.0 - consumer_dependence) * Math.log(resource_match);
 		
 		double rent_ratio = (0.5 + city.population_size()) / (0.5 + this.city.population_size()); //will use the actual rents in the housing model
 		double density_ratio = (0.5 + city.population_density()) / (0.5 + this.city.population_density());
@@ -77,7 +82,7 @@ public class Agent {
 		
 		
 		return centripetal - centrifugal;
-		//return (1.0 - industry) * Math.log(market_gain) - (industry) * Math.log(rent_ratio) + consumer_dependence * Math.log(consumer_gain);
+	
 	}
 	
 	public City get_next_city(ArrayList<Agent> agents, ArrayList<City> cities) {

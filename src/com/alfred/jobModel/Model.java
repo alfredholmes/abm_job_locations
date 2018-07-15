@@ -29,9 +29,6 @@ public class Model {
 		ArrayList<String> lons_string  = location_data.get_column("long");
 		ArrayList<String> areas_string = location_data.get_column("st_areashape");
 		
-		
-		
-		
 		ArrayList<String> location_names_geographic = location_data.get_column("lad17nm"); 
 		ArrayList<String> location_names_employment = employment_data.get_column("name");
 		ArrayList<String> employment_string = employment_data.get_column("employment");
@@ -74,7 +71,7 @@ public class Model {
 
 		for(int i = 0; i < n_cities; i++) {
 			cities.add(new City(i, cities, lats.get(i), lons.get(i), areas.get(i)));
-			String name = location_names_geographic.get(i);
+			/*String name = location_names_geographic.get(i);
 			//get_id in employment column
 			int j;
 			for(j = 0; j < location_names_employment.size(); j++) {
@@ -84,7 +81,12 @@ public class Model {
 			if(j != location_names_employment.size()) {
 				for(int k = 0; k < employment.get(j); k++)
 					agents.add(new Agent(cities.get(i)));
-			}
+			}*/
+			
+		}
+		
+		for(int i = 0; i < 1000; i++) {
+			agents.add(new Agent(cities));
 		}
 		
 		
