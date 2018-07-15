@@ -21,6 +21,8 @@ public class City {
 	
 	double resource;
 	
+	private static boolean update_consumer_markets = true;
+	private static ArrayList<Double> consumer_markets = new ArrayList();
 	
 	double k = 1.0 / 100.0; //parameter in transport costs - if k changes through time then could see better development of cities
 	
@@ -41,6 +43,7 @@ public class City {
 		this.location[1] = r.nextDouble();
 		this.area = r.nextDouble();
 		this.resource = r.nextDouble();
+		//this.resource = 0.5;
 	}
 	
 
@@ -100,12 +103,14 @@ public class City {
 		population++;
 		agents.add(a);
 		average_industry_cache = false;
+		update_consumer_markets = true;
 	}
 	
 	public void remove_agent(Agent a) {
 		population--;
 		agents.remove(a);
 		average_industry_cache = false;
+		update_consumer_markets = true;
 	}
 	
 	public double population_size() {
@@ -173,7 +178,22 @@ public class City {
 			double distance = distance_to(c);
 			transport_costs[c.get_id()] = Math.exp(- k * distance);
 		}
-	}	
+	}
+	
+	public double get_consumer_market(ArrayList<Agent> agents) {
+		if(update_consumer_markets) {
+			consumer_markets = new ArrayList<Double>();
+			for(City c : cities) {
+				double s = 0;
+				for(Agent a : agents) {
+					s += c.get_transport_cost_to(a.get_city());
+				}
+				consumer_markets.add(s);
+			}
+			update_consumer_markets = false;
+		}
+		return consumer_markets.get(id);
+	}
 	
 	
 }

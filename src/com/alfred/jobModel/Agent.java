@@ -7,12 +7,12 @@ import java.util.Random;
 public class Agent {
 	private double industry;
 	private double consumer_dependence;
-	private double k = 2; //parameter for the activation function
+	private static double k = 3; //parameter for the activation function
 	
-	private double a = 1; //industry
-	private double b = 1; //consumer
-	private double c = 1; //rent / population density
-	private double d = 10; //immobility
+	private static double a = 1; //industry
+	private static double b = 1; //consumer
+	private static double c = 1; //rent / population density
+	private static double d = 10; //immobility
 	
 	//private double target;
 	private City city;
@@ -60,13 +60,15 @@ public class Agent {
 			current_market   += this.city.get_transport_cost_to(a.city) * (1.0 - industry_difference);
 			potential_market +=      city.get_transport_cost_to(a.city) * (1.0 - industry_difference);
 				
-			consumer_market      += this.city.get_transport_cost_to(a.city);
-			potential_consumer_market += city.get_transport_cost_to(a.city);
+
 		}
+		
+		consumer_market = this.city.get_consumer_market(agents);
+		potential_consumer_market = city.get_consumer_market(agents);
 		
 		double market_gain   = potential_market / current_market;
 		double consumer_gain = potential_consumer_market / consumer_market;
-		double resource_match = Math.pow(city.get_resource() - this.industry, 2) / Math.pow(this.city.get_resource() - this.industry, 2);
+		double resource_match = (1.0 - Math.pow(city.get_resource() - this.industry, 2)) / (1.0 - Math.pow(this.city.get_resource() - this.industry, 2));
 		
 		double centripetal = a * (1.0 - industry) * Math.log(market_gain) + b * consumer_dependence * Math.log(consumer_gain) + b * (1.0 - consumer_dependence) * Math.log(resource_match);
 		
@@ -78,7 +80,7 @@ public class Agent {
 		
 		
 		return centripetal - centrifugal;
-		//return (1.0 - industry) * Math.log(market_gain) - (industry) * Math.log(rent_ratio) + consumer_dependence * Math.log(consumer_gain);
+	
 	}
 	
 	public City get_next_city(ArrayList<Agent> agents, ArrayList<City> cities) {
