@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.Random;
 
 import com.alfred.jobModel.Model;
-import com.alfred.utility.CSVReader;;
+import com.alfred.utility.CSVReader;
+import com.alfred.utility.CSVWriter;
+import com.alfred.utility.ModelReader;;
 
 public class Genetic {
 	public ArrayList<Model> models = new ArrayList<Model>();
@@ -15,8 +17,11 @@ public class Genetic {
 	int n_cities;
 	int n_models = 100;
 	int top_model;
+	double top_error;
 	
-	public Genetic() {
+	private double[] fitness_cache;
+	
+	public Genetic(boolean restore) {
 		ArrayList<CSVReader> csv_files = new ArrayList<CSVReader>();
 		
 		for(int i = 2012; i < 2017; i++) {
@@ -36,7 +41,7 @@ public class Genetic {
 		
 		//generate models
 		for(int i = 0; i  < n_models; i++) {
-			
+			if(!restore) {
 			double[] agent_params = new double[4];
 			for(int j = 0; j < agent_params.length; j++) {
 				agent_params[j] = rng.nextDouble();
@@ -48,8 +53,17 @@ public class Genetic {
 				city_params[j] = rng.nextDouble();
 			}
 			
+			
 			models.add(new Model(agent_params, city_params));
+			
+			}else {
+				models.add(ModelReader.get_from_file("traning/" + i + ".model"));
+			}
 		}
+		
+		
+		fitness_cache = new double[n_models];
+		for(int i = 0; i < fitness_cache.length; i++) fitness_cache[i] = -1;
 		
 	}
 	
@@ -62,12 +76,10 @@ public class Genetic {
 				error += Math.pow(output[j] - target[i][j], 2);
 			}
 		}
-		//System.out.println(error);
 		return error;
 	}
 	
 	public double update() {
-		//get array of fitness values
 		double[] fitness_values = new double[models.size()];
 		double average_error = 0;
 		
@@ -75,12 +87,16 @@ public class Genetic {
 		double top_model_fitness = -1;
 		for(int i = 0; i < models.size(); i++) {
 			System.out.println("\t Evaluating fitness of model " + i);
-			fitness_values[i] = fitness(models.get(i));
+			if(fitness_cache[i] == -1) {
+				fitness_cache[i] = fitness_values[i] = fitness(models.get(i));
+			}
+			
+			
 			if(top_model == 0) {
-				top_model_fitness = fitness_values[0];
+				top_error = fitness_values[0];
 			}else if(fitness_values[i] < top_model_fitness) {
 				top_model = i;
-				top_model_fitness = fitness_values[i];
+				top_error = fitness_values[i];
 			}	
 		}
 		
@@ -121,10 +137,14 @@ public class Genetic {
 				}
 				
 				for(int j = 0; j < city_params.length; j++) {
-					double r = rng.nextDouble();
+					double r = 1.5 * rng.nextDouble();
 					city_params[j] = r * parent1.city_parameters[j] + (1.0 - r) * parent2.city_parameters[j];
+					city_params[j] = city_params[j] < 1 ? city_params[j] : 1;
+					city_params[j] = city_params[j] > 0 ? city_params[j] : 0;
 					
 				}
+				
+				fitness_cache[i] = -1;
 				
 				
 				models.set(i, new Model(agent_params, city_params));
@@ -135,20 +155,28 @@ public class Genetic {
 		return average_error;
 	}
 	
+	public void save_state() {
+		for(int i = 0; i < models.size(); i++) {
+			//write file
+			CSVWriter writer = new CSVWriter("traning/" + i + ".model", false);
+			writer.write(models.get(i).agent_parameters);
+			writer.write(models.get(i).city_parameters);
+			writer.close();
+		}
+	}
+	
+	
+	
 	public static void run(String[] argv) {
 		//Generate population
 		System.out.println("Generating population...");
-		Genetic g = new Genetic();
-		for(int i = 0; i < 5; i++) {
+		Genetic g = new Genetic(true);
+		for(int i = 0; i < 30; i++) {
 			System.out.println("Running generation " + i);
 			double average_error = g.update();
-			System.out.println(average_error);
+			System.out.println(average_error + " " + g.top_error);
 		}
-		//print top parameters (lol)
 		
-		//System.out.println();
-		for(int i = 0; i < g.models.get(g.top_model).agent_parameters.length; i++) {
-			System.out.println(g.models.get(g.top_model).agent_parameters[i]);
-		}
+		g.save_state();
 	}
 }

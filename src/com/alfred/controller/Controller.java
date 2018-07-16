@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.alfred.calibration.Genetic;
 import com.alfred.jobModel.Model;
+import com.alfred.utility.CSVWriter;
 
 public class Controller {
 	public static boolean train = true;

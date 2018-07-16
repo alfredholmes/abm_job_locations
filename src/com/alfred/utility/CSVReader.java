@@ -16,12 +16,12 @@ public class CSVReader {
 		BufferedReader br = null;
 		FileReader fr = null;
 		
-	try {
-		fr = new FileReader(path);
-		br = new BufferedReader(fr);
+		try {
+			fr = new FileReader(path);
+			br = new BufferedReader(fr);
 			
-		String current_line;
-		String[] header = null;
+			String current_line;
+			String[] header = null;
 		
 		
 			
@@ -41,7 +41,7 @@ public class CSVReader {
 					data.add(line);
 				}
 				
-				//System.out.println(data);
+			//System.out.println(data);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
