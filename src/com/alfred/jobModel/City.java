@@ -21,7 +21,7 @@ public class City {
 	
 	double resource;
 	
-	private static boolean update_consumer_markets = true;
+	public static boolean update_consumer_markets = true;
 	private static ArrayList<Double> consumer_markets = new ArrayList();
 	
 	double k = 1.0 / 100.0; //parameter in transport costs - if k changes through time then could see better development of cities
@@ -47,14 +47,14 @@ public class City {
 	}
 	
 
-	public City(int id, ArrayList<City> cities, double lat, double lon, double area) {
+	public City(int id, ArrayList<City> cities, double lat, double lon, double area, double resource) {
 		r = new Random();
 		this.id = id;
 		this.cities = cities;
 		this.location[0] = lat;
 		this.location[1] = lon;
 		this.area = area;
-		this.resource = r.nextDouble();
+		this.resource = resource;
 	}
 	
 	public double distance_to(City city) {
@@ -190,9 +190,13 @@ public class City {
 				}
 				consumer_markets.add(s);
 			}
-			update_consumer_markets = false;
+			update_consumer_markets = false; //TODO: Think of a way to implement this cache with multiple Model instances 
 		}
 		return consumer_markets.get(id);
+	}
+	
+	public void set_resource(double resource) {
+		this.resource = resource;
 	}
 	
 	

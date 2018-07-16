@@ -1,0 +1,381 @@
+name,employment
+Gateshead,97.7
+Newcastle upon Tyne,184.1
+North Tyneside,80.0
+South Tyneside,46.3
+Sunderland,120.4
+Hartlepool,31.1
+Middlesbrough,61.7
+Redcar and Cleveland,42.0
+Stockton-on-Tees,86.7
+Darlington,52.4
+County Durham,176.0
+Northumberland,105.5
+Allerdale,38.5
+Barrow-in-Furness,31.9
+Carlisle,57.2
+Copeland,32.6
+Eden,25.1
+South Lakeland,52.6
+Burnley,38.5
+Chorley,39.3
+Fylde,43.1
+Hyndburn,28.3
+Lancaster,56.9
+Pendle,31.7
+Preston,84.1
+Ribble Valley,27.8
+Rossendale,24.5
+South Ribble,55.6
+West Lancashire,48.1
+Wyre,31.4
+Bolton,106.7
+Bury,67.1
+Manchester,356.9
+Oldham,81.8
+Rochdale,71.8
+Salford,120.7
+Stockport,125.7
+Tameside,68.0
+Trafford,147.8
+Wigan,105.8
+Knowsley,65.6
+Liverpool,236.6
+St. Helens,61.2
+Sefton,93.4
+Wirral,104.6
+Cheshire East,190.4
+Halton,57.1
+Warrington,124.9
+Cheshire West and Chester,171.3
+Blackburn with Darwen,66.4
+Blackpool,59.6
+Craven,31.1
+Hambleton,42.0
+Harrogate,80.9
+Richmondshire,17.2
+Ryedale,25.0
+Scarborough,43.9
+Selby,36.6
+Barnsley,77.8
+Doncaster,123.8
+Rotherham,103.2
+Sheffield,256.5
+Bradford,200.9
+Calderdale,99.9
+Kirklees,160.1
+Leeds,440.9
+Wakefield,151.1
+"Kingston upon Hull City of",121.8
+East Riding of Yorkshire,123.5
+North East Lincolnshire,68.5
+North Lincolnshire,72.2
+York,106.0
+Amber Valley,51.5
+Bolsover,35.7
+Chesterfield,51.2
+Derbyshire Dales,31.0
+Erewash,37.5
+High Peak,32.9
+North East Derbyshire,28.3
+South Derbyshire,30.6
+Blaby,54.4
+Charnwood,66.7
+Harborough,39.6
+Hinckley and Bosworth,41.3
+Melton,22.1
+North West Leicestershire,57.5
+Oadby and Wigston,18.1
+Boston,30.8
+East Lindsey,45.1
+Lincoln,56.1
+North Kesteven,37.4
+South Holland,35.5
+South Kesteven,55.9
+West Lindsey,26.4
+Corby,30.5
+Daventry,38.9
+East Northamptonshire,27.6
+Kettering,43.2
+Northampton,127.2
+South Northamptonshire,34.1
+Wellingborough,33.9
+Ashfield,52.2
+Bassetlaw,49.4
+Broxtowe,36.9
+Gedling,31.9
+Mansfield,39.4
+Newark and Sherwood,48.6
+Rushcliffe,40.4
+Derby,127.9
+Leicester,173.9
+Rutland,15.1
+Nottingham,220.7
+Cannock Chase,38.7
+East Staffordshire,63.1
+Lichfield,49.0
+Newcastle-under-Lyme,47.3
+South Staffordshire,33.8
+Stafford,57.9
+Staffordshire Moorlands,29.9
+Tamworth,31.0
+North Warwickshire,44.2
+Nuneaton and Bedworth,44.8
+Rugby,46.5
+Stratford-on-Avon,66.6
+Warwick,83.2
+Bromsgrove,37.9
+Malvern Hills,26.6
+Redditch,39.1
+Worcester,52.8
+Wychavon,50.5
+Wyre Forest,32.7
+Birmingham,504.1
+Coventry,157.4
+Dudley,114.5
+Sandwell,134.1
+Solihull,113.2
+Walsall,106.6
+Wolverhampton,102.4
+"Herefordshire County of",75.9
+Telford and Wrekin,84.0
+Shropshire,121.5
+Stoke-on-Trent,114.9
+Cambridge,102.5
+East Cambridgeshire,31.0
+Fenland,32.7
+Huntingdonshire,75.7
+South Cambridgeshire,78.6
+Basildon,84.1
+Braintree,55.3
+Brentwood,36.7
+Castle Point,21.1
+Chelmsford,83.6
+Colchester,81.9
+Epping Forest,49.9
+Harlow,41.9
+Maldon,20.1
+Rochford,21.9
+Tendring,39.6
+Uttlesford,39.6
+Broxbourne,41.8
+Dacorum,66.3
+East Hertfordshire,63.2
+Hertsmere,54.0
+North Hertfordshire,52.5
+St Albans,77.4
+Stevenage,43.8
+Three Rivers,43.5
+Watford,85.6
+Welwyn Hatfield,71.3
+Breckland,49.6
+Broadland,47.2
+Great Yarmouth,38.5
+King's Lynn and West Norfolk,54.3
+North Norfolk,33.2
+Norwich,89.7
+South Norfolk,51.8
+Babergh,32.1
+Forest Heath,24.6
+Ipswich,71.2
+Mid Suffolk,35.6
+St Edmundsbury,62.9
+Suffolk Coastal,50.8
+Waveney,41.3
+Peterborough,109.7
+Luton,89.2
+Bedford,75.1
+Central  Bedfordshire,96.3
+Southend-on-Sea,66.4
+Thurrock,64.7
+City of London,455.5
+Barking and Dagenham,52.2
+Barnet,133.5
+Bexley,73.2
+Brent,117.2
+Bromley,108.6
+Camden,353.6
+Croydon,119.5
+Ealing,131.3
+Enfield,105.3
+Greenwich,81.9
+Hackney,113.0
+Hammersmith and Fulham,137.6
+Haringey,70.7
+Harrow,73.5
+Havering,81.3
+Hillingdon,184.2
+Hounslow,163.3
+Islington,228.6
+Kensington and Chelsea,132.5
+Kingston upon Thames,83.6
+Lambeth,162.5
+Lewisham,69.7
+Merton,80.9
+Newham,101.8
+Redbridge,79.2
+Richmond upon Thames,84.1
+Southwark,232.2
+Sutton,72.1
+Tower Hamlets,280.9
+Waltham Forest,70.5
+Wandsworth,119.7
+Westminster,726.5
+Aylesbury Vale,75.9
+Chiltern,36.9
+South Bucks,37.4
+Wycombe,84.7
+Eastbourne,40.3
+Hastings,31.8
+Lewes,37.0
+Rother,28.7
+Wealden,49.6
+Basingstoke and Deane,81.3
+East Hampshire,45.7
+Eastleigh,64.5
+Fareham,51.6
+Gosport,21.0
+Hart,39.6
+Havant,44.8
+New Forest,72.0
+Rushmoor,49.7
+Test Valley,59.1
+Winchester,82.6
+Ashford,55.3
+Canterbury,64.6
+Dartford,63.1
+Dover,35.6
+Gravesham,29.7
+Maidstone,75.8
+Sevenoaks,52.0
+Shepway,38.2
+Swale,49.9
+Thanet,43.0
+Tonbridge and Malling,58.1
+Tunbridge Wells,63.1
+Cherwell,74.2
+Oxford,122.2
+South Oxfordshire,61.4
+Vale of White Horse,64.1
+West Oxfordshire,44.4
+Elmbridge,62.6
+Epsom and Ewell,32.9
+Guildford,79.1
+Mole Valley,46.2
+Reigate and Banstead,69.3
+Runnymede,57.6
+Spelthorne,39.3
+Surrey Heath,55.1
+Tandridge,33.6
+Waverley,56.5
+Woking,49.0
+Adur,21.0
+Arun,45.2
+Chichester,60.3
+Crawley,85.7
+Horsham,54.9
+Mid Sussex,59.2
+Worthing,46.1
+Medway,89.2
+Bracknell Forest,63.5
+West Berkshire,96.7
+Reading,103.0
+Slough,79.9
+Windsor and Maidenhead,80.7
+Wokingham,80.0
+Milton Keynes,173.8
+Brighton and Hove,137.8
+Portsmouth,103.3
+Southampton,117.4
+Isle of Wight,52.4
+East Devon,47.1
+Exeter,91.9
+Mid Devon,25.5
+North Devon,42.1
+South Hams,37.3
+Teignbridge,47.8
+Torridge,20.0
+West Devon,17.2
+Christchurch,20.1
+East Dorset,32.0
+North Dorset,25.0
+Purbeck,17.8
+West Dorset,51.4
+Weymouth and Portland,18.9
+Cheltenham,67.3
+Cotswold,41.5
+Forest of Dean,24.6
+Gloucester,64.6
+Stroud,48.9
+Tewkesbury,45.1
+Mendip,47.8
+Sedgemoor,44.6
+South Somerset,67.4
+Taunton Deane,55.5
+West Somerset,12.5
+Bath and North East Somerset,85.1
+"Bristol City of",263.2
+North Somerset,85.3
+South Gloucestershire,146.6
+Cornwall,214.6
+Isles of Scilly,1.3
+Plymouth,111.3
+Torbay,49.6
+Bournemouth,83.6
+Poole,79.5
+Swindon,113.7
+Wiltshire,204.2
+Isle of Anglesey,20.3
+Gwynedd,54.1
+Conwy,45.5
+Denbighshire,39.3
+Flintshire,73.5
+Wrexham,55.5
+Powys,29.5
+Ceredigion,45.3
+Pembrokeshire,67.2
+Carmarthenshire,109.4
+Swansea,49.0
+Neath Port Talbot,60.3
+Bridgend,40.1
+The Vale of Glamorgan,209.3
+Rhondda Cynon Taff,74.9
+Merthyr Tydfil,21.5
+Caerphilly,55.5
+Blaenau Gwent,19.1
+Torfaen,35.7
+Monmouthshire,35.8
+Newport,71.2
+Cardiff,209.3
+Aberdeen City,184.4
+Aberdeenshire,107.6
+Angus,35.5
+Argyll and Bute,38.0
+Scottish Borders,42.5
+Clackmannanshire,15.3
+West Dunbartonshire,31.8
+Dumfries and Galloway,59.9
+Dundee City,75.4
+East Ayrshire,41.0
+East Dunbartonshire,26.9
+East Lothian,28.7
+East Renfrewshire,21.4
+City of Edinburgh,326.1
+Falkirk,63.2
+Fife,136.5
+Glasgow City,408.1
+Highland,113.7
+Inverclyde,29.8
+Midlothian,29.6
+Moray,35.7
+North Ayrshire,40.7
+North Lanarkshire,131.7
+Orkney Islands,10.4
+Perth and Kinross,63.9
+Renfrewshire,42.5
+Shetland Islands,15.0
+South Ayrshire,47.1
+South Lanarkshire,118.8
+Stirling,46.3
+West Lothian,78.1
+Eilean Siar,10.9
