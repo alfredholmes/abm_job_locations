@@ -13,7 +13,7 @@ public class Model {
 	public double[] agent_parameters;
 	public double[] city_parameters;
 	
-	double jobs_per_agent = 100;
+	double jobs_per_agent = 25;
 	
 	
 	public Model(double[] agent_parameters, double[] city_parameters) {
@@ -106,11 +106,11 @@ public class Model {
 		
 	}
 	
-	/*public static void main(String[] argv) {
+	public static void run(String[] argv, double[] agent_params, double[] city_params) {
 		
 		long then = System.currentTimeMillis();
 		double previous_moves = 0;
-		Model m = new Model(1000);
+		Model m = new Model(agent_params, city_params);
 		Plot p = new Plot(m, 0);
 		//Plot q = new Plot(m, 1);
 		for(int i = 0; i < 200; i++) {
@@ -131,7 +131,7 @@ public class Model {
 		}
 		m.dump_cities();
 		
-	}*/
+	}
 	
 	public void dump_cities() {
 		for(City c: cities) {

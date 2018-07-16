@@ -62,11 +62,9 @@ public class Agent {
 		double potential_consumer_market = 0;
 		
 		/*for(Agent a : agents) {
-			//double industry_difference = Math.abs(industry - a.industry);
-			//current_market   += this.city.get_transport_cost_to(a.city) * (1.0 - industry_difference);
-			//potential_market +=      city.get_transport_cost_to(a.city) * (1.0 - industry_difference);
-				
-
+			double industry_difference = Math.abs(industry - a.industry);
+			current_market   += this.city.get_transport_cost_to(a.city) * (1.0 - industry_difference);
+			potential_market +=      city.get_transport_cost_to(a.city) * (1.0 - industry_difference);
 		}*/
 		
 		consumer_market = this.city.get_consumer_market(agents);

@@ -62,12 +62,15 @@ public class Genetic {
 				error += Math.pow(output[j] - target[i][j], 2);
 			}
 		}
+		//System.out.println(error);
 		return error;
 	}
 	
-	public void update() {
+	public double update() {
 		//get array of fitness values
 		double[] fitness_values = new double[models.size()];
+		double average_error = 0;
+		
 		top_model = 0;
 		double top_model_fitness = -1;
 		for(int i = 0; i < models.size(); i++) {
@@ -78,10 +81,13 @@ public class Genetic {
 			}else if(fitness_values[i] < top_model_fitness) {
 				top_model = i;
 				top_model_fitness = fitness_values[i];
-			}
-			
-			
+			}	
 		}
+		
+		for(double v : fitness_values) 
+			average_error += v;
+		
+		average_error /= (double)fitness_values.length;
 		
 		double[] f = new double[fitness_values.length];
 		System.arraycopy(fitness_values, 0, f, 0, fitness_values.length);
@@ -101,17 +107,16 @@ public class Genetic {
 		
 		for(int i = 0; i < fitness_values.length; i++) {
 			if(fitness_values[i] == -1) {
-				System.out.println("\t \t Updating model " + i);
 				
 				//make new model
-				Model parent1 = models.get(new_parent_ids.get((int)(rng.nextDouble() * new_parent_ids.size())));
-				Model parent2 = models.get(new_parent_ids.get((int)(rng.nextDouble() * new_parent_ids.size())));
+				Model parent1 = models.get(new_parent_ids.get(rng.nextInt(new_parent_ids.size())));
+				Model parent2 = models.get(new_parent_ids.get(rng.nextInt(new_parent_ids.size())));
 				
 				double[] agent_params = new double[4];
 				double[] city_params = new double[n_cities];
 				
 				for(int j = 0; j < agent_params.length; j++) {
-					double r = rng.nextDouble();
+					double r = 1.5 * rng.nextDouble();
 					agent_params[j] = r * parent1.agent_parameters[j] + (1.0 - r) * parent2.agent_parameters[j];
 				}
 				
@@ -124,16 +129,20 @@ public class Genetic {
 				
 				models.set(i, new Model(agent_params, city_params));
 			}
+		
 		}
+		
+		return average_error;
 	}
 	
-	public static void main(String[] argv) {
+	public static void run(String[] argv) {
 		//Generate population
 		System.out.println("Generating population...");
 		Genetic g = new Genetic();
 		for(int i = 0; i < 5; i++) {
 			System.out.println("Running generation " + i);
-			g.update();
+			double average_error = g.update();
+			System.out.println(average_error);
 		}
 		//print top parameters (lol)
 		
