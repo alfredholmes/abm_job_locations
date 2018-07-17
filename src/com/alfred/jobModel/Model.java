@@ -13,7 +13,7 @@ public class Model {
 	public double[] agent_parameters;
 	public double[] city_parameters;
 	
-	double jobs_per_agent = 25;
+	double jobs_per_agent = 50;
 	
 	
 	public Model(double[] agent_parameters, double[] city_parameters) {
@@ -160,7 +160,6 @@ public class Model {
 	}
 	
 	public double[] update() {
-		City.update_consumer_markets = true;
 		Map<Agent, City> movements = new HashMap<Agent, City>();
 		for(Agent a : agents) {			
 			movements.put(a, a.get_next_city(agents, cities));
@@ -173,9 +172,6 @@ public class Model {
 		for(int i = 0; i < r.length; i++) {
 			r[i]= cities.get(i).get_population() * jobs_per_agent;
 		}
-		
-		City.update_consumer_markets = false;
-		
 		return r;
 	}
 }

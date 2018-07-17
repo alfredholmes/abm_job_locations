@@ -17,11 +17,16 @@ public class Genetic {
 	int n_cities;
 	int n_models = 100;
 	int top_model;
-	double top_error;
+	double top_error = -1;
 	
 	private double[] fitness_cache;
 	
+	int n_cpus;
+	
 	public Genetic(boolean restore) {
+		n_cpus = Runtime.getRuntime().availableProcessors();
+		//n_cpus = 1;
+		
 		ArrayList<CSVReader> csv_files = new ArrayList<CSVReader>();
 		
 		for(int i = 2012; i < 2017; i++) {
@@ -42,21 +47,22 @@ public class Genetic {
 		//generate models
 		for(int i = 0; i  < n_models; i++) {
 			if(!restore) {
-			double[] agent_params = new double[4];
-			for(int j = 0; j < agent_params.length; j++) {
-				agent_params[j] = rng.nextDouble();
-			}
+				double[] agent_params = new double[4];
+				for(int j = 0; j < agent_params.length; j++) {
+					agent_params[j] = rng.nextDouble();
+				}
+				
+				double[] city_params = new double[n_cities];
+				
+				for(int j = 0; j < city_params.length; j++) {
+					city_params[j] = rng.nextDouble();
+				}
 			
-			double[] city_params = new double[n_cities];
 			
-			for(int j = 0; j < city_params.length; j++) {
-				city_params[j] = rng.nextDouble();
-			}
-			
-			
-			models.add(new Model(agent_params, city_params));
+				models.add(new Model(agent_params, city_params));
 			
 			}else {
+				//System.out.println("Here!");
 				models.add(ModelReader.get_from_file("traning/" + i + ".model"));
 			}
 		}
@@ -67,43 +73,43 @@ public class Genetic {
 		
 	}
 	
-	private double fitness(Model m) {
-		m = new Model(m.agent_parameters, m.city_parameters);
-		double error = 0;
-		for(int i = 1; i < target.length; i++) {
-			double[] output = m.update();
-			for(int j = 0; j < target[i].length; j++) {
-				error += Math.pow(output[j] - target[i][j], 2);
-			}
-		}
-		return error;
-	}
+
 	
 	public double update() {
+		ArrayList<Thread> workers = new ArrayList<Thread>();
+		
 		double[] fitness_values = new double[models.size()];
 		double average_error = 0;
 		
-		top_model = 0;
-		double top_model_fitness = -1;
-		for(int i = 0; i < models.size(); i++) {
-			System.out.println("\t Evaluating fitness of model " + i);
-			if(fitness_cache[i] == -1) {
-				fitness_cache[i] = fitness_values[i] = fitness(models.get(i));
-			}
-			
-			
-			if(top_model == 0) {
-				top_error = fitness_values[0];
-			}else if(fitness_values[i] < top_model_fitness) {
-				top_model = i;
-				top_error = fitness_values[i];
-			}	
+		for(int i = 0; i < n_cpus; i++) {
+			int start = (int)(i * (double)(models.size() / n_cpus));
+			int end = (int)((i + 1) * (double)(models.size() / n_cpus));
+			workers.add(new Thread(new ModelEvaluation(models, fitness_values, fitness_cache, target, start, end)));
 		}
 		
-		for(double v : fitness_values) 
-			average_error += v;
+		for(Thread w : workers) {
+			w.start();
+		}
 		
-		average_error /= (double)fitness_values.length;
+		
+
+		try {
+			for(Thread w : workers)
+				w.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		double total_error = 0;
+		double min_error = -1;
+		for(double d : fitness_values) {
+			total_error += d;
+			if(min_error == -1 || d < min_error) min_error = d;
+		}
+		average_error = total_error  / fitness_values.length;
+		top_error = min_error;
+		
+		
 		
 		double[] f = new double[fitness_values.length];
 		System.arraycopy(fitness_values, 0, f, 0, fitness_values.length);
@@ -116,7 +122,7 @@ public class Genetic {
 		for(int i = 0; i < fitness_values.length; i++) {
 			if(fitness_values[i] > median) {
 				fitness_values[i] = -1;
-			}else {
+			}else{
 				new_parent_ids.add(i);
 			}
 		}
@@ -163,6 +169,10 @@ public class Genetic {
 			writer.write(models.get(i).city_parameters);
 			writer.close();
 		}
+		
+		CSVWriter writer = new CSVWriter("config/optimal.model", false);
+		writer.write(models.get(top_model).agent_parameters);
+		writer.write(models.get(top_model).city_parameters);
 	}
 	
 	
@@ -170,7 +180,7 @@ public class Genetic {
 	public static void run(String[] argv) {
 		//Generate population
 		System.out.println("Generating population...");
-		Genetic g = new Genetic(true);
+		Genetic g = new Genetic(false);
 		for(int i = 0; i < 30; i++) {
 			System.out.println("Running generation " + i);
 			double average_error = g.update();

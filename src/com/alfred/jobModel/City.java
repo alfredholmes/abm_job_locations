@@ -21,8 +21,8 @@ public class City {
 	
 	double resource;
 	
-	public static boolean update_consumer_markets = true;
-	private static ArrayList<Double> consumer_markets = new ArrayList();
+	public boolean update_consumer_markets = true;
+	private ArrayList<Double> consumer_markets = new ArrayList();
 	
 	double k = 1.0 / 100.0; //parameter in transport costs - if k changes through time then could see better development of cities
 	
@@ -190,7 +190,7 @@ public class City {
 				}
 				consumer_markets.add(s);
 			}
-			update_consumer_markets = false; //TODO: Think of a way to implement this cache with multiple Model instances 
+			update_consumer_markets = false; //TODO: Think of a way to implement this cache with multiple Model instances and multiple threads
 		}
 		return consumer_markets.get(id);
 	}
