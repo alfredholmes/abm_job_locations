@@ -47,14 +47,14 @@ public class Genetic {
 		//generate models
 		for(int i = 0; i  < n_models; i++) {
 			if(!restore) {
-				double[] agent_params = new double[4];
+				double[] agent_params = new double[5];
 				for(int j = 0; j < agent_params.length; j++) {
 					agent_params[j] = rng.nextDouble();
 				}
 				
 				double[] city_params = new double[n_cities];
 				
-				for(int j = 0; j < city_params.length; j++) {
+				for(int j = 0; j < n_cities; j++) {
 					city_params[j] = rng.nextDouble();
 				}
 			
@@ -84,6 +84,8 @@ public class Genetic {
 		for(int i = 0; i < n_cpus; i++) {
 			int start = (int)(i * (double)(models.size() / n_cpus));
 			int end = (int)((i + 1) * (double)(models.size() / n_cpus));
+			if(i == n_cpus - 1 && end != models.size())
+				end = models.size();
 			workers.add(new Thread(new ModelEvaluation(models, fitness_values, fitness_cache, target, start, end)));
 		}
 		
@@ -102,9 +104,14 @@ public class Genetic {
 		
 		double total_error = 0;
 		double min_error = -1;
-		for(double d : fitness_values) {
+		for(int i = 0; i < fitness_values.length; i++) {
+			double d = fitness_values[i];
 			total_error += d;
-			if(min_error == -1 || d < min_error) min_error = d;
+			if(min_error == -1 || (d < min_error && d != 0)) {
+				min_error = d;
+				top_model = i;
+				
+			}
 		}
 		average_error = total_error  / fitness_values.length;
 		top_error = min_error;
@@ -134,16 +141,16 @@ public class Genetic {
 				Model parent1 = models.get(new_parent_ids.get(rng.nextInt(new_parent_ids.size())));
 				Model parent2 = models.get(new_parent_ids.get(rng.nextInt(new_parent_ids.size())));
 				
-				double[] agent_params = new double[4];
+				double[] agent_params = new double[5];
 				double[] city_params = new double[n_cities];
 				
 				for(int j = 0; j < agent_params.length; j++) {
-					double r = 1.5 * rng.nextDouble();
+					double r = 10 * rng.nextDouble();
 					agent_params[j] = r * parent1.agent_parameters[j] + (1.0 - r) * parent2.agent_parameters[j];
 				}
 				
 				for(int j = 0; j < city_params.length; j++) {
-					double r = 1.5 * rng.nextDouble();
+					double r = rng.nextDouble();
 					city_params[j] = r * parent1.city_parameters[j] + (1.0 - r) * parent2.city_parameters[j];
 					city_params[j] = city_params[j] < 1 ? city_params[j] : 1;
 					city_params[j] = city_params[j] > 0 ? city_params[j] : 0;
@@ -180,13 +187,14 @@ public class Genetic {
 	public static void run(String[] argv) {
 		//Generate population
 		System.out.println("Generating population...");
-		Genetic g = new Genetic(false);
-		for(int i = 0; i < 30; i++) {
+		Genetic g = new Genetic(true);
+		for(int i = 0; i < 20; i++) {
 			System.out.println("Running generation " + i);
 			double average_error = g.update();
 			System.out.println(average_error + " " + g.top_error);
+			g.save_state();
 		}
 		
-		g.save_state();
+		
 	}
 }

@@ -65,10 +65,8 @@ public class Model {
 			boolean found = false;
 			for(String t : location_names_employment) {
 				if(t.equals(s)) {
-					found = true;
-					
+					found = true;	
 				}
-				
 			}
 			if(!found) {
 				System.out.println(s);
@@ -94,40 +92,19 @@ public class Model {
 			
 		}
 		
-
-		
-		
-		
-
-		//generate agents
-		//for(int i = 0; i < n_agents; i++)
-		//	agents.add(new Agent(cities));
-
-		
 	}
 	
 	public static void run(String[] argv, double[] agent_params, double[] city_params) {
 		
-		long then = System.currentTimeMillis();
 		double previous_moves = 0;
 		Model m = new Model(agent_params, city_params);
 		Plot p = new Plot(m, 0);
-		//Plot q = new Plot(m, 1);
 		for(int i = 0; i < 200; i++) {
-			//m.dump_cities();
 			m.update();
-			
 			double moves = m.average_number_of_moves();
 			System.out.println("Step " + i + " " + moves + " "  + (moves - previous_moves));
-			long now = System.currentTimeMillis();
-			//if(now - then > 1000) {
-			//then = now;
 			p.draw();
-				//q.draw();
-			//}
-			previous_moves = moves;
-			
-			
+			previous_moves = moves;	
 		}
 		m.dump_cities();
 		
@@ -135,7 +112,7 @@ public class Model {
 	
 	public void dump_cities() {
 		for(City c: cities) {
-			System.out.println(c.population_size() + " \t" + c.average_industry() + " \t" + Math.pow(c.industry_variance(), 0.5) + "\t " + transport_cost_to_largest_city(c));
+			System.out.println(c.population_size() + " \t" + c.get_industry_mean() + " \t" + Math.pow(c.get_industry_variance(), 0.5) + "\t " + transport_cost_to_largest_city(c));
 		}
 	}
 	
@@ -156,18 +133,20 @@ public class Model {
 				capital = c;
 			}
 		}
-		return capital.get_transport_cost_to(city);
+		return capital.transport_cost_to(city);
 	}
 	
 	public double[] update() {
+		
 		Map<Agent, City> movements = new HashMap<Agent, City>();
 		for(Agent a : agents) {			
-			movements.put(a, a.get_next_city(agents, cities));
+			movements.put(a, a.get_next_city(cities));
 		}
 		//do the actual updates after all the agents have made their decisions
 		for(Map.Entry<Agent, City> m : movements.entrySet()) {
 			m.getKey().set_city(m.getValue());
 		}
+		
 		double[] r = new double[cities.size()];
 		for(int i = 0; i < r.length; i++) {
 			r[i]= cities.get(i).get_population() * jobs_per_agent;

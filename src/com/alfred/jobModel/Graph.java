@@ -32,7 +32,7 @@ public class Graph extends Canvas{
 				
 		}
 		for(City c: model.cities) {
-			g.setColor(new Color((float)c.average_industry(), (float)c.industry_variance() < 1.0f ? (float)c.industry_variance() : 1.0f , 1.0f - (float)c.average_industry()));
+			g.setColor(new Color((float)c.get_industry_mean(), (float)c.get_industry_variance() < 1.0f ? (float)c.get_industry_variance() : 1.0f , 1.0f - (float)c.get_industry_mean()));
 			//System.out.println(c.population_position());
 			circle(g, (int)(Math.log(c.population_rank()) / Math.log(model.cities.size()) * width), (int)((Math.log(c.population_size()) /  Math.log(min_rank)) * height), 9);
 		}

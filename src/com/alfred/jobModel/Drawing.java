@@ -47,7 +47,7 @@ public class Drawing extends Canvas{
 		//System.out.println("Call");
 		if(model.cities.size() != 0) {			
 			for(City c : model.cities) {
-				g.setColor(new Color((float)c.average_industry(), (float)c.industry_variance(), 1.0f - (float)c.average_industry()));
+				g.setColor(new Color((float)c.get_industry_mean(), (float)c.get_industry_variance(), 1.0f - (float)c.get_industry_mean()));
 				//g.fillOval(, (int)(250 * Math.sin(2*Math.PI / 10 * c.get_id())) + 500, (int)(c.get_population() / 5), (int)(c.get_population() / 5));
 				//int x = (int)(c.location[0] * width);
 				//int y = (int)(c.location[1] * height);
