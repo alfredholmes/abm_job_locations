@@ -1,7 +1,6 @@
 package com.alfred.jobModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.alfred.utility.CSVReader;
@@ -12,14 +11,14 @@ public class Model {
 	public double[] agent_parameters;
 	public double[] city_parameters;
 	
-	double jobs_per_agent = 50;
+	double jobs_per_agent = 5;
 	
 	int nCPU;
 	
 	
 	public Model(double[] agent_parameters, double[] city_parameters) {
 		nCPU = Runtime.getRuntime().availableProcessors();
-		//nCPU = 1;
+		
 		this.agent_parameters = agent_parameters;
 		this.city_parameters  = city_parameters;
 		
