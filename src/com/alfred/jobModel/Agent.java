@@ -37,26 +37,25 @@ public class Agent {
 		
 		double current_market    = 0;
 		double potential_market  = 0;
-		double consumer_market   = 0;
-		double potential_consumer_market = 0;
 		
 		for(City c : cities) {
-			current_market += c.get_population() * (1.0 - Math.abs(industry - c.get_industry_mean())) * this.city.transport_cost_to(c);
-			potential_market += c.get_population() * (1.0 - Math.abs(industry - c.get_industry_mean())) * city.transport_cost_to(c);
+			double a = c.get_population() * (1.0 - Math.abs(industry - c.get_industry_mean()));
+			current_market   += a * this.city.transport_cost_to(c);
+			potential_market += a *      city.transport_cost_to(c);
+			//current_market += 1;
+			//potential_market += 1;
+		
 		}
 		
-		//TODO make this faster with sensible caching 
-		consumer_market = this.city.get_consumer_market();
-		potential_consumer_market = city.get_consumer_market();
+		double consumer_market = this.city.get_consumer_market();
+		double potential_consumer_market = city.get_consumer_market();
 		
-		//double market_gain   = potential_market / current_market;
 		double market_gain = potential_market / current_market;
 		double consumer_gain = potential_consumer_market / consumer_market;
 		double resource_match = (1.0 - Math.pow(city.get_resource() - this.industry, 2)) / (1.0 - Math.pow(this.city.get_resource() - this.industry, 2));
 		
 		double centripetal = parameters[0] * (1.0 - industry) * Math.log(market_gain) + parameters[1] * consumer_dependence * Math.log(consumer_gain) + parameters[2] * (1.0 - consumer_dependence) * Math.log(resource_match);
 		
-		//double rent_ratio = (0.5 + city.population_size()) / (0.5 + this.city.population_size()); //will use the actual rents in the housing model
 		double density_ratio = (0.5 + city.population_density()) / (0.5 + this.city.population_density());
 		double immobility = (1.0 / this.city.transport_cost_to(city));
 		

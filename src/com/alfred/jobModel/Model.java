@@ -13,7 +13,7 @@ public class Model {
 	public double[] agent_parameters;
 	public double[] city_parameters;
 	
-	double jobs_per_agent = 50;
+	double jobs_per_agent = 3;
 	
 	
 	public Model(double[] agent_parameters, double[] city_parameters) {
@@ -146,7 +146,11 @@ public class Model {
 		for(Map.Entry<Agent, City> m : movements.entrySet()) {
 			m.getKey().set_city(m.getValue());
 		}
-		
+		//reset cache on all cities
+		for(City c : cities) {
+			c.set_update_consumer_market(true);
+		}
+		//sort out return for genetic alg
 		double[] r = new double[cities.size()];
 		for(int i = 0; i < r.length; i++) {
 			r[i]= cities.get(i).get_population() * jobs_per_agent;

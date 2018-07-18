@@ -44,7 +44,7 @@ public class ModelReader {
 				agent_params[i] = Double.parseDouble(data.get(0)[i]);
 			}
 			
-			for(int i = 0; i < agent_params.length; i++) {
+			for(int i = 0; i < city_params.length; i++) {
 				city_params[i] = Double.parseDouble(data.get(1)[i]);
 			}
 			m = new Model(agent_params, city_params);

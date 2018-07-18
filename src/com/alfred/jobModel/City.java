@@ -6,9 +6,7 @@ import java.util.Random;
 public class City {
 
 
-	//------------------//
-  //----- Fields -----//
-	//------------------//
+	
 	private int id;
 	private int population = 0;
 	private ArrayList<City> cities;
@@ -83,7 +81,6 @@ public class City {
 
 	public void remove_agent(Agent a) {
 		industry_mean = population > 1 ? ((population * industry_mean) - a.get_industry()) / (double)(population - 1) : 0;
-		
 		population--;
 		agents.remove(a);
 		industry_variance = calculate_variance();
@@ -158,11 +155,14 @@ public class City {
 			
 		
 		}
-		//System.out.println(industry_mean);
 		
 		return s / (double)(agents.size() - 1);
 	}
-
+	public void set_update_consumer_market(boolean value) {
+		update_consumer_markets = value;
+	}
+	
+	
 	public void set_resource(double resource) {
 		this.resource = resource;
 	}

@@ -145,15 +145,13 @@ public class Genetic {
 				double[] city_params = new double[n_cities];
 				
 				for(int j = 0; j < agent_params.length; j++) {
-					double r = 10 * rng.nextDouble();
+					double r = rng.nextDouble();
 					agent_params[j] = r * parent1.agent_parameters[j] + (1.0 - r) * parent2.agent_parameters[j];
 				}
 				
 				for(int j = 0; j < city_params.length; j++) {
 					double r = rng.nextDouble();
 					city_params[j] = r * parent1.city_parameters[j] + (1.0 - r) * parent2.city_parameters[j];
-					city_params[j] = city_params[j] < 1 ? city_params[j] : 1;
-					city_params[j] = city_params[j] > 0 ? city_params[j] : 0;
 					
 				}
 				
@@ -188,7 +186,7 @@ public class Genetic {
 		//Generate population
 		System.out.println("Generating population...");
 		Genetic g = new Genetic(true);
-		for(int i = 0; i < 20; i++) {
+		for(int i = 0; i < 10; i++) {
 			System.out.println("Running generation " + i);
 			double average_error = g.update();
 			System.out.println(average_error + " " + g.top_error);
