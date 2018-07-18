@@ -24,7 +24,7 @@ public class City {
 	private double resource;
 
 	public boolean update_consumer_markets = true;
-	private ArrayList<Double> consumer_markets = new ArrayList<Double>();
+	private double consumer_markets = 0;
 
 	private double k = 1.0 / 100.0; //parameter in transport costs - if k changes through time then could see better development of cities
 
@@ -48,6 +48,8 @@ public class City {
 	public City(int id, ArrayList<City> cities) {
 		this(id, cities, new Random().nextDouble(), new Random().nextDouble(), new Random().nextDouble(), new Random().nextDouble());
 	}
+	
+	
 	public double get_industry_mean() {
 		return industry_mean;
 	}
@@ -134,15 +136,13 @@ public class City {
 		}
 	}
 
-	public double get_consumer_market() {
+	public synchronized double get_consumer_market() {
 		if(update_consumer_markets) {
-			consumer_markets = new ArrayList<Double>();
-			for(City c : cities) {
-				consumer_markets.add(transport_cost_to(c) * c.population);
-			}
+			for(City c : cities)
+				consumer_markets += transport_cost_to(c) * c.population;
 			update_consumer_markets = false; //TODO: Think of a way to implement this cache with multiple Model instances and multiple threads
 		}
-		return consumer_markets.get(id);
+		return consumer_markets;
 	}
 
 	public double calculate_variance(){

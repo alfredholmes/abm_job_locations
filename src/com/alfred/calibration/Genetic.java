@@ -73,34 +73,31 @@ public class Genetic {
 		
 	}
 	
+	private double fitness(Model m) {
+		m = new Model(m.agent_parameters, m.city_parameters);
+		double error = 0;
+		for(int i = 1; i < target.length; i++) {
+			double[] output = m.update();
+			for(int j = 0; j < target[i].length; j++) {
+				error += Math.abs(output[j] - target[i][j]);
+			}
+		}
+		
+		return error;
+	}
+	
 
 	
 	public double update() {
-		ArrayList<Thread> workers = new ArrayList<Thread>();
 		
 		double[] fitness_values = new double[models.size()];
-		double average_error = 0;
 		
-		for(int i = 0; i < n_cpus; i++) {
-			int start = (int)(i * (double)(models.size() / n_cpus));
-			int end = (int)((i + 1) * (double)(models.size() / n_cpus));
-			if(i == n_cpus - 1 && end != models.size())
-				end = models.size();
-			workers.add(new Thread(new ModelEvaluation(models, fitness_values, fitness_cache, target, start, end)));
+		for(int i = 0; i < fitness_values.length; i++) {
+			System.out.print("\t Evaluating model " +  i + " ...");
+			fitness_values[i] = fitness(models.get(i));
+			System.out.println(" done");
 		}
 		
-		for(Thread w : workers) {
-			w.start();
-		}
-		
-		
-
-		try {
-			for(Thread w : workers)
-				w.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		
 		double total_error = 0;
 		double min_error = -1;
@@ -110,10 +107,9 @@ public class Genetic {
 			if(min_error == -1 || (d < min_error && d != 0)) {
 				min_error = d;
 				top_model = i;
-				
 			}
 		}
-		average_error = total_error  / fitness_values.length;
+		double average_error = total_error  / fitness_values.length;
 		top_error = min_error;
 		
 		

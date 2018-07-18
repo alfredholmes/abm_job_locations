@@ -3,7 +3,6 @@ package com.alfred.jobModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import com.alfred.utility.CSVReader;
 
@@ -13,11 +12,14 @@ public class Model {
 	public double[] agent_parameters;
 	public double[] city_parameters;
 	
-	double jobs_per_agent = 3;
+	double jobs_per_agent = 50;
+	
+	int nCPU;
 	
 	
 	public Model(double[] agent_parameters, double[] city_parameters) {
-		
+		nCPU = Runtime.getRuntime().availableProcessors();
+		//nCPU = 1;
 		this.agent_parameters = agent_parameters;
 		this.city_parameters  = city_parameters;
 		
@@ -137,15 +139,36 @@ public class Model {
 	}
 	
 	public double[] update() {
+		ArrayList<AgentDecisionRunnable> decisions = new ArrayList<AgentDecisionRunnable>();
+		ArrayList<Thread> workers = new ArrayList<Thread>();
+		for(int i = 0; i < nCPU; i++) {
+			double s = (double)agents.size() / (double)(nCPU);
+			int start = i * (int)s;
+			int end   = (i + 1) * (int)s;
+			if(i == (nCPU - 1) && end != agents.size())
+				end = agents.size();
+			decisions.add(new AgentDecisionRunnable(agents, cities, start, end));
+			workers.add(new Thread(decisions.get(i)));
+		}
 		
-		Map<Agent, City> movements = new HashMap<Agent, City>();
-		for(Agent a : agents) {			
-			movements.put(a, a.get_next_city(cities));
+		for(Thread w : workers)
+			w.start();
+		
+		try{
+			for(Thread w : workers)
+				w.join();
+		}catch(InterruptedException e) {
+			e.printStackTrace();
 		}
-		//do the actual updates after all the agents have made their decisions
-		for(Map.Entry<Agent, City> m : movements.entrySet()) {
-			m.getKey().set_city(m.getValue());
+			
+		//move agents
+		for(AgentDecisionRunnable d : decisions) {
+			for(Map.Entry<Agent, City> e : d.getDecisions().entrySet()) {
+				e.getKey().set_city(e.getValue());
+			}
 		}
+		
+		
 		//reset cache on all cities
 		for(City c : cities) {
 			c.set_update_consumer_market(true);

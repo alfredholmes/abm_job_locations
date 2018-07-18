@@ -6,7 +6,7 @@ import com.alfred.jobModel.Model;
 import com.alfred.utility.ModelReader;
 
 public class Controller {
-	public static boolean train = false;
+	public static boolean train = true;
 	public static void main(String[] argv) {
 		if(train) {
 			Genetic.run(argv);

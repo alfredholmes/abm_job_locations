@@ -81,7 +81,7 @@ public class Agent {
 		if(cities.get(0).equals(city))
 		{
 			best = cities.get(1);
-		}else {
+		}else{
 			best = cities.get(0);
 		}
 		double best_rating = rating(cities, best);
