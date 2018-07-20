@@ -23,10 +23,7 @@ public class ModelReader {
 			fr = new FileReader(filename);
 			br = new BufferedReader(fr);
 			
-			String current_line;
-		
-		
-			
+			String current_line;	
 		
 			while((current_line = br.readLine()) != null) {
 				String[] line_data = current_line.split(",");
