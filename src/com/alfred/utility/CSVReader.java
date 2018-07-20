@@ -17,7 +17,7 @@ public class CSVReader {
 		FileReader fr = null;
 		
 		try {
-			fr = new FileReader(path);
+			fr = new FileReader(this.path);
 			br = new BufferedReader(fr);
 			
 			String current_line;

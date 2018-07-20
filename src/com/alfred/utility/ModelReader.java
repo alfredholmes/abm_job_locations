@@ -30,8 +30,6 @@ public class ModelReader {
 		
 			while((current_line = br.readLine()) != null) {
 				String[] line_data = current_line.split(",");
-				int i = 0;
-
 				data.add(line_data);
 			}
 			
