@@ -12,7 +12,7 @@ public class Controller {
 			Genetic.run(argv);
 		} else {
 			Model m = ModelReader.get_from_file("config/optimal.model");
-			Model.run(argv, m.agent_parameters, m.city_parameters);
+			Model.run(argv, m.agentParameters, m.cityParameters);
 		}
 	}
 }

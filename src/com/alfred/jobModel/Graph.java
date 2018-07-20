@@ -11,7 +11,6 @@ public class Graph extends Canvas{
 	 */
 	private static final long serialVersionUID = 2L;
 	Model model;
-	int n_cities;
 	int width, height;
 	public Graph(int width, int height, Model m) {
 		this.width = width;
@@ -19,22 +18,21 @@ public class Graph extends Canvas{
 		setSize(width, height);
 		setBackground(Color.white);
 		model = m;
-		n_cities = m.cities.size(); //need to be careful this is done post init
 	}
 	
 	public void paint(Graphics g) {
 		double min_rank = 1.0;
 		for(City c : model.cities) {
-			if(c.population_size() < min_rank && c.population_size() != 0) {
-				min_rank = c.population_size();
+			if(c.populationSize() < min_rank && c.populationSize() != 0) {
+				min_rank = c.populationSize();
 				
 			}
 				
 		}
 		for(City c: model.cities) {
-			g.setColor(new Color((float)c.get_industry_mean(), (float)c.get_industry_variance() < 1.0f ? (float)c.get_industry_variance() : 1.0f , 1.0f - (float)c.get_industry_mean()));
+			g.setColor(new Color((float)c.getIndustryMean(), (float)c.getIndustryVariance() < 1.0f ? (float)c.getIndustryVariance() : 1.0f , 1.0f - (float)c.getIndustryMean()));
 			//System.out.println(c.population_position());
-			circle(g, (int)(Math.log(c.population_rank()) / Math.log(model.cities.size()) * width), (int)((Math.log(c.population_size()) /  Math.log(min_rank)) * height), 9);
+			circle(g, (int)(Math.log(c.populationRank()) / Math.log(model.cities.size()) * width), (int)((Math.log(c.populationSize()) /  Math.log(min_rank)) * height), 9);
 		}
 		
 		

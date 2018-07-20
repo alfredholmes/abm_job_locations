@@ -8,9 +8,8 @@ public class Drawing extends Canvas{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -5833125259908110049L;
 	Model model;
-	int n_cities;
 	int width, height;
 	double min_x, max_x, min_y, max_y;
 	public Drawing(int width, int height, Model m) {
@@ -19,7 +18,6 @@ public class Drawing extends Canvas{
 		setSize(width, height);
 		setBackground(Color.white);
 		model = m;
-		n_cities = m.cities.size(); //need to be careful this is done post init
 		boolean first = true;
 		for(City c : model.cities) {
 			if(first) {
@@ -47,14 +45,10 @@ public class Drawing extends Canvas{
 		//System.out.println("Call");
 		if(model.cities.size() != 0) {			
 			for(City c : model.cities) {
-				g.setColor(new Color((float)c.get_industry_mean(), (float)c.get_industry_variance(), 1.0f - (float)c.get_industry_mean()));
-				//g.fillOval(, (int)(250 * Math.sin(2*Math.PI / 10 * c.get_id())) + 500, (int)(c.get_population() / 5), (int)(c.get_population() / 5));
-				//int x = (int)(c.location[0] * width);
-				//int y = (int)(c.location[1] * height);
+				g.setColor(new Color((float)c.getIndustryMean(), (float)c.getIndustryVariance(), 1.0f - (float)c.getIndustryMean()));
 				int x = (int)((c.location[1] - min_x) * width / (10.0 - min_x)) + 150;
 				int y = (int)((-c.location[0] + max_y) * 5 * height / (max_y - min_y)) + 100;
-				//System.out.println(min_x + " " + min_y + " " + max_x + " " + 10.0);
-				circle(g, x, y, (int)(1.5  * Math.sqrt(c.get_population())));
+				circle(g, x, y, (int)(1.5  * Math.sqrt(c.getPopulation())));
 			}
 
 		}

@@ -21,7 +21,7 @@ public class AgentDecisionRunnable implements Runnable {
 	
 	public void run() {
 		for(int i = start; i < end; i++) {
-			decisions.put(agents.get(i), agents.get(i).get_next_city(cities));
+			decisions.put(agents.get(i), agents.get(i).getNextCity(cities));
 		}
 	}
 	

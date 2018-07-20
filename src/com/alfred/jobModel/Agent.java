@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class Agent {
 	private double industry; //parameter whether to prefer being close to jobs of a similar industry or have cheap running costs
-	private double consumer_dependence; //parameter whether to care about being close to other jobs - irrespective of their industry
+	private double consumerDependence; //parameter whether to care about being close to other jobs - irrespective of their industry
 	private static double k = 10; //parameter for the activation function
 	
 	private double[] parameters; //weights in the evaluation function of 
@@ -22,12 +22,12 @@ public class Agent {
 		this.parameters = parameters;
 		Random r = new Random();
 		industry = r.nextDouble();
-		consumer_dependence = 1.0 - industry;
+		consumerDependence = 1.0 - industry;
 		
-		set_city(city);
+		setCity(city);
 	}
 	
-	public double activation(double x) {
+	public static double activation(double x) {
 		return 1.0 / (1.0 + Math.exp(-x));
 	}
 	
@@ -39,9 +39,9 @@ public class Agent {
 		double potential_market  = 0;
 		
 		for(City c : cities) {
-			double a = c.get_population() * (1.0 - Math.abs(industry - c.get_industry_mean()));
-			current_market   += a * this.city.transport_cost_to(c);
-			potential_market += a *      city.transport_cost_to(c);
+			double a = c.getPopulation() * (1.0 - Math.abs(industry - c.getIndustryMean()));
+			current_market   += a * this.city.transportCost(c);
+			potential_market += a *      city.transportCost(c);
 			//current_market += 1;
 			//potential_market += 1;
 		
@@ -52,12 +52,12 @@ public class Agent {
 		
 		double market_gain = potential_market / current_market;
 		double consumer_gain = potential_consumer_market / consumer_market;
-		double resource_match = (1.0 - Math.pow(city.get_resource() - this.industry, 2)) / (1.0 - Math.pow(this.city.get_resource() - this.industry, 2));
+		double resource_match = (1.0 - Math.pow(city.getResource() - this.industry, 2)) / (1.0 - Math.pow(this.city.getResource() - this.industry, 2));
 		
-		double centripetal = parameters[0] * (1.0 - industry) * Math.log(market_gain) + parameters[1] * consumer_dependence * Math.log(consumer_gain) + parameters[2] * (1.0 - consumer_dependence) * Math.log(resource_match);
+		double centripetal = parameters[0] * (1.0 - industry) * Math.log(market_gain) + parameters[1] * consumerDependence * Math.log(consumer_gain) + parameters[2] * (1.0 - consumerDependence) * Math.log(resource_match);
 		
-		double density_ratio = (0.5 + city.population_density()) / (0.5 + this.city.population_density());
-		double immobility = (1.0 / this.city.transport_cost_to(city));
+		double density_ratio = (0.5 + city.populationDensity()) / (0.5 + this.city.populationDensity());
+		double immobility = (1.0 / this.city.transportCost(city));
 		
 		double centrifugal = industry * (parameters[3] * Math.log(density_ratio)) +  parameters[4] * Math.log(immobility);
 		
@@ -65,7 +65,7 @@ public class Agent {
 	
 	}
 	
-	public City get_next_city(ArrayList<City> cities) {
+	public City getNextCity(ArrayList<City> cities) {
 		if(cities.size() < 2)
 			return null;
 		
@@ -73,7 +73,7 @@ public class Agent {
 		Random rand = new Random();
 		
 		if(city == null) {
-			set_city(cities.get((int)(rand.nextDouble() * cities.size()))); //if cities is empty then the program deserves to crash
+			setCity(cities.get((int)(rand.nextDouble() * cities.size()))); //if cities is empty then the program deserves to crash
 		}
 		
 		
@@ -103,23 +103,23 @@ public class Agent {
 		}
 	}
 	
-	public void set_city(City c) {
+	public void setCity(City c) {
 		if (city == null || !city.equals(c)){
 			if(city != null) {
-				city.remove_agent(this);		
+				city.removeAgent(this);		
 				moves++;
 			}
 			city = c;
-			c.add_agent(this);
+			c.addAgent(this);
 			
 		}
 	}
 	
-	public City get_city() {
+	public City getCity() {
 		return city;
 	}
 	
-	public double get_industry() {
+	public double getIndustry() {
 		return industry;
 	}
 }

@@ -14,12 +14,12 @@ public class Genetic {
 	Random rng = new Random();
 	
 	public double[][] target;
-	int n_cities;
-	int n_models = 100;
-	int top_model;
-	double top_error = -1;
+	int nCities;
+	int nModels = 100;
+	int topModel;
+	double topError = -1;
 	
-	private double[] fitness_cache;
+	private double[] fitnessCache;
 	
 	
 	public Genetic(boolean restore) {
@@ -30,28 +30,28 @@ public class Genetic {
 			csv_files.add(new CSVReader("data/Employment_By_Local_Authority/" + i + ".csv"));
 		}
 		
-		n_cities = csv_files.get(0).get_num_rows();
+		nCities = csv_files.get(0).getNRows();
 		
-		target = new double[csv_files.size()][n_cities];
+		target = new double[csv_files.size()][nCities];
 		
 		for(int i = 0; i < csv_files.size(); i++) {
-			ArrayList<String> employment = csv_files.get(i).get_column("employment");
+			ArrayList<String> employment = csv_files.get(i).getColumn("employment");
 			for(int j = 0; j < employment.size(); j++) {
 				target[i][j] = Double.parseDouble(employment.get(j));
 			}
 		}
 		
 		//generate models
-		for(int i = 0; i  < n_models; i++) {
+		for(int i = 0; i  < nModels; i++) {
 			if(!restore) {
 				double[] agent_params = new double[5];
 				for(int j = 0; j < agent_params.length; j++) {
 					agent_params[j] = rng.nextDouble();
 				}
 				
-				double[] city_params = new double[n_cities];
+				double[] city_params = new double[nCities];
 				
-				for(int j = 0; j < n_cities; j++) {
+				for(int j = 0; j < nCities; j++) {
 					city_params[j] = rng.nextDouble();
 				}
 			
@@ -65,13 +65,13 @@ public class Genetic {
 		}
 		
 		
-		fitness_cache = new double[n_models];
-		for(int i = 0; i < fitness_cache.length; i++) fitness_cache[i] = -1;
+		fitnessCache = new double[nModels];
+		for(int i = 0; i < fitnessCache.length; i++) fitnessCache[i] = -1;
 		
 	}
 	
 	private double fitness(Model m) {
-		m = new Model(m.agent_parameters, m.city_parameters);
+		m = new Model(m.agentParameters, m.cityParameters);
 		double error = 0;
 		for(int i = 1; i < target.length; i++) {
 			double[] output = m.update();
@@ -103,11 +103,11 @@ public class Genetic {
 			total_error += d;
 			if(min_error == -1 || (d < min_error && d != 0)) {
 				min_error = d;
-				top_model = i;
+				topModel = i;
 			}
 		}
 		double average_error = total_error  / fitness_values.length;
-		top_error = min_error;
+		topError = min_error;
 		
 		
 		
@@ -135,20 +135,20 @@ public class Genetic {
 				Model parent2 = models.get(new_parent_ids.get(rng.nextInt(new_parent_ids.size())));
 				
 				double[] agent_params = new double[5];
-				double[] city_params = new double[n_cities];
+				double[] city_params = new double[nCities];
 				
 				for(int j = 0; j < agent_params.length; j++) {
 					double r = rng.nextDouble();
-					agent_params[j] = r * parent1.agent_parameters[j] + (1.0 - r) * parent2.agent_parameters[j];
+					agent_params[j] = r * parent1.agentParameters[j] + (1.0 - r) * parent2.agentParameters[j];
 				}
 				
 				for(int j = 0; j < city_params.length; j++) {
 					double r = rng.nextDouble();
-					city_params[j] = r * parent1.city_parameters[j] + (1.0 - r) * parent2.city_parameters[j];
+					city_params[j] = r * parent1.cityParameters[j] + (1.0 - r) * parent2.cityParameters[j];
 					
 				}
 				
-				fitness_cache[i] = -1;
+				fitnessCache[i] = -1;
 				
 				
 				models.set(i, new Model(agent_params, city_params));
@@ -159,18 +159,18 @@ public class Genetic {
 		return average_error;
 	}
 	
-	public void save_state() {
+	public void saveState() {
 		for(int i = 0; i < models.size(); i++) {
 			//write file
 			CSVWriter writer = new CSVWriter("training/" + i + ".model", false);
-			writer.write(models.get(i).agent_parameters);
-			writer.write(models.get(i).city_parameters);
+			writer.write(models.get(i).agentParameters);
+			writer.write(models.get(i).cityParameters);
 			writer.close();
 		}
 		
 		CSVWriter writer = new CSVWriter("config/optimal.model", false);
-		writer.write(models.get(top_model).agent_parameters);
-		writer.write(models.get(top_model).city_parameters);
+		writer.write(models.get(topModel).agentParameters);
+		writer.write(models.get(topModel).cityParameters);
 	}
 	
 	
@@ -182,8 +182,8 @@ public class Genetic {
 		for(int i = 0; i < 4; i++) {
 			System.out.println("Running generation " + i);
 			double average_error = g.update();
-			System.out.println(average_error + " " + g.top_error);
-			g.save_state();
+			System.out.println(average_error + " " + g.topError);
+			g.saveState();
 		}
 		
 		

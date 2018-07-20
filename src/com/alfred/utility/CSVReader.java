@@ -57,7 +57,7 @@ public class CSVReader {
 		}
 	}
 	
-	public Map<String, String> get_row(int i) {
+	public Map<String, String> getRow(int i) {
 		if(i < data.size()) {
 			return data.get(i);
 		}else {
@@ -65,7 +65,7 @@ public class CSVReader {
 		}
 	}
 	
-	public ArrayList<String> get_column(String head){
+	public ArrayList<String> getColumn(String head){
 		ArrayList<String> r = new ArrayList<String>();
 		for(Map<String, String> line : data) {
 			r.add(line.get(head));
@@ -74,7 +74,7 @@ public class CSVReader {
 		return r;
 	}
 	
-	public int get_num_rows() {
+	public int getNRows() {
 		return data.size();
 	}
 }

@@ -2,46 +2,45 @@ package com.alfred.jobModel;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Random;
 
 import com.alfred.utility.CSVReader;
 
 public class Model {
 	public ArrayList<Agent> agents = new ArrayList<Agent>(); 
 	public ArrayList<City> cities = new ArrayList<City>();	
-	public double[] agent_parameters;
-	public double[] city_parameters;
+	public double[] agentParameters;
+	public double[] cityParameters;
 	
-	double jobs_per_agent = 5; //number of thousands of jobs represented by each agent
+	private double jobsPerAgent = 5; //number of thousands of jobs represented by each agent
 	
-	int nCPU;
+	private int nCPU;
 	
 	
-	public Model(double[] agent_parameters, double[] city_parameters) {
+	public Model(double[] agentParameters, double[] cityParameters) {
 		nCPU = Runtime.getRuntime().availableProcessors();
 		
-		this.agent_parameters = agent_parameters;
-		this.city_parameters  = city_parameters;
+		this.agentParameters = agentParameters;
+		this.cityParameters  = cityParameters;
 		
 		//loading data
 		
 		CSVReader location_data = new CSVReader("data/Local_Authority_Districts_December_2017_Full_Clipped_Boundaries_in_Great_Britain.csv");
 		CSVReader employment_data = new CSVReader("data/Employment_By_Local_Authority/2012.csv");
 	
-		int n_cities = location_data.get_num_rows();
+		int n_cities = location_data.getNRows();
 		
 		ArrayList<Double> lats  = new ArrayList<Double>();
 		ArrayList<Double> lons  = new ArrayList<Double>();
 		ArrayList<Double> areas = new ArrayList<Double>();
 		ArrayList<Double> employment = new ArrayList<Double>();
 		
-		ArrayList<String> lats_string  = location_data.get_column("lat" );
-		ArrayList<String> lons_string  = location_data.get_column("long");
-		ArrayList<String> areas_string = location_data.get_column("st_areashape");
+		ArrayList<String> lats_string  = location_data.getColumn("lat" );
+		ArrayList<String> lons_string  = location_data.getColumn("long");
+		ArrayList<String> areas_string = location_data.getColumn("st_areashape");
 		
-		ArrayList<String> location_names_geographic = location_data.get_column("lad17nm"); 
-		ArrayList<String> location_names_employment = employment_data.get_column("name");
-		ArrayList<String> employment_string = employment_data.get_column("employment");
+		ArrayList<String> location_names_geographic = location_data.getColumn("lad17nm"); 
+		ArrayList<String> location_names_employment = employment_data.getColumn("name");
+		ArrayList<String> employment_string = employment_data.getColumn("employment");
 		
 		
 		
@@ -58,7 +57,7 @@ public class Model {
 		}
 		
 		for(String s : employment_string) {
-			employment.add(Double.parseDouble(s) / jobs_per_agent);
+			employment.add(Double.parseDouble(s) / jobsPerAgent);
 		}
 		
 		 
@@ -79,7 +78,7 @@ public class Model {
 		
 
 		for(int i = 0; i < n_cities; i++) {
-			cities.add(new City(i, cities, lats.get(i), lons.get(i), areas.get(i), city_parameters[i]));
+			cities.add(new City(i, cities, lats.get(i), lons.get(i), areas.get(i), cityParameters[i]));
 			String name = location_names_geographic.get(i);
 			
 			int j = 0;
@@ -89,7 +88,7 @@ public class Model {
 			}
 			if(j != location_names_employment.size()) {
 				for(int k = 0; k < employment.get(j); k++)
-					agents.add(new Agent(cities.get(i), agent_parameters));
+					agents.add(new Agent(cities.get(i), agentParameters));
 			}
 			
 		}
@@ -103,40 +102,29 @@ public class Model {
 		Plot p = new Plot(m, 0);
 		for(int i = 0; i < 200; i++) {
 			m.update();
-			double moves = m.average_number_of_moves();
+			double moves = m.averageNMoves();
 			System.out.println("Step " + i + " " + moves + " "  + (moves - previous_moves));
 			p.draw();
 			previous_moves = moves;	
 		}
-		m.dump_cities();
+		m.dumpCities();
 		
 	}
 	
-	public void dump_cities() {
+	public void dumpCities() {
 		for(City c: cities) {
-			System.out.println(c.population_size() + " \t" + c.get_industry_mean() + " \t" + Math.pow(c.get_industry_variance(), 0.5) + "\t " + transport_cost_to_largest_city(c));
+			System.out.println(c.populationSize() + " \t" + c.getIndustryMean() + " \t" + Math.pow(c.getIndustryVariance(), 0.5));
 		}
 	}
 	
-	public double average_number_of_moves() {
+	public double averageNMoves() {
 		int sum = 0;
 		for(Agent a : agents)
 			sum += a.moves;
 		return (double)sum / (double)agents.size();
 	}
 	
-	public double transport_cost_to_largest_city(City city) {
-		//find the largest city
-		int max_pop = 0;
-		City capital = null;
-		for(City c : cities) {
-			if (c.get_population() > max_pop) {
-				max_pop = c.get_population();
-				capital = c;
-			}
-		}
-		return capital.transport_cost_to(city);
-	}
+	
 	
 	public double[] update() {
 		ArrayList<AgentDecisionRunnable> decisions = new ArrayList<AgentDecisionRunnable>();
@@ -164,19 +152,19 @@ public class Model {
 		//move agents
 		for(AgentDecisionRunnable d : decisions) {
 			for(Map.Entry<Agent, City> e : d.getDecisions().entrySet()) {
-				e.getKey().set_city(e.getValue());
+				e.getKey().setCity(e.getValue());
 			}
 		}
 		
 		
 		//reset cache on all cities
 		for(City c : cities) {
-			c.set_update_consumer_market(true);
+			c.setUpdateConsumerMarket(true);
 		}
 		//sort out return for genetic alg
 		double[] r = new double[cities.size()];
 		for(int i = 0; i < r.length; i++) {
-			r[i]= cities.get(i).get_population() * jobs_per_agent;
+			r[i]= cities.get(i).getPopulation() * jobsPerAgent;
 		}
 		return r;
 	}
