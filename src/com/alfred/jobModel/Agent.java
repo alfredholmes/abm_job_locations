@@ -39,12 +39,9 @@ public class Agent {
 		double potential_market  = 0;
 		
 		for(City c : cities) {
-			double a = c.getPopulation() * (1.0 - Math.abs(industry - c.getIndustryMean()));
-			current_market   += a * this.city.transportCost(c);
-			potential_market += a *      city.transportCost(c);
-			//current_market += 1;
-			//potential_market += 1;
-		
+			double a = (c.getPopulation() - 1) * c.getIndustryVariance() + c.getPopulation() * (1.0 - Math.pow(c.getIndustryMean() - industry, 2));
+			current_market   += a * (1.0 - this.city.transportCost(c));
+			potential_market += a * (1.0 -      city.transportCost(c));
 		}
 		
 		double consumer_market = this.city.get_consumer_market();
