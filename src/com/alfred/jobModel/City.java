@@ -132,14 +132,15 @@ public class City {
 		}
 	}
 
-	public double get_consumer_market() {
+	public double getConsumerMarket() {
 		if(updateConsumerMarkets) {
 			synchronized(this) {
 				consumerMarkets = 0;
 				for(City c : cities)
 					consumerMarkets += transportCost(c) * c.population;
-				}
-			updateConsumerMarkets = false; //TODO: Think of a way to implement this cache with multiple Model instances and multiple threads
+					
+				updateConsumerMarkets = false;
+			}
 		}
 		return consumerMarkets;
 	}

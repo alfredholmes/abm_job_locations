@@ -6,13 +6,13 @@ import java.util.Random;
 
 public class Agent {
 	private double industry; //parameter whether to prefer being close to jobs of a similar industry or have cheap running costs
-	private double consumerDependence; //parameter whether to care about being close to other jobs - irrespective of their industry
+	private double consumerDependence; //parameter whether to care about being close to other jobs - irrespective of their industry - when connected to housing model, this will use people rather than job density
 	private static double k = 10; //parameter for the activation function
 	
-	private double[] parameters; //weights in the evaluation function of 
+	private double[] parameters; //weights used in the evaluation of cities
 	
 	private City city; //current city
-	int moves = 0; //keep track of number of times agent has moved
+	public int moves = 0; //keep track of number of times agent has moved
 	
 	public Agent(ArrayList<City> cities, double[] parameters) {
 		this(cities.get(new Random().nextInt(cities.size())), parameters);
@@ -40,12 +40,12 @@ public class Agent {
 		
 		for(City c : cities) {
 			double a = (c.getPopulation() - 1) * c.getIndustryVariance() + c.getPopulation() * (1.0 - Math.pow(c.getIndustryMean() - industry, 2));
-			current_market   += a * (1.0 - this.city.transportCost(c));
-			potential_market += a * (1.0 -      city.transportCost(c));
+			current_market   += a * this.city.transportCost(c);
+			potential_market += a *      city.transportCost(c);
 		}
 		
-		double consumer_market = this.city.get_consumer_market();
-		double potential_consumer_market = city.get_consumer_market();
+		double consumer_market = this.city.getConsumerMarket();
+		double potential_consumer_market = city.getConsumerMarket();
 		
 		double market_gain = potential_market / current_market;
 		double consumer_gain = potential_consumer_market / consumer_market;
@@ -56,7 +56,7 @@ public class Agent {
 		double density_ratio = (0.5 + city.populationDensity()) / (0.5 + this.city.populationDensity());
 		double immobility = (1.0 / this.city.transportCost(city));
 		
-		double centrifugal = industry * (parameters[3] * Math.log(density_ratio)) +  parameters[4] * Math.log(immobility);
+		double centrifugal = industry * (parameters[3] * Math.log(density_ratio) + parameters[4] * Math.log(immobility));
 		
 		return centripetal - centrifugal;
 	
