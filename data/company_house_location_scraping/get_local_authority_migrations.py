@@ -1,5 +1,4 @@
 import csv, requests, json, time, random
-from requests.auth import HTTPBasicAuth
 import re
 
 post_code_regex = r'([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})'
@@ -83,11 +82,9 @@ for s in company_numbers:
                 data = json.loads(requests.post('http://api.postcodes.io/postcodes', data={'postcodes': [a[0] for a in movement_data]}).text)
                 try:
                     for i in range(1, len(movement_data)):
-                        print(data)
                         destination_la = data['result'][i - 1]['result']['codes']['admin_district']
                         departure_la   = data['result'][i]['result']['codes']['admin_district']
                         date = movement_data[i][1]
-
                         moves.append([departure_la, destination_la, date, len(fh), staff])
                 except:
                     errors.append(['Error finding local authority: ', data, d])
