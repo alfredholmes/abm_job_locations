@@ -30,7 +30,7 @@ for s in company_numbers:
     #preventing calling the .gov.uk api too many times
     if last_request != 0 and 0.5 - (time.time() - last_request) > 0:
         time.sleep(0.5 - (time.time() - last_request))
-    
+
     last_request = time.time()
 
     filing_history = json.loads(requests.get('https://api.companieshouse.gov.uk/company/' + s + '/filing-history', data={'items_per_page': 1000}, auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', '')).text)
@@ -83,9 +83,11 @@ for s in company_numbers:
                 data = json.loads(requests.post('http://api.postcodes.io/postcodes', data={'postcodes': [a[0] for a in movement_data]}).text)
                 try:
                     for i in range(1, len(movement_data)):
+                        print(data)
                         destination_la = data['result'][i - 1]['result']['codes']['admin_district']
                         departure_la   = data['result'][i]['result']['codes']['admin_district']
                         date = movement_data[i][1]
+
                         moves.append([departure_la, destination_la, date, len(fh), staff])
                 except:
                     errors.append(['Error finding local authority: ', data, d])
@@ -103,4 +105,5 @@ for s in company_numbers:
             writer = csv.writer(csvfile)
             for error in errors:
                 writer.writerow(error)
+        errors = []
 #find changes of address
