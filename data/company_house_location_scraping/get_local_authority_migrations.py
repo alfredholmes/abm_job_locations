@@ -8,7 +8,7 @@ company_numbers = []
 
 print('Loading data...')
 
-with open('CompanyNumbers.csv', 'r') as csvfile:
+with open('Company_Numbers_2012-2018.csv', 'r') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
         company_numbers.append(line[0])
@@ -31,15 +31,16 @@ for s in company_numbers:
         time.sleep(0.5 - (time.time() - last_request))
     last_request = time.time()
 
-    filing_history = json.loads(requests.get('https://api.companieshouse.gov.uk/company/' + s + '/filing-history', auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', '')).text)
+    filing_history = json.loads(requests.get('https://api.companieshouse.gov.uk/company/' + s + '/filing-history', data={'items_per_page': 10000}, auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', '')).text)
     r += 1
     print(r)
+    print(filing_history)
     if 'items' in filing_history:
         fh = filing_history['items']
         for d in fh:
             if d['category'] == 'address':
                 if 'old_address' in d['description_values'] and 'new_address' in d['description_values']:
-                    try:
+                    try: # TODO: Change processing of locations to get chain to deal with legacy location changes - Potential issue is that filings were put togeathe 
 
                         old_address = d['description_values']['old_address']
                         new_address = d['description_values']['new_address']
