@@ -1,4 +1,4 @@
-# Agent Based Model of Job Locations
+# Agent Based Model of UK Job Locations
 
 This project models the movement of jobs around the UK's local authorities using an agent based approach.
 
