@@ -78,8 +78,6 @@ for s in company_numbers:
                             staff += 1
                         elif 'resigned' in d['description_values']['description'] or 'terminated' in d['description_values']['description']:
                             staff -= 1
-                    if staff < 1:
-                        staff = 1
             #process the data to find the local authority
             if len(movement_data) > 0:
                 data = json.loads(requests.post('http://api.postcodes.io/postcodes', data={'postcodes': [a[0] for a in movement_data]}).text)
