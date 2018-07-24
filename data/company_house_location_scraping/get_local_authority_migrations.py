@@ -1,4 +1,4 @@
-import csv, requests, json, time
+import csv, requests, json, time, random
 from requests.auth import HTTPBasicAuth
 import re
 
@@ -12,6 +12,10 @@ with open('CompanyNumbers.csv', 'r') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
         company_numbers.append(line[0])
+
+
+#shuffle company numbers to get random sample
+random.shuffle(company_numbers)
 
 print('Done')
 
@@ -50,7 +54,7 @@ for s in company_numbers:
 
                         old_district = data['result'][0]['result']['codes']['admin_district']
                         new_district = data['result'][1]['result']['codes']['admin_district']
-                        date = d['action_date']
+                        date = d['description_values']['change_date']
 
                         if old_district != new_district:
                             moves.append([old_district, new_district, date])
@@ -59,10 +63,10 @@ for s in company_numbers:
 
 
     if r % 100 == 0:
+        #append moeves to file
         with open('district_moves.csv', 'a') as csvfile:
             writer = csv.writer(csvfile)
             for line in moves:
                 writer.writerow(line)
-
         moves = []
 #find changes of address
