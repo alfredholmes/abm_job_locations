@@ -7,6 +7,16 @@ import re
 
 post_code_regex = r'([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})'
 
+print('Loading data...')
+
+postcodes = {}
+
+with open('postcode_la.csv', 'r') as csvfile:
+    reader = csv.reader(csvfile)
+    for line in reader:
+        #print(line)
+        postcodes[line[0]] = line[1]
+
 
 def get_post_code_from_address(address, regex):
     matches = re.search(regex, address)
@@ -17,7 +27,7 @@ def get_post_code_from_address(address, regex):
 
 company_numbers = []
 
-print('Loading data...')
+
 
 with open('Company_Numbers_2012-2018.csv', 'r') as csvfile:
     reader = csv.reader(csvfile)
@@ -41,8 +51,8 @@ last_request = 0
 for s in company_numbers:
     #preventing calling the .gov.uk api too many times
     if last_request != 0 and 0.5 - (time.time() - last_request) > 0:
-        time.sleep(0.5 - (time.time() - last_request))
-        #pass
+        #time.sleep(0.5 - (time.time() - last_request))
+        pass
     try:
         req = requests.get('https://api.companieshouse.gov.uk/company/' + s + '/filing-history', data={'items_per_page': 1000}, auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', ''))
         if req.status_code != 200:
@@ -117,20 +127,19 @@ for s in company_numbers:
                             staff -= 1
             #process the data to find the local authority
             if len(movement_data) > 0:
-                data = json.loads(requests.post('http://api.postcodes.io/postcodes', data={'postcodes': [a[0] for a in movement_data]}).text)
                 for i in range(1, len(movement_data)):
                     try:
-                        destination_la = data['result'][i - 1]['result']['codes']['admin_district']
-                        departure_la   = data['result'][i]['result']['codes']['admin_district']
+                        destination_la = postcodes[movement_data[i - 1][0]]
+                        departure_la   = postcodes[movement_data[i][0]]
                         date = movement_data[i][1]
                         if destination_la != departure_la:
                             moves.append([departure_la, destination_la, date, len(fh) - movement_data[i][2], staff + 1 - movement_data[i][3]])
                     except:
-                        if data['result'][i]['result'] == None and data['result'][i - 1]['result'] != None:
-                            errors.append(['Error finding local authority for company ' + s, data['result'][i]])
-                            data['result'][i] = data['result'][i - 1]
+                        if movement_data[i][0] not in postcodes and movement_data[i - 1][0] in postcodes:
+                            errors.append(['Error finding local authority for company ' + s, movement_data[i][0]])
+                            movement_data[i][0] = movement_data[i - 1][0]
                         else:
-                            errors.append(['Error finding local authority for company ' + s, data['result'][i -1]])
+                            errors.append(['Error finding local authority for company ' + s, movement_data[i-1][0]])
             companies.append([s, d['date'], alive, staff, len(fh)])
         except:
             errors.append(['Error with company ' + s, d])
