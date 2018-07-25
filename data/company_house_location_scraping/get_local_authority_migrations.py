@@ -1,7 +1,19 @@
 import csv, requests, json, time, random
 import re
 
+# TODO: Clean up Code
+# TODO: Some filing histories > 100 items are not handeled well
+# TODO: Errors with employee counting
+
 post_code_regex = r'([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})'
+
+
+def get_post_code_from_address(address, regex):
+    matches = re.search(regex, address)
+    try:
+        return matches.group(0)
+    except:
+        return None
 
 company_numbers = []
 
@@ -29,44 +41,63 @@ for s in company_numbers:
     #preventing calling the .gov.uk api too many times
     if last_request != 0 and 0.5 - (time.time() - last_request) > 0:
         time.sleep(0.5 - (time.time() - last_request))
+    try:
+        req = requests.get('https://api.companieshouse.gov.uk/company/' + s + '/filing-history', data={'items_per_page': 1000}, auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', ''))
+        if req.status_code != 200:
+            errors.append(['Error with companies house API request for company ' + s, req.status_code])
+            continue
 
+    except:
+        errors.append(['Unknown error with companies house api ' + s])
+        continue
+
+    filing_history = json.loads(req.text)
     last_request = time.time()
-
-    filing_history = json.loads(requests.get('https://api.companieshouse.gov.uk/company/' + s + '/filing-history', data={'items_per_page': 1000}, auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', '')).text)
     r += 1
     print(r)
-    #print(filing_history)
     if 'items' in filing_history:
         fh = filing_history['items']
         movement_data = [] # array with reverse chronological list of [postcode, leaving_date]
-        staff = 1 #company registered with director, perhaps
+        staff = 0 #company registered with director, perhaps
         try:
             j = 0
             for d in fh:
                 j = j+1
                 if d['category'] == 'address':
                     if 'old_address' in d['description_values'] and 'new_address' in d['description_values']:
-                        #add the current address to the post code
+                        #add the current address to the post code if haven't already
                         if len(movement_data) == 0:
-                            new_post_code = re.search(post_code_regex, d['description_values']['new_address']).group(0)
-                            movement_data.append([new_post_code])
+                            new_post_code = get_post_code_from_address(d['description_values']['new_address'], post_code_regex)
+                            if new_post_code != None:
+                                movement_data.append([new_post_code])
                         #then add previous address
-                        old_post_code = re.search(post_code_regex, d['description_values']['old_address']).group(0)
-                        movement_data.append([old_post_code, d['date'], j])
-                    elif d['description'] == 'legacy' and len(movement_data) > 0:
+
+                        old_post_code = get_post_code_from_address(d['description_values']['new_address'], post_code_regex)
+                        if old_post_code != None:
+                            movement_data.append([old_post_code, d['date'], j, staff])
+                        else:
+                            errors.append(['Problem parsing address', old_address])
+                    elif len(movement_data) > 0 and d['description'] == 'legacy' and 'office' in d['description_values']['description']:
                         old_address = d['description_values']['description']
-                        old_post_code = re.search(post_code_regex, old_address).group(0)
-                        movement_data.append([old_post_code, d['date'], j])
-                    elif d['description'] == 'legacy':
+                        old_post_code = get_post_code_from_address(old_address, post_code_regex)
+                        if old_post_code != None:
+                            movement_data.append([old_post_code, d['date'], j, staff])
+                        else:
+                            errors.append(['Problem parsing address', old_address])
+                    elif d['description'] == 'legacy' and 'office' in d['description_values']['description']:
                         #find current post code
                         if last_request != 0 and 0.5 - (time.time() - last_request) > 0:
                             time.sleep(0.5 - (time.time() - last_request))
                         last_request = time.time()
+                        # TODO: Catch errors that could come from here
                         address = json.loads(requests.get('https://api.companieshouse.gov.uk/company/' + s + '/registered-office-address', auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', '')).text)
                         old_address = d['description_values']['description']
-                        old_post_code = re.search(post_code_regex, old_address).group(0)
-                        movement_data.append([address['postal_code']])
-                        movement_data.append([old_post_code, d['date'], j])
+                        old_post_code = get_post_code_from_address(old_address, post_code_regex)
+                        if old_post_code != None:
+                            movement_data.append([address['postal_code']])
+                            movement_data.append([old_post_code, d['date'], j, staff])
+                        else:
+                            errors.append(['Problem parsing address', old_address])
                 if d['category'] == 'officers':
                     if d['description'] != 'legacy':
                         if d['subcategory'] == 'appointments':
@@ -87,10 +118,13 @@ for s in company_numbers:
                         departure_la   = data['result'][i]['result']['codes']['admin_district']
                         date = movement_data[i][1]
                         if destination_la != departure_la:
-                            moves.append([departure_la, destination_la, date, len(fh) - movement_data[i][2], staff])
+                            moves.append([departure_la, destination_la, date, len(fh) - movement_data[i][2], staff + 1 - movement_data[i][3]])
                     except:
-                        errors.append(['Error finding local authority: ', data['result'][i], d])
-                        data['result'][i] = data['result'][i - 1]
+                        if data['result'][i]['result'] == None and data['result'][i - 1]['result'] != None:
+                            errors.append(['Error finding local authority for company ' + s, data['result'][i]])
+                            data['result'][i] = data['result'][i - 1]
+                        else:
+                            errors.append(['Error finding local authority for company ' + s, data['result'][i -1]])
         except:
             errors.append(['Error with company ' + s, d])
 
