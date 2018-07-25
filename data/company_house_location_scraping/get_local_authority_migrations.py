@@ -41,8 +41,8 @@ last_request = 0
 for s in company_numbers:
     #preventing calling the .gov.uk api too many times
     if last_request != 0 and 0.5 - (time.time() - last_request) > 0:
-        #time.sleep(0.5 - (time.time() - last_request))
-        pass
+        time.sleep(0.5 - (time.time() - last_request))
+        #pass
     try:
         req = requests.get('https://api.companieshouse.gov.uk/company/' + s + '/filing-history', data={'items_per_page': 1000}, auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', ''))
         if req.status_code != 200:
@@ -131,7 +131,7 @@ for s in company_numbers:
                             data['result'][i] = data['result'][i - 1]
                         else:
                             errors.append(['Error finding local authority for company ' + s, data['result'][i -1]])
-            companies.append([s, alive, staff, len(fh)])
+            companies.append([s, d['date'], alive, staff, len(fh)])
         except:
             errors.append(['Error with company ' + s, d])
 
