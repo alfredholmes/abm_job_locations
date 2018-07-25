@@ -32,6 +32,7 @@ print('Done')
 
 company_addresses = {}
 moves = []
+companies = []
 errors = []
 
 #Get current company address
@@ -40,7 +41,8 @@ last_request = 0
 for s in company_numbers:
     #preventing calling the .gov.uk api too many times
     if last_request != 0 and 0.5 - (time.time() - last_request) > 0:
-        time.sleep(0.5 - (time.time() - last_request))
+        #time.sleep(0.5 - (time.time() - last_request))
+        pass
     try:
         req = requests.get('https://api.companieshouse.gov.uk/company/' + s + '/filing-history', data={'items_per_page': 1000}, auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', ''))
         if req.status_code != 200:
@@ -61,7 +63,11 @@ for s in company_numbers:
         staff = 0 #company registered with director, perhaps
         try:
             j = 0
+
             for d in fh:
+                if j == 0:
+                    alive = 'gazette' not in d['category']
+
                 j = j+1
                 if d['category'] == 'address':
                     if 'old_address' in d['description_values'] and 'new_address' in d['description_values']:
@@ -125,6 +131,7 @@ for s in company_numbers:
                             data['result'][i] = data['result'][i - 1]
                         else:
                             errors.append(['Error finding local authority for company ' + s, data['result'][i -1]])
+            companies.append([s, alive, staff, len(fh)])
         except:
             errors.append(['Error with company ' + s, d])
 
@@ -140,4 +147,10 @@ for s in company_numbers:
             for error in errors:
                 writer.writerow(error)
         errors = []
+
+        with open('company_info.csv', 'a') as csvfile:
+            writer = csv.writer(csvfile)
+            for company in companies:
+                writer.writerow(company)
+        companies = []
 #find changes of address
