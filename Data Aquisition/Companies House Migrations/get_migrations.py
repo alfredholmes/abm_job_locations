@@ -27,9 +27,14 @@ def main():
             write_data(data)
             data = []
 
+def logerror(err):
+    with open('errors', 'a') as errorfile:
+        errorfile.write(err + '\n')
+
+
 def write_data(data):
     with open('company_migration_data.csv', 'a') as csvfile:
-        fields = ['Company Number', 'Date', 'Registered Staff', 'Old Postcode', 'New Postcode', 'Old Local Authority', 'New Local Authority']
+        fields = ['CompanyNumber', 'Date','OldPostcode', 'NewPostcode', 'OldLocalAuthority', 'NewLocalAuthority', 'RegisteredStaff', 'IncorperationDate','NFiles']
         writer = csv.DictWriter(csvfile, fields)
         for line in data:
             if csvfile.tell() == 0:
@@ -53,7 +58,7 @@ def get_company_filing_history(company, last_request_time):
         req = requests.get('https://api.companieshouse.gov.uk/company/' + company + '/filing-history', data={'items_per_page': 100, 'start_index': index}, auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', ''))
         last_request_time = time.time()
         if req.status_code != 200:
-            print('Error with request: ' + req.status_code + req.text)
+            logerror('Error with request: ' + req.status_code + req.text)
             return None, last_request_time
 
         available_files = json.loads(req.text)['total_count']
@@ -69,9 +74,8 @@ def get_company_filing_history(company, last_request_time):
 
 def wait_until_difference(difference, last_request):
     if time.time() - last_request < difference:
-        #time.sleep(difference - (time.time() - last_request))
-        pass
-
+        time.sleep(difference - (time.time() - last_request))
+        
 def parse_filing_history(filing_history, company, last_request, pc):
     #get the current address
     current_postcode = None
@@ -131,13 +135,15 @@ def parse_filing_history(filing_history, company, last_request, pc):
     r = []
     for i in range(0, len(moves)):
         r.append({
-            'Company Number': company,
+            'CompanyNumber': company,
             'Date': moves[i]['date'],
-            'Registered Staff': staff_at_date[moves[i]['date']],
-            'Old Postcode': moves[i]['moving_from'],
-            'New Postcode': current_postcode if i == len(moves) - 1 else moves[i + 1]['moving_from'],
-            'Old Local Authority': pc.get_local_authority_from_postcode(moves[i]['moving_from']),
-            'New Local Authority': pc.get_local_authority_from_postcode(current_postcode if i == len(moves) - 1 else moves[i + 1]['moving_from'])
+            'RegisteredStaff': staff_at_date[moves[i]['date']],
+            'OldPostcode': moves[i]['moving_from'],
+            'NewPostcode': current_postcode if i == len(moves) - 1 else moves[i + 1]['moving_from'],
+            'OldLocalAuthority': pc.get_local_authority_from_postcode(moves[i]['moving_from']),
+            'NewLocalAuthority': pc.get_local_authority_from_postcode(current_postcode if i == len(moves) - 1 else moves[i + 1]['moving_from']),
+            'IncorperationDate': filing_history[0]['date'],
+            'NFiles': files_at_date[moves[i]['date']]
         })
     return r, last_request
 
@@ -157,20 +163,20 @@ class PostCode:
 
     def get_local_authority_from_postcode(self, postcode):
         if postcode is None:
-            print('Error parsing postcode is None')
+            logerror('Error parsing postcode is None')
             return None
 
         if postcode in self.postcode_local_authority:
             return self.postcode_local_authority[postcode]
         else:
-            print('Postcode not recognised: ' + postcode)
+            logerror('Postcode not recognised: ' + postcode)
             return None
 
     def postcode_from_address(address):
         try:
             s = re.search(r'([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})', address.upper()).group(0)
         except:
-            print('Error getting poscode from address: ' + address)
+            logerror('Error getting poscode from address: ' + address)
             return None
         #split and remove spaces
         s = s.split(' ')
