@@ -24,8 +24,8 @@ public class Model {
 		
 		//loading data
 		
-		CSVReader location_data = new CSVReader("data/Local_Authority_Districts_December_2017_Full_Clipped_Boundaries_in_Great_Britain.csv");
-		CSVReader employment_data = new CSVReader("data/Employment_By_Local_Authority/2012.csv");
+		CSVReader location_data = new CSVReader("resources/data/Local_Authority_Districts_December_2017_Full_Clipped_Boundaries_in_Great_Britain.csv");
+		CSVReader employment_data = new CSVReader("resources/data/Employment_By_Local_Authority/2012.csv");
 	
 		int n_cities = location_data.getNRows();
 		

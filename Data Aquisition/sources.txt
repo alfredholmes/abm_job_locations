@@ -1,0 +1,26 @@
+Companies House Locations:
+	Companies House API (used in the python script that pulls company movement data):
+		https://developer.companieshouse.gov.uk/api/docs/
+
+	Post Codes (postcodes_la.csv - csv that maps postcodes to the local authority code):
+		Download:
+			https://ons.maps.arcgis.com/home/item.html?id=dfa0ff74981b4b228d2030d852f0b14a
+			not sure why this is not an ons / gov site
+
+		Link to download from ons / gov site:
+			http://geoportal.statistics.gov.uk/datasets?q=ONSPD+February+2017&sort_by=name&sort_order=asc
+	Company snapshots to get list of company ids (CompanyNumbers2012-2018.csv):
+		Most Recent Snapshot:
+			http://download.companieshouse.gov.uk/
+
+		Archived snapshots to find dissolved companies - data from 2012 - 2017, 2015 missing
+			https://web.archive.org/web/*/http://download.companieshouse.gov.uk/*
+			- Enter the search term 'Basic' to find list of the archived snapshots 
+
+2012 Business Entries and Exits:
+	ONS Business demography:
+		https://www.ons.gov.uk/businessindustryandtrade/business/activitysizeandlocation/datasets/businessdemographyreferencetable
+
+	Population data:
+		Using 2012 data in the population forecasts from the 2012 data
+		https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationprojections/datasets/localauthoritiesinenglandtable2

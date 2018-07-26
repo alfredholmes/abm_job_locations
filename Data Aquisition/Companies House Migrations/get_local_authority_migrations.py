@@ -29,7 +29,7 @@ company_numbers = []
 
 
 
-with open('Company_Numbers_2012-2018.csv', 'r') as csvfile:
+with open('CompanyNumbers2012-2018.csv', 'r') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
         company_numbers.append(line[0])
@@ -54,7 +54,7 @@ for s in company_numbers:
         #time.sleep(0.5 - (time.time() - last_request))
         pass
     try:
-        req = requests.get('https://api.companieshouse.gov.uk/company/' + s + '/filing-history', data={'items_per_page': 1000}, auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', ''))
+        req = requests.get('https://api.companieshouse.gov.uk/company/' + s + '/filing-history', data={'items_per_page': 100}, auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', ''))
         if req.status_code != 200:
             errors.append(['Error with companies house API request for company ' + s, req.status_code])
             continue

@@ -1,0 +1,2 @@
+Local_Authority_Districts_December_2017_Full_Clipped_Boundaries_in_Great_Britain.csv,http://geoportal.statistics.gov.uk/datasets/local-authority-districts-december-2017-full-clipped-boundaries-in-great-britain?selectedAttribute=long, minor corrections to names to match 2
+Employment_By_Local_Authority -2012,2013,2014,2015,2016,https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/datasets/localauthoritydistrictbusinessregisterandemploymentsurveybrestable6, data from all column of each region put into one csv

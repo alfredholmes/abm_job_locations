@@ -27,7 +27,7 @@ public class Genetic {
 		ArrayList<CSVReader> csv_files = new ArrayList<CSVReader>();
 		
 		for(int i = 2012; i < 2017; i++) {
-			csv_files.add(new CSVReader("data/Employment_By_Local_Authority/" + i + ".csv"));
+			csv_files.add(new CSVReader("resources/data/Employment_By_Local_Authority/" + i + ".csv"));
 		}
 		
 		nCities = csv_files.get(0).getNRows();
