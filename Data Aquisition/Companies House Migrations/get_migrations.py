@@ -1,6 +1,5 @@
 import csv, json, requests, re, time
 
-# TODO: Error Logs
 
 def main():
     #load post code data
@@ -17,15 +16,20 @@ def main():
     last_request = 0
     data = []
     for company in company_numbers:
-        i += 1
-        print('Company ' + str(i) + ' ' + company)
-        filing_history, last_request = get_company_filing_history(company, last_request)
-        #get address and people changes
-        moves, last_request = parse_filing_history(filing_history, company, last_request, pc)
-        data += moves
-        if i % 100 == 0:
-            write_data(data)
-            data = []
+        try:
+            i += 1
+            filing_history, last_request = get_company_filing_history(company, last_request)
+            #get address and people changes
+            moves, last_request = parse_filing_history(filing_history, company, last_request, pc)
+            data += moves
+            if i % 100 == 0:
+                print('Writing companies: ' + str(i))
+                write_data(data)
+                data = []
+                with open('number_of_companies_processed.txt', 'w') as f:
+                    f.write(i)
+        except Exception as e:
+            logerror('Unhandeled error in main loop:' + str(e))
 
 def logerror(err):
     with open('errors', 'a') as errorfile:
@@ -75,7 +79,7 @@ def get_company_filing_history(company, last_request_time):
 def wait_until_difference(difference, last_request):
     if time.time() - last_request < difference:
         time.sleep(difference - (time.time() - last_request))
-        
+
 def parse_filing_history(filing_history, company, last_request, pc):
     #get the current address
     current_postcode = None
@@ -88,8 +92,12 @@ def parse_filing_history(filing_history, company, last_request, pc):
                 wait_until_difference(0.5, last_request)
                 last_request = time.time()
                 # TODO: Handle potential errors
-                address = json.loads(requests.get('https://api.companieshouse.gov.uk/company/' + company + '/registered-office-address', auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', '')).text)
-                current_postcode = PostCode.postcode_from_address(address['postal_code'])
+                try:
+                    address = json.loads(requests.get('https://api.companieshouse.gov.uk/company/' + company + '/registered-office-address', auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', '')).text)
+                    current_postcode = PostCode.postcode_from_address(address['postal_code'])
+                except:
+                    logerror('Error getting current postcode of company: ' + company)
+                    return [], last_request
             break
 
     #reverse the filing history array such that the array is in chronological order
@@ -110,7 +118,10 @@ def parse_filing_history(filing_history, company, last_request, pc):
             elif 'type' in event and event['type'] == 'AD01':
                 postcode = PostCode.postcode_from_address(event['description_values']['old_address'])
             if postcode is not None:
-                moves.append({'date': event['date'], 'moving_from': postcode})
+                if len(moves) > 0 and moves[-1] != postcode:
+                    moves.append({'date': event['date'], 'moving_from': postcode})
+                elif len(moves) == 0 and postcode != current_postcode:
+                    moves.append({'date': event['date'], 'moving_from': postcode})
         if event['category'] == 'officers':
             if 'description' in event and event['description'] == 'legacy':
                 parts = event['description_values']['description'].lower().split(';')
@@ -145,6 +156,18 @@ def parse_filing_history(filing_history, company, last_request, pc):
             'IncorperationDate': filing_history[0]['date'],
             'NFiles': files_at_date[moves[i]['date']]
         })
+        to_delete = []
+        for i in range(0, len(r)):
+            if r[i]['OldLocalAuthority'] is None:
+                if i == 0:
+                    to_delete.append(i)
+                else:
+                    r[i]['OldLocalAuthority'] = r[i - 1]['OldLocalAuthority']
+                    to_delete.append(i - 1)
+        for i in to_delete:
+            del r[i]
+
+
     return r, last_request
 
 
@@ -176,7 +199,7 @@ class PostCode:
         try:
             s = re.search(r'([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})', address.upper()).group(0)
         except:
-            logerror('Error getting poscode from address: ' + address)
+            logerror('Error getting postcode from address: ' + address)
             return None
         #split and remove spaces
         s = s.split(' ')
