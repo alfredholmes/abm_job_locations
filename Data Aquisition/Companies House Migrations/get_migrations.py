@@ -27,7 +27,7 @@ def main():
                 write_data(data)
                 data = []
                 with open('number_of_companies_processed.txt', 'w') as f:
-                    f.write(i)
+                    f.write(str(i))
         except Exception as e:
             logerror('Unhandeled error in main loop:' + str(e))
 
@@ -181,7 +181,7 @@ class PostCode:
                 self.postcode_local_authority[line[0]] = line[1]
 
     def get_local_authority_form_address(self, address):
-        s = PostCode.postcode_from_address(address)
+        s = PostCode.postcode_from_address(address[-20:])
         self.get_local_authority_from_postcode(s)
 
     def get_local_authority_from_postcode(self, postcode):
@@ -197,9 +197,9 @@ class PostCode:
 
     def postcode_from_address(address):
         try:
-            s = re.search(r'([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})', address.upper()).group(0)
+            s = re.search(r'([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})', address.upper()[-25:]).group(0)
         except:
-            logerror('Error getting postcode from address: ' + address)
+            logerror('Error getting postcode from part of address: ' + address.upper()[-25:] + ' from the address ' + address)
             return None
         #split and remove spaces
         s = s.split(' ')
