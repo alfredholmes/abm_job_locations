@@ -1,4 +1,9 @@
-import csv, json, requests, re, time
+import csv, json, requests, re, time, random
+
+#register account with companies house and add an array keys into a file called apikeys.py
+# TODO: Reimplement getting current postcode through filing history as quicker than sending requests
+# TODO: Think about multithreading - issues with compatability
+import apikeys
 
 
 def main():
@@ -10,26 +15,32 @@ def main():
     print('Loading Company Numbers...')
     company_numbers = get_company_numbers()
     print('Done')
-    n = 100
+    print('Shuffling companies')
+    random.shuffle(company_numbers)
+    print('Done')
+
+
+    chapi = CompaniesHouseAPI(apikeys.keys)
     i = 0
+
     #loop through the compnies, get the filing history and find location changes and staff changes, and write this to a file after n iterations
-    last_request = 0
     data = []
     for company in company_numbers:
-        try:
-            i += 1
-            filing_history, last_request = get_company_filing_history(company, last_request)
-            #get address and people changes
-            moves, last_request = parse_filing_history(filing_history, company, last_request, pc)
-            data += moves
-            if i % 100 == 0:
-                print('Writing companies: ' + str(i))
-                write_data(data)
-                data = []
-                with open('number_of_companies_processed.txt', 'w') as f:
-                    f.write(str(i))
-        except Exception as e:
-            logerror('Unhandeled error in main loop:' + str(e))
+        #try:
+        i += 1
+        print('Evaluating company ' + str(i))
+        filing_history = chapi.get_company_filing_history(company)
+        #get address and people changes
+        moves = parse_filing_history(filing_history, company, pc, chapi)
+        data += moves
+        if i % 100 == 0:
+            print('Writing companies: ' + str(i))
+            write_data(data)
+            data = []
+            with open('number_of_companies_processed.txt', 'w') as f:
+                f.write(str(i))
+        #except Exception as e:
+        #    logerror('Unhandeled error in main loop:' + str(e))
 
 def logerror(err):
     with open('errors', 'a') as errorfile:
@@ -54,51 +65,13 @@ def get_company_numbers():
 
     return numbers
 
-def get_company_filing_history(company, last_request_time):
-    index = 0
-    fh = []
-    while True:
-        wait_until_difference(0.5, last_request_time)
-        req = requests.get('https://api.companieshouse.gov.uk/company/' + company + '/filing-history', data={'items_per_page': 100, 'start_index': index}, auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', ''))
-        last_request_time = time.time()
-        if req.status_code != 200:
-            logerror('Error with request: ' + req.status_code + req.text)
-            return None, last_request_time
 
-        available_files = json.loads(req.text)['total_count']
-
-        if available_files <= 0:
-            return fh, last_request_time
-        else:
-            fh = fh + json.loads(req.text)['items']
-
-        if len(fh) >= json.loads(req.text)['total_count']:
-            return fh, last_request_time
-        index += 100
-
-def wait_until_difference(difference, last_request):
-    if time.time() - last_request < difference:
-        time.sleep(difference - (time.time() - last_request))
-
-def parse_filing_history(filing_history, company, last_request, pc):
+def parse_filing_history(filing_history, company, pc, chapi):
     #get the current address
-    current_postcode = None
-    for event in filing_history:
-        if event['category'] == 'address':
-            if 'description_values' in event and 'new_address' in event['description_values']:
-                current_postcode = PostCode.postcode_from_address(event['description_values']['new_address'])
-            else:
-                #get the address through an extra request :(
-                wait_until_difference(0.5, last_request)
-                last_request = time.time()
-                # TODO: Handle potential errors
-                try:
-                    address = json.loads(requests.get('https://api.companieshouse.gov.uk/company/' + company + '/registered-office-address', auth=('evHt9MOd08fueWenYhMHXCf5SFO98vSiKuP-66tI', '')).text)
-                    current_postcode = PostCode.postcode_from_address(address['postal_code'])
-                except:
-                    logerror('Error getting current postcode of company: ' + company)
-                    return [], last_request
-            break
+    current_postcode = chapi.get_company_postcode(company)
+    if current_postcode is None:
+        logerror('Error getting current postcode for ' + company)
+        return []
 
     #reverse the filing history array such that the array is in chronological order
 
@@ -168,7 +141,52 @@ def parse_filing_history(filing_history, company, last_request, pc):
             del r[i]
 
 
-    return r, last_request
+    return r
+
+class CompaniesHouseAPI:
+    def __init__(self, keys):
+        self.keys = keys
+        self.key = 0
+        self.number_of_keys = len(keys)
+        self.last_api_call = 0
+        self.api_delay = 0.5 / self.number_of_keys
+
+    def prevent_call_limit(self):
+        if time.time() - self.last_api_call < 0.5 / self.api_delay:
+            time.sleep(0.5 / self.api_delay - (time.time() - self.last_api_call))
+
+    def get_company_filing_history(self, company):
+        index = 0
+        fh = []
+        while True:
+            self.prevent_call_limit()
+            req = requests.get('https://api.companieshouse.gov.uk/company/' + company + '/filing-history', data={'items_per_page': 100, 'start_index': index}, auth=(apikeys.keys[self.key], ''))
+            self.last_request = time.time()
+            self.key = (self.key + 1) % self.number_of_keys
+            if req.status_code != 200:
+                logerror('Error with request: ' + req.status_code + req.text)
+                return None
+
+            available_files = json.loads(req.text)['total_count']
+
+            if available_files <= 0:
+                return fh
+            else:
+                fh = fh + json.loads(req.text)['items']
+
+            if len(fh) >= json.loads(req.text)['total_count']:
+                return fh
+            index += 100
+
+    def get_company_postcode(self, company):
+        try:
+            self.prevent_call_limit()
+            req = requests.get('https://api.companieshouse.gov.uk/company/' + company + '/registered-office-address', auth=(apikeys.keys[self.key], ''))
+            self.last_request = time.time()
+            self.key = (self.key + 1) % self.number_of_keys
+            return json.loads(req.text)['postal_code']
+        except:
+            return None
 
 
 
