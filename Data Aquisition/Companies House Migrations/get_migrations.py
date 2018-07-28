@@ -14,7 +14,7 @@ def main():
     #get the company index to start
     start = 0
     try:
-        with open('number_of_compan0ies_processed.txt', 'r') as f:
+        with open('number_of_companies_processed.txt', 'r') as f:
             s = f.read()
             start = int(s)
     except FileNotFoundError as e:
@@ -104,14 +104,15 @@ def parse_filing_history(filing_history, company, pc, chapi):
         if event['category'] == 'address':
             postcode = None
             if 'description' in event and event['description'] == 'legacy':
-                not_important_strings = ['sit reg', 'register of members', 'debenture register']
+                not_important_strings = ['sit reg', 'register of members', 'debenture register', 'Sit of register', 'register of directors']
                 for s in not_important_strings:
                     if s in event['description_values']['description']:
                         break
-                postcode = PostCodeHandler.postcode_from_address(event['description_values']['description'])
-                if postcode is None:
-                    # TODO Implement google maps search to find address
-                    print(event)
+                else:
+                    postcode = PostCodeHandler.postcode_from_address(event['description_values']['description'])
+                    if postcode is None:
+                        # TODO Implement google maps search to find address
+                        print(event)
 
             elif 'type' in event and event['type'] == 'AD01':
                 postcode = PostCodeHandler.postcode_from_address(event['description_values']['old_address'])
@@ -220,7 +221,9 @@ class CompaniesHouseAPI:
             self.last_request = time.time()
             self.key = (self.key + 1) % self.number_of_keys
             return json.loads(req.text)['postal_code']
-        except:
+        except Exception as e:
+            if str(e) == 'postal_code':
+                logerror('Postal code not returned in reg office address for company ' + company)
             return None
 
 
@@ -252,7 +255,6 @@ class PostCodeHandler:
         try:
             s = re.search(r'\s([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})', address.upper()[-25:]).group(0)
         except Exception as e:
-            print(e)
             logerror('Error getting postcode from part of address: ' + address.upper()[-25:] + ' from the address ' + address)
             return None
         #split and remove spaces
