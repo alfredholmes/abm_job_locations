@@ -1,5 +1,7 @@
 import csv, json, requests, re, time, random
 
+
+
 #register account with companies house and add an array keys into a file called apikeys.py
 # TODO: Reimplement getting current postcode through filing history as quicker than sending requests
 # TODO: Think about multithreading - issues with compatability
@@ -7,13 +9,25 @@ import apikeys
 
 
 def main():
+    #seed the random number generator such that the shuffle of the array is the same each time the scrips runs
+    random.seed(0)
+    #get the company index to start
+    start = 0
+    try:
+        with open('number_of_compan0ies_processed.txt', 'r') as f:
+            s = f.read()
+            start = int(s)
+    except FileNotFoundError as e:
+        start = 0
+
+
     #load post code data
     print('Loading Postcode data...')
-    pc = PostCode()
+    pc = PostCodeHandler()
     print('Done')
     #load CompanyNumber array
     print('Loading Company Numbers...')
-    company_numbers = get_company_numbers()
+    company_numbers = get_company_numbers(start)
     print('Done')
     print('Shuffling companies')
     random.shuffle(company_numbers)
@@ -21,26 +35,26 @@ def main():
 
 
     chapi = CompaniesHouseAPI(apikeys.keys)
-    i = 0
+    i = start
 
     #loop through the compnies, get the filing history and find location changes and staff changes, and write this to a file after n iterations
     data = []
     for company in company_numbers:
-        #try:
-        i += 1
-        print('Evaluating company ' + str(i))
-        filing_history = chapi.get_company_filing_history(company)
-        #get address and people changes
-        moves = parse_filing_history(filing_history, company, pc, chapi)
-        data += moves
-        if i % 100 == 0:
-            print('Writing companies: ' + str(i))
-            write_data(data)
-            data = []
-            with open('number_of_companies_processed.txt', 'w') as f:
-                f.write(str(i))
-        #except Exception as e:
-        #    logerror('Unhandeled error in main loop:' + str(e))
+        try:
+            i += 1
+            print('Evaluating company ' + str(i))
+            filing_history = chapi.get_company_filing_history(company)
+            #get address and people changes
+            moves = parse_filing_history(filing_history, company, pc, chapi)
+            data += moves
+            if i % 100 == 0:
+                print('Writing companies: ' + str(i))
+                write_data(data)
+                data = []
+                with open('number_of_companies_processed.txt', 'w') as f:
+                    f.write(str(i))
+        except Exception as e:
+            logerror('Unhandeled error in main loop:' + str(e))
 
 def logerror(err):
     with open('errors', 'a') as errorfile:
@@ -56,19 +70,22 @@ def write_data(data):
                 writer.writeheader()
             writer.writerow(line)
 
-def get_company_numbers():
+def get_company_numbers(start):
     numbers = []
+    i = 0
     with open('CompanyNumbers2012-2018.csv', 'r') as csvfile:
         reader = csv.reader(csvfile)
         for line in reader:
-            numbers.append(line[0])
+                i += 1 # TODO : should make more efficient since still assigning data
+                if start < i:
+                    numbers.append(line[0])
 
     return numbers
 
 
 def parse_filing_history(filing_history, company, pc, chapi):
     #get the current address
-    current_postcode = chapi.get_company_postcode(company)
+    current_postcode = chapi.get_company_postcode(company, filing_history)
     if current_postcode is None:
         logerror('Error getting current postcode for ' + company)
         return []
@@ -87,9 +104,17 @@ def parse_filing_history(filing_history, company, pc, chapi):
         if event['category'] == 'address':
             postcode = None
             if 'description' in event and event['description'] == 'legacy':
-                postcode = PostCode.postcode_from_address(event['description_values']['description'])
+                not_important_strings = ['sit reg', 'register of members', 'debenture register']
+                for s in not_important_strings:
+                    if s in event['description_values']['description']:
+                        break
+                postcode = PostCodeHandler.postcode_from_address(event['description_values']['description'])
+                if postcode is None:
+                    # TODO Implement google maps search to find address
+                    print(event)
+
             elif 'type' in event and event['type'] == 'AD01':
-                postcode = PostCode.postcode_from_address(event['description_values']['old_address'])
+                postcode = PostCodeHandler.postcode_from_address(event['description_values']['old_address'])
             if postcode is not None:
                 if len(moves) > 0 and moves[-1] != postcode:
                     moves.append({'date': event['date'], 'moving_from': postcode})
@@ -178,8 +203,18 @@ class CompaniesHouseAPI:
                 return fh
             index += 100
 
-    def get_company_postcode(self, company):
+    def get_company_postcode(self, company, filing_history = None):
         try:
+            if filing_history is not None:
+                for file in filing_history:
+                    if 'category' in file and file['category'] == 'address':
+                        if 'description_values' in file and 'new_address' in file['description_values']:
+                            pc = PostCodeHandler.postcode_from_address(file['description_values']['new_address'])
+                            if pc is not None:
+                                return pc
+                        else:
+                            break
+
             self.prevent_call_limit()
             req = requests.get('https://api.companieshouse.gov.uk/company/' + company + '/registered-office-address', auth=(apikeys.keys[self.key], ''))
             self.last_request = time.time()
@@ -190,7 +225,7 @@ class CompaniesHouseAPI:
 
 
 
-class PostCode:
+class PostCodeHandler:
     def __init__(self):
         with open('postcode_la.csv', 'r') as csvfile:
             self.postcode_local_authority = {}
@@ -199,7 +234,7 @@ class PostCode:
                 self.postcode_local_authority[line[0]] = line[1]
 
     def get_local_authority_form_address(self, address):
-        s = PostCode.postcode_from_address(address[-20:])
+        s = PostCodeHandler.postcode_from_address(address[-20:])
         self.get_local_authority_from_postcode(s)
 
     def get_local_authority_from_postcode(self, postcode):
@@ -215,8 +250,9 @@ class PostCode:
 
     def postcode_from_address(address):
         try:
-            s = re.search(r'([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})', address.upper()[-25:]).group(0)
-        except:
+            s = re.search(r'\s([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})', address.upper()[-25:]).group(0)
+        except Exception as e:
+            print(e)
             logerror('Error getting postcode from part of address: ' + address.upper()[-25:] + ' from the address ' + address)
             return None
         #split and remove spaces
