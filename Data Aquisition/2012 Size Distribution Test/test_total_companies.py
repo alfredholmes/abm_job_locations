@@ -1,4 +1,4 @@
-import csv, random
+import csv, random, math
 
 
 EMPLOYMENT_BANDS = ['0-4', '5-9', '10-19', '50-99', '100-249', '250+']
@@ -44,7 +44,7 @@ def main():
             recon_las[data[0]] = 1
 
     for la, total in scaling.items():
-        fractions.append([la, (recon_las[la] / total) * (total_employment / len(companies))])
+        fractions.append([la, (recon_las[la] / total)])
 
     with open('scaling_factors.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
