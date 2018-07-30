@@ -24,4 +24,6 @@ hs_err_pid*
 
 #eclipse settings
 .settings/*
-*api-keys.py
+*apikeys.py
+#python things
+*__pycache__*
