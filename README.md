@@ -14,3 +14,14 @@ And then to run:
 ```
 java com.alfred.controller.Controller
 ```
+
+### Data
+Project uses data from the following sources:
++ ONS Geography Location of Local Authorities
++ ONS Geography Postcode data
++ ONS Employment 2012 - 2017
++ ONS Business Demography - Local Authority Size distributions 2012 - 2017
++ Companies House
+
+See `Data Aquisition/sources.txt` for details
+
