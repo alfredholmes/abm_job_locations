@@ -178,7 +178,7 @@ public class Genetic {
 	public static void run(String[] argv) {
 		//Generate population
 		System.out.println("Generating population...");
-		Genetic g = new Genetic(true);
+		Genetic g = new Genetic(false);
 		for(int i = 0; i < 4; i++) {
 			System.out.println("Running generation " + i);
 			double average_error = g.update();
