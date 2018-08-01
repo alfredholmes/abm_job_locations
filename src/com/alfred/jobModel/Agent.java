@@ -9,7 +9,7 @@ public class Agent {
 	private double consumerDependence; //parameter whether to care about being close to other jobs - irrespective of their industry - when connected to housing model, this will use people rather than job density
 	private static double k = 10; //parameter for the activation function
 	
-	private double[] parameters; //weights used in the evaluation of cities
+	private double[] parameters; //weights used in the evaluation of cities	
 	
 	private City city; //current city
 	public int moves = 0; //keep track of number of times agent has moved
