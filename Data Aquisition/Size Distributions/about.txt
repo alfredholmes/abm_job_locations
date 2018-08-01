@@ -1,0 +1,2 @@
+The goal of this sub project is to estimate the number of employees in a 
+company based on the information on companies house.
