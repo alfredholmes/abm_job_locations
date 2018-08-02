@@ -1,17 +1,17 @@
+#This script performs MLE on the company data fitting a log normal distribution to 2012 ONS data for each local authority
+# TODO: Evaluate accuracy of fitted distributions
 import csv, scipy.optimize as op, scipy.stats as sps, numpy, math, random
 
 SIZES = ['0-4','5-9','10-19','20-49', '50-99','100-249','250+']
-#METHODS = ['Nelder-Mead','Powell', 'CG', 'BFGS', 'Newton-CG','L-BFGS-B','TNC','COBYLA','SLSQP','trust-constr','dogleg','trust-ncg','trust-exact','trust-krylov' ]
 
-METHODS = ['Nelder-Mead','Powell', 'CG', 'BFGS', 'Newton-CG','L-BFGS-B','TNC','SLSQP','trust-constr','dogleg','trust-ncg','trust-exact','trust-krylov' ]
-
-#METHODS = ['L-BFGS-B']
 def main():
     data = get_data()
     for id,d in data.items():
-        r = op.minimize(ll, [0, 1], d, method='L-BFGS-B', bounds=op.Bounds([-10, 0], [10, 10]))
+        r = op.minimize(ll, [0, 1], d, bounds=op.Bounds([-10, 0], [10, 10]))
         mean = r.x[0]
         sd   = r.x[1]
+
+        print(mean, sd)
 
         total = 0
         for v in d:
