@@ -1,13 +1,47 @@
-import csv, scipy.optimize as op, scipy.stats as sps, math
+import csv, scipy.optimize as op, scipy.stats as sps, numpy, math, random
 
 SIZES = ['0-4','5-9','10-19','20-49', '50-99','100-249','250+']
+#METHODS = ['Nelder-Mead','Powell', 'CG', 'BFGS', 'Newton-CG','L-BFGS-B','TNC','COBYLA','SLSQP','trust-constr','dogleg','trust-ncg','trust-exact','trust-krylov' ]
 
+METHODS = ['Nelder-Mead','Powell', 'CG', 'BFGS', 'Newton-CG','L-BFGS-B','TNC','SLSQP','trust-constr','dogleg','trust-ncg','trust-exact','trust-krylov' ]
 
+#METHODS = ['L-BFGS-B']
 def main():
     data = get_data()
     for id,d in data.items():
-        r = op.minimize(ll, [0, 1], tuple(d))
-        print(r)
+        r = op.minimize(ll, [0, 1], d, method='L-BFGS-B', bounds=op.Bounds([-10, 0], [10, 10]))
+        mean = r.x[0]
+        sd   = r.x[1]
+
+        total = 0
+        for v in d:
+            total += v
+        bands = [0] * 7
+        for i in range(total):
+            k = random.lognormvariate(mean, sd)
+            if k < 4:
+                bands[0] +=1
+                continue
+            if k < 9:
+                bands[1] +=1
+                continue
+            if k < 19:
+                bands[2] +=1
+                continue
+            if k < 49:
+                bands[3] +=1
+                continue
+            if k < 99:
+                bands[4] +=1
+                continue
+            if k < 249:
+                bands[5] +=1
+                continue
+            bands[6] += 1
+
+        print(bands)
+        print(d)
+
 
 def get_data():
     data = {}
@@ -19,12 +53,19 @@ def get_data():
 
 
 def ll(param, arr):
-    r = 0
-    endpoints = [0.0001,4,19,49,99,249,2000]
+    endpoints = [0,4,9,19,49,99,249,numpy.inf]
+    s = 0
     for i,x in enumerate(arr):
-        r += x * (sps.norm.cdf(math.log((endpoints[i + 1]) - param[0]) / param[1]) - sps.norm.nd.cdf(math.log((endpoints[i]) - param[0]) / param[1]))
-
-    return 1 / (r**2)
+        #print(x)
+        a = (numpy.log(endpoints[i+1]) - param[0]) / param[1]
+        b = (numpy.log(endpoints[i  ]) - param[0]) / param[1]
+        if b != -numpy.inf and a != numpy.inf:
+            s += x * numpy.log(sps.norm.cdf(a) - sps.norm.cdf(b))
+        elif b == -numpy.inf:
+            s+= x * numpy.log(sps.norm.cdf(a))
+        else:
+            s+= x * numpy.log(1 - sps.norm.cdf(b))
+    return -s #return negative such that minimise methods can be used
 
 
 if __name__ == '__main__':
