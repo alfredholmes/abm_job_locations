@@ -15,12 +15,12 @@ Companies House Locations:
 
 		Archived snapshots to find dissolved companies - data from 2012 - 2017, 2015 missing
 			https://web.archive.org/web/*/http://download.companieshouse.gov.uk/*
-			- Enter the search term 'Basic' to find list of the archived snapshots 
+			- Enter the search term 'Basic' to find list of the archived snapshots
 
-2012 Business Entries and Exits:
-	ONS Business demography:
-		https://www.ons.gov.uk/businessindustryandtrade/business/activitysizeandlocation/datasets/businessdemographyreferencetable
+Population Data:
+	ONS population timeseries by age and local authority:
+		https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland
 
-	Population data:
-		Using 2012 data in the population forecasts from the 2012 data
-		https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationprojections/datasets/localauthoritiesinenglandtable2
+Wages:
+	Income Percentiles by local authority
+		https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/placeofworkbylocalauthorityashetable7
