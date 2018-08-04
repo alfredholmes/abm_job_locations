@@ -1,0 +1,489 @@
+County Durham,3335
+Chester-le-Street,305
+Derwentside,430
+Durham,795
+Easington,610
+Sedgefield,555
+Teesdale,165
+Wear Valley,475
+Darlington,885
+Hartlepool,640
+Middlesbrough,1170
+Northumberland,2280
+Alnwick,270
+Berwick-upon-Tweed,290
+Blyth Valley,500
+Castle Morpeth,395
+Tynedale,450
+Wansbeck,375
+Redcar and Cleveland,850
+Stockton-on-Tees,1525
+Tyne and Wear Metropolitan County,8525
+Gateshead,1720
+Newcastle upon Tyne,2845
+North Tyneside,1325
+South Tyneside,815
+Sunderland,1820
+NORTH WEST,50135
+Blackburn with Darwen,1090
+Blackpool,1080
+Cheshire East,2530
+Congleton,510
+Crewe and Nantwich,820
+Macclesfield,1200
+Cheshire West and Chester,2720
+Chester,1280
+Ellesmere Port & Neston,625
+Vale Royal,815
+Halton,865
+Warrington,1815
+Cumbria County,4625
+Allerdale,875
+Barrow-in-Furness,570
+Carlisle,1085
+Copeland,575
+Eden,500
+South Lakeland,1020
+Greater Manchester Metropolitan County,18815
+Bolton,1765
+Bury,970
+Manchester,5015
+Oldham,1205
+Rochdale,1275
+Salford,1660
+Stockport,1815
+Tameside,1155
+Trafford,2070
+Wigan,1885
+Lancashire County,7425
+Burnley,640
+Chorley,580
+Fylde,505
+Hyndburn,480
+Lancaster,975
+Pendle,515
+Preston,1295
+Ribble Valley,275
+Rossendale,340
+South Ribble,655
+West Lancashire,600
+Wyre,565
+Merseyside Metropolitan County,9170
+Knowsley,840
+Liverpool,3645
+St. Helens,1095
+Sefton,1740
+Wirral,1850
+YORKSHIRE AND THE HUMBER,37190
+East Riding of Yorkshire,1925
+"Kingston upon Hull, City of",2595
+North East Lincolnshire,1200
+North Lincolnshire,1225
+York,2195
+North Yorkshire County,4820
+Craven,480
+Hambleton,815
+Harrogate,1325
+Richmondshire,410
+Ryedale,405
+Scarborough,880
+Selby,505
+South Yorkshire Metropolitan County,8570
+Barnsley,1275
+Doncaster,1995
+Rotherham,1765
+Sheffield,3535
+West Yorkshire Metropolitan County,14660
+Bradford,2740
+Calderdale,1210
+Kirklees,2210
+Leeds,6105
+Wakefield,2395
+EAST MIDLANDS,30135
+Derby,2020
+Leicester,2140
+Nottingham,2765
+Rutland,210
+Derbyshire County,4500
+Amber Valley,710
+Bolsover,445
+Chesterfield,835
+Derbyshire Dales,600
+Erewash,610
+High Peak,565
+North East Derbyshire,385
+South Derbyshire,350
+Leicestershire County,3620
+Blaby,540
+Charnwood,935
+Harborough,440
+Hinckley and Bosworth,485
+Melton,310
+North West Leicestershire,620
+Oadby and Wigston,290
+Lincolnshire County,5295
+Boston,560
+East Lindsey,970
+Lincoln,1150
+North Kesteven,605
+South Holland,515
+South Kesteven,1025
+West Lindsey,470
+Northamptonshire County,4515
+Corby,410
+Daventry,430
+East Northamptonshire,370
+Kettering,575
+Northampton,1905
+South Northamptonshire,365
+Wellingborough,460
+Nottinghamshire County,5070
+Ashfield,740
+Bassetlaw,840
+Broxtowe,675
+Gedling,575
+Mansfield,825
+Newark and Sherwood,815
+Rushcliffe,600
+WEST MIDLANDS,37775
+"Herefordshire, County of",1360
+Shropshire,2130
+Bridgnorth,255
+North Shropshire,330
+Oswestry,330
+Shrewsbury and Atcham,895
+South Shropshire,320
+Stoke-on-Trent,1830
+Telford and Wrekin,1195
+Staffordshire County,5310
+Cannock Chase,620
+East Staffordshire,885
+Lichfield,615
+Newcastle-under-Lyme,710
+South Staffordshire,435
+Stafford,1025
+Staffordshire Moorlands,490
+Tamworth,530
+Warwickshire County,4025
+North Warwickshire,435
+Nuneaton and Bedworth,790
+Rugby,735
+Stratford-on-Avon,830
+Warwick,1235
+West Midlands Metropolitan County,18300
+Birmingham,7295
+Coventry,1970
+Dudley,1930
+Sandwell,1865
+Solihull,1630
+Walsall,1545
+Wolverhampton,2065
+Worcestershire County,3625
+Bromsgrove,510
+Malvern Hills,345
+Redditch,555
+Worcester,925
+Wychavon,695
+Wyre Forest,595
+EAST,38550
+Bedford,1130
+Former district of:Bedford,1130
+Central  Bedfordshire,1200
+Mid Bedfordshire,570
+South Bedfordshire,630
+Luton,1185
+Peterborough,1485
+Southend-on-Sea,985
+Thurrock,1105
+Cambridgeshire County,4235
+Cambridge,1660
+East Cambridgeshire,350
+Fenland,560
+Huntingdonshire,1005
+South Cambridgeshire,660
+Essex County,8470
+Basildon,1125
+Braintree,840
+Brentwood,490
+Castle Point,310
+Chelmsford,1525
+Colchester,1310
+Epping Forest,530
+Harlow,610
+Maldon,190
+Rochford,325
+Tendring,750
+Uttlesford,465
+Hertfordshire County,7515
+Broxbourne,520
+Dacorum,1035
+East Hertfordshire,910
+Hertsmere,495
+North Hertfordshire,830
+St Albans,990
+Stevenage,660
+Three Rivers,405
+Watford,860
+Welwyn Hatfield,810
+Norfolk County,5960
+Breckland,830
+Broadland,560
+Great Yarmouth,775
+King's Lynn and West Norfolk,970
+North Norfolk,675
+Norwich,1545
+South Norfolk,605
+Suffolk County,5280
+Babergh,490
+Forest Heath,450
+Ipswich,1250
+Mid Suffolk,510
+St Edmundsbury,945
+Suffolk Coastal,845
+Waveney,790
+LONDON,59865
+Inner London,32315
+Camden,3210
+City of London,3020
+Hackney,1120
+Hammersmith and Fulham,1790
+Haringey,1145
+Islington,1975
+Kensington and Chelsea,2230
+Lambeth,1560
+Lewisham,1205
+Newham,1505
+Southwark,1990
+Tower Hamlets,2065
+Wandsworth,1915
+Westminster,7585
+Outer London,27550
+Barking and Dagenham,1525
+Barnet,1825
+Bexley,1165
+Brent,1435
+Bromley,1695
+Croydon,1955
+Ealing,1665
+Enfield,1445
+Greenwich,1400
+Harrow,1115
+Havering,1220
+Hillingdon,2235
+Hounslow,1770
+Kingston upon Thames,1345
+Merton,1230
+Redbridge,1165
+Richmond upon Thames,1255
+Sutton,1010
+Waltham Forest,1095
+SOUTH EAST,61940
+Bracknell Forest,740
+Brighton and Hove,2415
+Isle of Wight,1220
+Medway,1635
+Milton Keynes,2015
+Portsmouth,1700
+Reading,1640
+Slough,960
+Southampton,1920
+West Berkshire,1275
+Windsor and Maidenhead,1130
+Wokingham,765
+Buckinghamshire County,2935
+Aylesbury Vale,960
+Chiltern,450
+South Bucks,400
+Wycombe,1125
+East Sussex County,3140
+Eastbourne,710
+Hastings,575
+Lewes,580
+Rother,495
+Wealden,780
+Hampshire County,8660
+Basingstoke and Deane,1225
+East Hampshire,615
+Eastleigh,970
+Fareham,790
+Gosport,385
+Hart,465
+Havant,735
+New Forest,1130
+Rushmoor,750
+Test Valley,850
+Winchester,745
+Kent County,10025
+Ashford,940
+Canterbury,1115
+Dartford,910
+Dover,735
+Gravesham,460
+Maidstone,1180
+Sevenoaks,600
+Shepway,730
+Swale,780
+Thanet,885
+Tonbridge and Malling,820
+Tunbridge Wells,870
+Oxfordshire County,5950
+Cherwell,1255
+Oxford,2080
+South Oxfordshire,955
+Vale of White Horse,930
+West Oxfordshire,730
+Surrey County,8170
+Elmbridge,870
+Epsom and Ewell,525
+Guildford,1280
+Mole Valley,595
+Reigate and Banstead,940
+Runnymede,500
+Spelthorne,770
+Surrey Heath,680
+Tandridge,445
+Waverley,815
+Woking,750
+West Sussex County,5645
+Adur,275
+Arun,830
+Chichester,880
+Crawley,1180
+Horsham,765
+Mid Sussex,880
+Worthing,835
+SOUTH WEST,40765
+Bath and North East Somerset,1440
+Bournemouth,1495
+"Bristol, City of",4030
+Cornwall,4625
+Caradon,580
+Carrick,1135
+Kerrier,710
+North Cornwall,860
+Penwith,575
+Restormel,765
+Isles of Scilly,55
+North Somerset,1270
+Plymouth,1890
+Poole,1150
+South Gloucestershire,1975
+Swindon,1625
+Torbay,940
+Wiltshire,3305
+Kennet,545
+North Wiltshire,890
+Salisbury,980
+West Wiltshire,890
+Devon County,5855
+East Devon,865
+Exeter,1540
+Mid Devon,415
+North Devon,780
+South Hams,660
+Teignbridge,820
+Torridge,415
+West Devon,360
+Dorset County,2820
+Christchurch,350
+East Dorset,500
+North Dorset,425
+Purbeck,275
+West Dorset,820
+Weymouth and Portland,450
+Gloucestershire County,4435
+Cheltenham,1105
+Cotswold,630
+Forest of Dean,410
+Gloucester,1110
+Stroud,665
+Tewkesbury,515
+Somerset County,3855
+Mendip,830
+Sedgemoor,665
+South Somerset,1110
+Taunton Deane,975
+West Somerset,275
+WALES,23095
+Isle of Anglesey,535
+Gwynedd,1270
+Conwy,970
+Denbighshire,800
+Flintshire,1090
+Wrexham,980
+Powys,1105
+Ceredigion,615
+Pembrokeshire,930
+Carmarthenshire,1405
+Swansea,1780
+Neath Port Talbot,835
+Bridgend,945
+The Vale of Glamorgan,755
+Cardiff,3430
+"Rhondda, Cynon, Taff",1460
+Merthyr Tydfil,440
+Caerphilly,975
+Blaenau Gwent,440
+Torfaen,580
+Monmouthshire,620
+Newport,1135
+SCOTLAND,47305
+Aberdeen City,2685
+Aberdeenshire,1870
+Angus,960
+Argyll & Bute,1045
+Clackmannanshire,330
+Dumfries & Galloway,1460
+Dundee City,1485
+East Ayrshire,1125
+East Dunbartonshire,540
+East Lothian,515
+East Renfrewshire,350
+"Edinburgh, City of",4850
+Eilean Siar,325
+Falkirk,1070
+Fife,2830
+Glasgow City,6220
+Highland,2925
+Inverclyde,530
+Midlothian,495
+Moray,875
+North Ayrshire,1170
+North Lanarkshire,3085
+Orkney Islands,255
+Perth & Kinross,1215
+Renfrewshire,1360
+"Scottish Borders, The",1030
+Shetland Islands,370
+South Ayrshire,1015
+South Lanarkshire,2440
+Stirling,890
+West Dunbartonshire,640
+West Lothian,1350
+NORTHERN IRELAND,15385
+Antrim,520
+Ards,500
+Armagh,405
+Ballymena,665
+Ballymoney,205
+Banbridge,325
+Belfast,3850
+Carrickfergus,220
+Castlereagh,475
+Coleraine,575
+Cookstown,285
+Craigavon,715
+Derry,960
+Down,530
+Dungannon,395
+Fermanagh,510
+Larne,260
+Limavady,185
+Lisburn,750
+Magherafelt,330
+Moyle,145
+Newry and Mourne,685
+Newtownabbey,665
+North Down,515
+Omagh,465
+Strabane,250
