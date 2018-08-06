@@ -33,7 +33,13 @@ class LocalAuthority:
 
         for migration in business_migrations:
 
-            if migration[0] == self.id and migration[1] not in not_recognised:
-                self.emmigration[local_authorities[migration[1]]] = int(migration[2])
-            elif migration[1] == self.id and migration[0] not in not_recognised:
-                self.immigration[local_authorities[migration[0]]] = int(migration[2])
+            if migration[0] == self.id:
+                try:
+                    self.emmigration[local_authorities[migration[1]]] = int(migration[2])
+                except:
+                    pass
+            elif migration[1] == self.id:
+                try:
+                    self.immigration[local_authorities[migration[0]]] = int(migration[2])
+                except:
+                    pass

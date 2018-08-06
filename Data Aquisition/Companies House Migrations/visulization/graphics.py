@@ -27,7 +27,7 @@ class Graphics:
         pygame.draw.circle(self.surf, (255, 255, 255), (x, y), r)
 
     def draw_line(self, x, y, x_, y_):
-        pygame.draw.aaline((255, 255, 255), (x, y), (x_, y_))
+        pygame.draw.aaline(self.surf, (255, 255, 255), (x, y), (x_, y_))
     def should_quit(self):
         for e in pygame.event.get():
             return e.type == QUIT

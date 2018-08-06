@@ -14,7 +14,7 @@ def main():
     for id, la in lm.local_authorities.items():
         x, y = ll_to_xy((la.long, la.lat))
         for la_m, n in la.emmigration.items():
-            x_, y_ = ll_to_xy(la_m.long, la_m.lat)
+            x_, y_ = ll_to_xy((la_m.long, la_m.lat))
             g.draw_line(x, y, x_, y_)
         g.draw_point(int(x), int(y), 2)
 
