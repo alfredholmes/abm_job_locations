@@ -12,11 +12,13 @@ def main():
     print('done')
 
     for id, la in lm.local_authorities.items():
+        print(id)
         x, y = ll_to_xy((la.long, la.lat))
+        g.draw_point(int(x), int(y), 2)
         for la_m, n in la.emmigration.items():
             x_, y_ = ll_to_xy((la_m.long, la_m.lat))
             g.draw_line(x, y, x_, y_)
-        g.draw_point(int(x), int(y), 2)
+        g.draw_temp_surf_with_alpha(30)
 
     while not g.should_quit():
         #g.draw_point(5, 5, 20)
