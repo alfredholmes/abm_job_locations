@@ -5,7 +5,7 @@ import graphics, location, time
 
 
 def main():
-    size = 1000
+    size = 1920
     g = graphics.Graphics(size, size)
 
     print('Loading LA data...')
@@ -20,16 +20,17 @@ def main():
             x_, y_ = ll_to_xy((la_m.long, la_m.lat), size)
             c = '#ff5a5f'
             if y_ < y:
+                #if move to is further south - make white
                 c = '#bfd7ea'
             #g.flip()
             g.draw_line(x, y, x_, y_, c, int(n / 300 * 255))
 
 
-    g.save_to_file('output.png')
+    g.save_to_file('output_.bmp')
     g.flip()
 
-    while not g.should_quit():
-        pass
+    #while not g.should_quit():
+    #    pass
 
     g.quit()
 

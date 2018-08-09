@@ -10,8 +10,8 @@ class Graphics:
 
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.bg = pygame.Surface((self.width, self.height))
-        self.bg.fill(pygame.Color('#0b3954'))
-        #self.bg.fill((0, 0, 0))
+        #self.bg.fill(pygame.Color('#0b3954'))
+        self.bg.fill((0, 0, 0))
         self.surf = pygame.Surface((self.width, self.height))
         self.surf.blit(self.bg, (0, 0))
 
@@ -32,9 +32,8 @@ class Graphics:
 
     def draw_line(self, x, y, x_, y_, c, alpha):
         temp = pygame.Surface((self.width, self.height))
-        temp.blit(self.bg, (0, 0))
-        pygame.draw.aaline(temp, pygame.Color(c), (x, y), (x_, y_))
-        temp.set_colorkey(pygame.Color('#0b3954'))
+        pygame.draw.line(temp, pygame.Color(c), (x, y), (x_, y_))
+        temp.set_colorkey((0, 0, 0))
         temp.set_alpha(alpha)
         self.surf.blit(temp, (0, 0))
         #self.surf.set_alpha(255)
