@@ -1,7 +1,7 @@
 import csv, random, math
 
 
-EMPLOYMENT_BANDS = ['0-4', '5-9', '10-19', '50-99', '100-249', '250+']
+EMPLOYMENT_BANDS = ['0-4', '5-9', '10-19', '20-49', '50-99', '100-249', '250+']
 
 def main():
 

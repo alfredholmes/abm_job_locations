@@ -32,7 +32,7 @@ class Graphics:
 
     def draw_line(self, x, y, x_, y_, c, alpha):
         temp = pygame.Surface((self.width, self.height))
-        pygame.draw.line(temp, pygame.Color(c), (x, y), (x_, y_))
+        pygame.draw.aaline(temp, pygame.Color(c), (x, y), (x_, y_))
         temp.set_colorkey((0, 0, 0))
         temp.set_alpha(alpha)
         self.surf.blit(temp, (0, 0))

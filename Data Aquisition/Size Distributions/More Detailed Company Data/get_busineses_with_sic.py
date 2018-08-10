@@ -7,7 +7,7 @@ def main():
     companies = load_data()
     local_authorities = {}
     for company in companies:
-        if (company[-1] != '99999 - Dormant Company' and company[-1] != 'None Supplied') or company[-2] != 'NO ACCOUNTS FILED':
+        if (company[-1] != '99999 - Dormant Company' and company[-1] != 'None Supplied') and company[-2] != 'NO ACCOUNTS FILED' and company[-2] != 'DORMANT':
             if company[1] not in local_authorities:
                 local_authorities[company[1]]  = 1
             else:

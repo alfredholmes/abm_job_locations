@@ -3,44 +3,42 @@
 import csv, scipy.optimize as op, scipy.stats as sps, numpy, math, random
 
 SIZES = ['0-4','5-9','10-19','20-49', '50-99','100-249','250+']
+results = {}
+N = 50
+min = -0.597583854625895
+max = 0.757872365989689
+W = (max - min) / N
+
+
 
 def main():
     data = get_data()
-    for id,d in data.items():
+    output = []
+    for id, d in data.items():
         r = op.minimize(ll, [0, 1], d, bounds=op.Bounds([-10, 0], [10, 10]))
         mean = r.x[0]
         sd   = r.x[1]
-
+        output.append([id, mean, sd, ''] + d)
         print(mean, sd)
 
-        total = 0
-        for v in d:
-            total += v
-        bands = [0] * 7
-        for i in range(total):
-            k = random.lognormvariate(mean, sd)
-            if k < 4:
-                bands[0] +=1
-                continue
-            if k < 9:
-                bands[1] +=1
-                continue
-            if k < 19:
-                bands[2] +=1
-                continue
-            if k < 49:
-                bands[3] +=1
-                continue
-            if k < 99:
-                bands[4] +=1
-                continue
-            if k < 249:
-                bands[5] +=1
-                continue
-            bands[6] += 1
+        b = min + int((mean - min) / W) * W
 
-        print(bands)
-        print(d)
+        if b in results:
+            results[b] += 1
+        else:
+            results[b]  = 1
+
+    with open('la_lognormal_params.csv', 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        for line in output:
+            writer.writerow(line)
+
+    with open('mean_distribution.csv', 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        for base, n in results.items():
+            writer.writerow([base, n])
+
+
 
 
 def get_data():
