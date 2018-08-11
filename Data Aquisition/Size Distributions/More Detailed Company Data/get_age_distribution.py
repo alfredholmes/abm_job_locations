@@ -1,6 +1,6 @@
 import csv
 
-FILES = ['2017/company_data_' + str(i) + '.csv' for i in range(10)]
+FILES = ['2013/' + str(i) + '.csv' for i in range(6)]
 AGE_BANDS = [2, 4, 10]
 
 
@@ -25,8 +25,9 @@ def main():
 
 
 def write_data(data):
-    with open('age_data.csv', 'w') as csvfile:
+    with open('2013_age_data_ch.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
+        writer.writerow(['la'] + AGE_BANDS + ['10+'])
         for la, d in data.items():
             writer.writerow([la] + d)
 
