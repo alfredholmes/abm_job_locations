@@ -22,5 +22,14 @@ Population Data:
 		https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland
 
 Wages:
-	Income Percentiles by local authority
+	Income Percentiles by local authority:
 		https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/placeofworkbylocalauthorityashetable7
+
+Business Demography:
+	ONS data on number of company size distributions per Local authority and size distributions by SIC code:
+		2012:
+		http://webarchive.nationalarchives.gov.uk/20140511113648/http://www.ons.gov.uk/ons/publications/re-reference-tables.html?edition=tcm%3A77-254601&format=hi-vis
+		2013:
+		http://webarchive.nationalarchives.gov.uk/20140510023623/http://www.ons.gov.uk/ons/publications/re-reference-tables.html?edition=tcm%3A77-313744&format=hi-vis
+		2014 - 2017:
+		https://www.ons.gov.uk/businessindustryandtrade/business/activitysizeandlocation/datasets/ukbusinessactivitysizeandlocation

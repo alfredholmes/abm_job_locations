@@ -1,10 +1,10 @@
 import csv
 
 
-MAX = 1.8
-MIN = 0.4
+MAX = 1.5
+MIN = 0.5
 
-FILES = ['2013/' + str(i) + '.csv' for i in range(6)]
+FILES = ['../CHData/2013/' + str(i) + '.csv' for i in range(6)]
 
 def main():
     ons = read_ons('ons_2013_sic_total.csv')
