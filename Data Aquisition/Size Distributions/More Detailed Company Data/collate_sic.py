@@ -11,7 +11,7 @@ def main():
         elif int(str(c)[:2]) in ons:
             data[int(str(c)[:2])] = [n, ons[int(str(c)[:2])]]
         else:
-            print(int(str(c)[:2]))
+            data[int(str(c)[:2])] = [n, 0]
     with open('2013_sic_comparison.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         for sic, d in data.items():
