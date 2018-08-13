@@ -27,7 +27,7 @@ def main():
                         if line[1] in las:
                             las[line[1]] += ratios[int(line[5][:4])]
                         else:
-                            las[line[1]] = ratios[int(line[5][:4])]
+                            las[line[1]]  = ratios[int(line[5][:4])]
                 except:
                     pass
     with open('2017_la_totals_filtered.csv', 'w') as csvfile:
