@@ -24,28 +24,16 @@ BANDS = [(1, 4),
 
 
 def main():
-    companies = get_ch_data()
-    las = {}
-    for company in companies:
-        if company[0] in las:
-            if str(company[1]) in las[company[0]]:
-                las[company[0]][str(company[1])] += 1
-            else:
-                las[company[0]][str(company[1])]  = 1
-        else:
-            las[company[0]] = {str(company[1]): 1}
-    with open('2_sic_by_la.csv', 'w') as csvfile:
-        writer = csv.DictWriter(csvfile, ['la'] + [str(band) for band in BANDS])
-        writer.writeheader()
-        for la, sic in las.items():
-
-            sic['la'] = la
-            writer.writerow(sic)
+    las = get_ch_data()
+    with open('2017_la_totals_bad_sic_removed.csv', 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        for la, n in las.items():
+            writer.writerow([la, n])
 
 
 
 def get_ch_data():
-    data = []
+    data = {}
     for file in FILES:
         with open(file, 'r') as csvfile:
             reader = csv.reader(csvfile)
@@ -53,11 +41,12 @@ def get_ch_data():
                 try:
                     sic = int(line[5][:2])
                     band = get_band(sic)
-                    if band == (68, 69):
-                        print(line[5])
-                    if band is None:
+                    if band is None or band == (1, 4):
                         continue
-                    data.append([line[1], band])
+                    if line[1] in data:
+                        data[line[1]] += 1
+                    else:
+                        data[line[1]]  = 1
                 except:
                     pass
 
