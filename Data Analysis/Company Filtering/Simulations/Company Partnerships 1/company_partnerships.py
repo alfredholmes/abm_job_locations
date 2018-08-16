@@ -3,9 +3,6 @@ import csv, random
 #Script to test the effects of companies being registered multiple times on companies house / companies form partnerships that are
 #recorded as one company on companies house
 
-#Idea is that two companies have a certain probability of being partners. The partnership is transative, and the total number of companies is the
-#number of partitions of the companies formed by the partnerships
-
 
 P_MATCH = 0.0001
 N_CITIES = 100
