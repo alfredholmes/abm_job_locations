@@ -15,7 +15,7 @@ def main():
         mean = r.x[0]
         sd   = r.x[1]
         output.append([id, mean, sd])
-    with open('la_lognormal_params.csv', 'w') as csvfile:
+    with open('sic_lognormal_params.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         for line in output:
             writer.writerow(line)
