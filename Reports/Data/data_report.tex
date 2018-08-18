@@ -1,6 +1,7 @@
 \documentclass[a4paper,10pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
+\usepackage{graphicx}
 
 %opening
 \title{Building a Granular Dataset of UK Companies}
@@ -11,8 +12,14 @@
 \maketitle
 
 \begin{abstract}
-    Open data on UK companies is available from two sources: The Office for National Statistics and Companies House. It is possible to combine the two to estimate the properties of individual companies and in doing so compile a dataset of UK companies to get reasonably accurate detailed granular data on the age, turnover, location through time and employment size of individual companies through the years 2012 - present. This report describes the techniques used to build the dataset.
+    Open data on UK companies is available from two sources: The Office for National Statistics and Companies House. It is possible to combine the two to estimate the properties of individual companies and in doing so compile a dataset of reasonably accurate detailed granular data on the age, turnover, location through time and employment size of individual companies through the years 2012 - present. This report describes the techniques used to build the dataset.
 \end{abstract}
+\section*{Motivation}
+Contemporary economic modeling requires detailed granular data, but typically the available data is aggregated either due to old methods being used or to avoid breaking privacy laws by disclosing too much personal data. This project began as a way to gain granular data on the number of jobs (employment opportunities) moving from each local authority to each other local authority by combining multiple data sources for use in an agent based model. The techniques presented here could be used to infer many properties of individual companies operating in the UK as well as producing all manner of summary statistics and visualisations.
+\begin{figure}[ht]
+ \includegraphics[width=340px]{graphics/visulisation}
+ \caption{Visulisation of all company migrations of active companies. Higher opacity means more companies, red line means migration is south to north, black north to south}
+\end{figure}
 
 \section{Raw Data}
 \subsection{Companies House}
@@ -21,5 +28,15 @@
 ONS releases fairly detailed business data on a yearly basis. The data broken down by SIC code and location - up to local authority level. The data contains information about enterprises, defined by ONS as `units with a certain level of autonomy', and local units which are parts of an enterprise. For this analysis of the ONS and Companies House data, it is assumed that an enterprise is a collection of Companies House companies. Data before 2014 needs to be accessed through the archive of the old ONS website. ONS also releases data (position, area, name - id look up) on each of the UK's local authorities as well as postcode look up tables to match postcodes to local authorities.
 
 \section{Issues matching Companies House companies to ONS Enterprises}
-For the years 2012 - Present, there are about $10^6$ more companies in the Companies House snapshot than are reported on ONS.
+For the years 2012 - Present, there are about $10^6$ more companies in the Companies House snapshot than are reported on ONS. This means that in order to combine the two datasets there needs to be a way of deciding which companies to include and which to discard.
+\subsection{Power Law with number reported by ONS and number of companies registered on Companies House}
+\begin{figure}[ht]
+
+\includegraphics[width=330px]{graphics/2017_ons_against_ch}
+\caption{Total companies operating in local authorities against active number registered on Companies House}
+\end{figure}
+
+
+
+
 \end{document}
