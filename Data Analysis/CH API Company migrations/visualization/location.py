@@ -19,6 +19,14 @@ class LocationManager:
         for id,la in self.local_authorities.items():
             la.add_migrations(business_migrations, self.local_authorities)
 
+        self.mean_migrations = 0
+        total = 0
+        for id, la in self.local_authorities.items():
+            for id, n in la.emmigration.items():
+                total += 1
+                self.mean_migrations += n
+        self.mean_migrations /= total
+
 class LocalAuthority:
     def __init__(self, id, location):
         self.id = id
