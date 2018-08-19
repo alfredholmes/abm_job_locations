@@ -16,20 +16,24 @@
 \end{abstract}
 \section*{Motivation}
 Contemporary economic modeling requires detailed granular data, but typically the available data is aggregated either due to old methods being used or to avoid breaking privacy laws by disclosing too much personal data. This project began as a way to gain granular data on the number of jobs (employment opportunities) moving from each local authority to each other local authority by combining multiple data sources for use in an agent based model. The techniques presented here could be used to infer many properties of individual companies operating in the UK as well as producing all manner of summary statistics and visualizations.
+
+\subsection*{Data and Code}
+The code used for this analysis, along with data, is available in a \href{https://github.com/alfredholmes/abm_job_locations}{GitHub} repository. 
 \begin{figure}[ht]
  \includegraphics[width=\textwidth]{graphics/visualisation}
- \caption{Visualization of all company migrations of active companies. Higher opacity means more companies, red lines represent migration from south to north, black north to south}
+ \caption{Visualization of all company migrations of active companies. Higher opacity represents more companies making the migration, red lines represent migration from south to north, black north to south.}
 \end{figure}
 
 \section{Raw Data}
 \subsection{Companies House Snapshots}
-\href{https://www.gov.uk/government/organisations/companies-house}{Companies House} (CH) is the database of registered companies\footnote{Need to check definition of a company} in the UK. The database contains the registered address, standard industrial classification (SIC) code, age, number of mortgages, and sometimes turnover information depending on the size of the company. Every month CH releases a snapshot of all the active\footnote{According to Companies house records - the company hasn't told companies house that it is inactive.} registered companies. This is the easiest way to get company data, but CH does have an open \href{https://developer.companieshouse.gov.uk/api/docs/}{API} which can be used to get more detailed data by processing filing histories of individual companies. This can be used to see the evolution of a set of companies through time. The API has to be used on an individual company basis so to get data for a particular company it's Company ID is required. As the API doesn't have a call to dump a list of company numbers, to use the API the company numbers need to be acquired. Company numbers can be taken from the CH snapshots. If looking at aspects of companies through time it may be important to have the company numbers of companies that are no longer active but were active during the time of the sample. \href{https://web.archive.org/web/*/http://download.companieshouse.gov.uk/en_output.html}{Archived} versions of the CH snapshot can be used to get company numbers of inactive companies from 2012 and onwards.
+\href{https://www.gov.uk/government/organisations/companies-house}{Companies House} (CH) is the database of registered companies\footnote{Need to check definition of a company} in the UK. The database contains the registered address, standard industrial classification (SIC) code, age, number of mortgages, and sometimes turnover information depending on the size of the company. Every month CH releases a snapshot of all the active\footnote{According to Companies house records - the company hasn't told companies house that it is inactive.} registered companies. This is the easiest way to get company data of companies that are currently operating.
 \subsection{Companies House API}
+CH does have an open \href{https://developer.companieshouse.gov.uk/api/docs/}{API} which can be used to get more detailed data by processing filing histories of individual companies. This can be used to see the evolution of a set of companies through time. The API has to be used on an individual company basis so to get data for a particular company it's Company ID is required. As the API doesn't have a call to dump a list of company numbers, to use the API the company numbers need to be acquired. Company numbers can be taken from the CH snapshots. If looking at aspects of companies through time it may be important to have the company numbers of companies that are no longer active but were active during the time of the sample. \href{https://web.archive.org/web/*/http://download.companieshouse.gov.uk/en_output.html}{Archived} versions of the CH snapshot can be used to get company numbers of inactive companies from 2012 and onwards. \href{https://github.com/alfredholmes/abm_job_locations/tree/master/Data%20Analysis/CH%20API%20Company%20migrations}{Scripts} to get company migration data can be written, although inconsitent structures of the filing elements makes the processing of this data difficult. The API also has to be used to get accurate timings for the death of companies since in the snapshots only active companies are listed.
 \subsection{Office of National Statistics}
 The Office of National Statistics (ONS) releases fairly detailed business data on a yearly basis. The data broken down by SIC code and location - up to local authority level. The data contains information about enterprises, defined by ONS as `units with a certain level of autonomy', and local units which are parts of an enterprise. For this analysis of the ONS and CH data, it is assumed that an enterprise is a collection of CH companies. Data before 2014 needs to be accessed through the archive of the old ONS website. ONS also releases data (position, area, name - id look up) on each of the UK's local authorities as well as postcode look up tables to match postcodes to local authorities.
 
 \section{Combining CH Granular Data with ONS reports}
-Since the Companies House open data doesn't contain some of the most important properties of a company (number of employees, turnover) we assign companies properties in a way that both matches probabilistic growth models (with the added condition that the companies don't exit) and such that the assigned values match the aggregated statistics.
+Since the Companies House open data doesn't contain some of the most important properties of a company (number of employees and turnover in particular) we assign companies properties in a way that both matches conditionally probabilistic growth models. The conditions being that the granular dataset reproduces the ONS aggregated statistics and that the companies die when the real CH companies die\footnote{Due to the lack of data, we have been unable to test the accuracy of this method of prediction}.
 \subsection{Assumptions}
 
 
@@ -49,6 +53,7 @@ If one assumes that each enterprise reported by ONS is represented by a collecti
 \subsection{Generating other ONS Data from Dataset}
 \subsubsection{Employment totals}
 
-
+\section{Structure of Dataset}
+When dealing with highly granular data of this kind, a difficult question is how to store the data.
 
 \end{document}
