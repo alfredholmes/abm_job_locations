@@ -34,7 +34,7 @@ def main():
     plt.plot([0, 1], [0, 1], label='Target')
     plt.legend()
 
-    plt.savefig('proportions.png')
+    plt.savefig('proportions_local_units.png')
 
 
     plt.figure(1)
@@ -42,7 +42,7 @@ def main():
         plt.hist(d['x'], 20, label=r)
 
     plt.legend()
-    plt.savefig('la_dists.png')
+    plt.savefig('la_proportion_dists_local_units.png')
 
     plt.show()
 
@@ -51,7 +51,7 @@ def ln_cdf(x, mu, sigma):
 
 def get_parameters():
     data = {}
-    with open('data/la_lognormal_params.csv', 'r') as csvfile:
+    with open('output/la_local_units_lognormal_params.csv', 'r') as csvfile:
         reader = csv.reader(csvfile)
         for line in reader:
             data[line[0]] = {'mean': float(line[1]), 'sd': float(line[2])}
@@ -60,7 +60,7 @@ def get_parameters():
 def get_local_authority_data():
     data = {}
     totals = {}
-    with open('data/la_company_size_dist_by_id.csv', 'r') as csvfile:
+    with open('data/la_local_unit_size_dist_2017.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for line in reader:
             data[line['la']] = {s : int(line[s]) for s in SIZE_BANDS}

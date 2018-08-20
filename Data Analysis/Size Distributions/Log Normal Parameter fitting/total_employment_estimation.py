@@ -4,6 +4,8 @@ from scipy.stats import linregress
 import numpy as np
 import random, csv
 
+from scipy.optimize import curve_fit
+
 SIZE_BANDS = ['0-4','5-9','10-19','20-49','50-99','100-249','250+']
 BANDS = [0, 5, 10, 20, 50, 100, 250, np.inf]
 
@@ -27,7 +29,12 @@ def main():
 
         i+= 1
 
-    slope, intercept, _,_,_  = linregress((results['x']), (results['y']))
+    #slope, intercept, _,_,_  = linregress((results['x']), (results['y']))
+
+    #fit the data
+
+    slope = curve_fit(lambda x, m: m * x, results['x'], results['y'])[0][0]
+    intercept = 0
 
 
 
@@ -35,9 +42,9 @@ def main():
     plt.xlabel('Actual')
     plt.ylabel('Predicted')
 
-    plt.plot((results['x']),intercept + slope*(results['x']), label=str(slope) + 'x + ' + str(intercept))
+    plt.plot((results['x']),intercept + slope*(results['x']), label='y = ' + str(slope) + 'x + ' + str(intercept))
     plt.legend()
-    plt.savefig('EmploymentPrediction.png')
+    plt.savefig('EmploymentPrediction_local_units.png')
     plt.show()
 
 
@@ -47,7 +54,7 @@ def ln_cdf(x, mu, sigma):
 
 def get_parameters():
     data = {}
-    with open('data/la_lognormal_params.csv', 'r') as csvfile:
+    with open('output/la_local_units_lognormal_params.csv', 'r') as csvfile:
         reader = csv.reader(csvfile)
         for line in reader:
             data[line[0]] = {'mean': float(line[1]), 'sd': float(line[2])}
@@ -63,7 +70,7 @@ def get_total_employment_stats():
 
 def get_number_of_companies():
     data = {}
-    with open('data/la_company_size_dist_by_id.csv', 'r') as csvfile:
+    with open('data/la_local_unit_size_dist_2017.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for line in reader:
             total = 0
