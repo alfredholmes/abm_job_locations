@@ -6,25 +6,8 @@ UK_SIZE_DIST = [2087030, 299710, 151140, 80575, 25915, 14615, 9825]
 import csv, scipy.optimize as op
 
 def main():
-    r = get_yule_param(UK_SIZE_DIST)[0]
-    row = r[0]
-
-    print(row)
-
-
-
-    sizes = []
-    for _ in range(10000):
-        r = random.random()
-        i = 0
-        while r < cdf(i, row):
-            i += 1
-            print(i)
-        sizes.append(i)
-        print(_, i)
-
-    plt.hist(sizes, 50)
-    plt.show()
+    for i in range(100):
+        print(cdf(i, 1))
 
 def get_yule_param(data):
     r = op.minimize(ll, [1, 1], data, bounds = op.Bounds([0, -numpy.inf], [numpy.inf, numpy.inf]))
@@ -49,8 +32,18 @@ def ll(params, data):
     return -s * params[1]
 
 
-def cdf(k, row):
-    return integrate.quad(lambda s: beta(s, row + 1), 0, k)[0]
+def pdf(x, row):
+    return beta(x, row + 1)
+
+def cdf(x, row):
+    total = 0
+    i = 0
+    while i <= x:
+        total += pdf(x, row)
+
+        i += 1
+
+    return total
 
 
 
