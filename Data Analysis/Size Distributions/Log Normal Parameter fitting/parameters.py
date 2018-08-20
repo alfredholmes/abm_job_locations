@@ -51,7 +51,7 @@ def get_data():
 
 
 def ll(param, arr):
-    endpoints = [0,4,9,19,49,99,249,numpy.inf]
+    endpoints = [0,5,10,20,50,100,250,numpy.inf]
     s = 0
     for i,x in enumerate(arr):
         #print(x)

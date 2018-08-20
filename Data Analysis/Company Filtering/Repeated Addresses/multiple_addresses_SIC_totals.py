@@ -13,7 +13,7 @@ def main():
             for line in reader:
                 address = line[-1] + line[-2]
                 if address in addresses:
-                    
+
                     continue
                 sic = 9999
                 try:
