@@ -25,7 +25,7 @@ def main():
 
 def get_la_totals():
     data = {}
-    with open('la_company_size_dist_by_id.csv', 'r') as csvfile:
+    with open('data/la_company_size_dist_by_id.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for line in reader:
             total = 0
@@ -37,7 +37,7 @@ def get_la_totals():
 
 def get_la_params():
     data = {}
-    with open('la_lognormal_params.csv', 'r') as csvfile:
+    with open('data/la_lognormal_params.csv', 'r') as csvfile:
         reader = csv.reader(csvfile)
         for line in reader:
             data[line[0]] = {'mean': float(line[1]), 'sd': float(line[2])}

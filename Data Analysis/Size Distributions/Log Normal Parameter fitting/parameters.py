@@ -28,12 +28,12 @@ def main():
         else:
             results[b]  = 1
 
-    with open('la_lognormal_params.csv', 'w') as csvfile:
+    with open('data/la_lognormal_params.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         for line in output:
             writer.writerow(line)
 
-    with open('mean_distribution.csv', 'w') as csvfile:
+    with open('output/mean_distribution.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         for base, n in results.items():
             writer.writerow([base, n])

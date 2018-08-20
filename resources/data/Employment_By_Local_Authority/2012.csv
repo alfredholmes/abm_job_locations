@@ -1,381 +1,380 @@
-name,employment
-Gateshead,91.0
-Newcastle upon Tyne,179.0
-North Tyneside,71.6
-South Tyneside,44.7
-Sunderland,115.0
-Hartlepool,28.4
-Middlesbrough,60.8
-Redcar and Cleveland,39.9
-Stockton-on-Tees,79.6
-Darlington,49.5
-County Durham,162.9
-Northumberland,98.6
-Allerdale,38.5
-Barrow-in-Furness,28.2
-Carlisle,55.1
-Copeland,29.8
-Eden,24.1
-South Lakeland,49.6
-Burnley,35.4
-Chorley,40.4
-Fylde,40.1
-Hyndburn,27.3
-Lancaster,53.9
-Pendle,31.5
-Preston,83.7
-Ribble Valley,30.2
-Rossendale,20.8
-South Ribble,55.9
-West Lancashire,44.9
-Wyre,31.0
-Bolton,102.4
-Bury,65.5
-Manchester,326.3
-Oldham,78.4
-Rochdale,73.4
-Salford,117.8
-Stockport,124.5
-Tameside,67.0
-Trafford,132.7
-Wigan,98.7
-Knowsley,57.9
-Liverpool,232.6
-St. Helens,63.7
-Sefton,88.3
-Wirral,99.2
-Cheshire East,173.5
-Halton,60.1
-Warrington,118.9
-Cheshire West and Chester,151.5
-Blackburn with Darwen,61.6
-Blackpool,57.2
-Craven,27.4
-Hambleton,38.1
-Harrogate,76.4
-Richmondshire,15.9
-Ryedale,22.0
-Scarborough,41.4
-Selby,32.9
-Barnsley,71.6
-Doncaster,110.5
-Rotherham,94.5
-Sheffield,244.6
-Bradford,191.4
-Calderdale,86.8
-Kirklees,151.6
-Leeds,405.7
-Wakefield,139.5
-"Kingston upon Hull City of",116.4
-East Riding of Yorkshire,112.4
-North East Lincolnshire,65.4
-North Lincolnshire,67.7
-York,103.6
-Amber Valley,50.4
-Bolsover,28.8
-Chesterfield,52.4
-Derbyshire Dales,36.6
-Erewash,37.6
-High Peak,31.9
-North East Derbyshire,27.7
-South Derbyshire,31.3
-Blaby,51.8
-Charnwood,59.9
-Harborough,35.4
-Hinckley and Bosworth,39.7
-Melton,19.2
-North West Leicestershire,52.2
-Oadby and Wigston,18.0
-Boston,29.5
-East Lindsey,42.9
-Lincoln,51.8
-North Kesteven,35.9
-South Holland,33.2
-South Kesteven,52.0
-West Lindsey,24.2
-Corby,29.2
-Daventry,35.1
-East Northamptonshire,27.0
-Kettering,40.2
-Northampton,123.9
-South Northamptonshire,29.9
-Wellingborough,33.7
-Ashfield,48.5
-Bassetlaw,45.9
-Broxtowe,37.4
-Gedling,30.5
-Mansfield,36.2
-Newark and Sherwood,44.7
-Rushcliffe,39.2
-Derby,121.4
-Leicester,158.1
-Rutland,14.1
-Nottingham,205.5
-Cannock Chase,35.1
-East Staffordshire,55.2
-Lichfield,41.3
-Newcastle-under-Lyme,46.0
-South Staffordshire,29.3
-Stafford,57.8
-Staffordshire Moorlands,28.7
-Tamworth,30.7
-North Warwickshire,38.5
-Nuneaton and Bedworth,42.1
-Rugby,46.1
-Stratford-on-Avon,59.6
-Warwick,80.0
-Bromsgrove,35.6
-Malvern Hills,26.0
-Redditch,36.5
-Worcester,53.2
-Wychavon,48.1
-Wyre Forest,33.0
-Birmingham,477.6
-Coventry,144.7
-Dudley,109.3
-Sandwell,124.9
-Solihull,103.4
-Walsall,98.4
-Wolverhampton,110.9
-"Herefordshire County of",75.4
-Telford and Wrekin,78.7
-Shropshire,120.0
-Stoke-on-Trent,112.3
-Cambridge,91.6
-East Cambridgeshire,26.8
-Fenland,31.2
-Huntingdonshire,71.1
-South Cambridgeshire,67.0
-Basildon,80.8
-Braintree,49.8
-Brentwood,34.4
-Castle Point,21.3
-Chelmsford,84.3
-Colchester,77.5
-Epping Forest,45.5
-Harlow,39.1
-Maldon,20.6
-Rochford,21.3
-Tendring,38.3
-Uttlesford,36.7
-Broxbourne,39.1
-Dacorum,60.8
-East Hertfordshire,58.4
-Hertsmere,48.1
-North Hertfordshire,47.2
-St Albans,65.3
-Stevenage,43.1
-Three Rivers,34.7
-Watford,69.6
-Welwyn Hatfield,71.7
-Breckland,43.3
-Broadland,45.4
-Great Yarmouth,38.2
-King's Lynn and West Norfolk,51.8
-North Norfolk,31.0
-Norwich,85.8
-South Norfolk,48.2
-Babergh,31.1
-Forest Heath,23.5
-Ipswich,66.6
-Mid Suffolk,33.3
-St Edmundsbury,59.2
-Suffolk Coastal,47.9
-Waveney,40.3
-Peterborough,98.9
-Luton,82.2
-Bedford,69.6
-Central  Bedfordshire,87.6
-Southend-on-Sea,64.6
-Thurrock,58.4
-City of London,400.8
-Barking and Dagenham,49.3
-Barnet,119.9
-Bexley,67.6
-Brent,109.5
-Bromley,101.9
-Camden,315.9
-Croydon,115.9
-Ealing,123.1
-Enfield,100.1
-Greenwich,71.4
-Hackney,93.9
-Hammersmith and Fulham,130.3
-Haringey,63.7
-Harrow,68.1
-Havering,76.3
-Hillingdon,193.8
-Hounslow,140.4
-Islington,193.1
-Kensington and Chelsea,125.3
-Kingston upon Thames,73.4
-Lambeth,134.2
-Lewisham,63.1
-Merton,75.7
-Newham,88.3
-Redbridge,71.4
-Richmond upon Thames,74.3
-Southwark,201.4
-Sutton,70.2
-Tower Hamlets,240.4
-Waltham Forest,63.0
-Wandsworth,110.9
-Westminster,666.3
-Aylesbury Vale,72.2
-Chiltern,32.8
-South Bucks,34.0
-Wycombe,79.5
-Eastbourne,39.0
-Hastings,31.4
-Lewes,31.9
-Rother,25.8
-Wealden,46.5
-Basingstoke and Deane,82.1
-East Hampshire,47.2
-Eastleigh,63.7
-Fareham,48.6
-Gosport,19.6
-Hart,34.9
-Havant,41.4
-New Forest,67.9
-Rushmoor,44.7
-Test Valley,52.9
-Winchester,74.3
-Ashford,50.5
-Canterbury,61.2
-Dartford,56.8
-Dover,31.5
-Gravesham,27.0
-Maidstone,70.7
-Sevenoaks,45.5
-Shepway,38.1
-Swale,45.3
-Thanet,40.2
-Tonbridge and Malling,54.5
-Tunbridge Wells,50.1
-Cherwell,69.3
-Oxford,107.5
-South Oxfordshire,57.0
-Vale of White Horse,58.3
-West Oxfordshire,41.3
-Elmbridge,57.5
-Epsom and Ewell,29.0
-Guildford,77.2
-Mole Valley,47.3
-Reigate and Banstead,63.9
-Runnymede,55.4
-Spelthorne,36.2
-Surrey Heath,53.7
-Tandridge,32.0
-Waverley,50.7
-Woking,47.5
-Adur,18.7
-Arun,42.5
-Chichester,57.7
-Crawley,84.4
-Horsham,51.4
-Mid Sussex,58.4
-Worthing,46.3
-Medway,87.6
-Bracknell Forest,58.3
-West Berkshire,90.0
-Reading,97.8
-Slough,80.3
-Windsor and Maidenhead,75.7
-Wokingham,70.1
-Milton Keynes,147.0
-Brighton and Hove,127.7
-Portsmouth,107.4
-Southampton,107.3
-Isle of Wight,50.1
-East Devon,45.8
-Exeter,85.5
-Mid Devon,23.3
-North Devon,42.0
-South Hams,35.0
-Teignbridge,44.4
-Torridge,18.8
-West Devon,16.6
-Christchurch,18.6
-East Dorset,30.2
-North Dorset,23.5
-Purbeck,16.6
-West Dorset,49.0
-Weymouth and Portland,18.3
-Cheltenham,64.1
-Cotswold,39.1
-Forest of Dean,24.0
-Gloucester,61.9
-Stroud,46.9
-Tewkesbury,41.3
-Mendip,42.9
-Sedgemoor,41.7
-South Somerset,64.1
-Taunton Deane,52.8
-West Somerset,12.0
-Bath and North East Somerset,85.0
-"Bristol City of",238.9
-North Somerset,77.3
-South Gloucestershire,136.5
-Cornwall,204.6
-Isles of Scilly,1.2
-Plymouth,107.8
-Torbay,50.8
-Bournemouth,77.5
-Poole,77.0
-Swindon,108.1
-Wiltshire,186.1
-Isle of Anglesey,20.8
-Gwynedd,52.9
-Conwy,41.7
-Denbighshire,37.9
-Flintshire,70.6
-Wrexham,54.8
-Powys,49.7
-Ceredigion,27.6
-Pembrokeshire,43.6
-Carmarthenshire,64.2
-Swansea,102.6
-Neath Port Talbot,46.5
-Bridgend,55.8
-The Vale of Glamorgan,38.0
-Rhondda Cynon Taff,73.7
-Merthyr Tydfil,22.1
-Caerphilly,51.5
-Blaenau Gwent,20.2
-Torfaen,35.6
-Monmouthshire,33.5
-Newport,70.2
-Cardiff,196.1
-Aberdeen City,179.7
-Aberdeenshire,101.1
-Angus,33.7
-Argyll and Bute,37.7
-Scottish Borders,39.9
-Clackmannanshire,13.7
-West Dunbartonshire,29.9
-Dumfries and Galloway,55.8
-Dundee City,73.2
-East Ayrshire,39.2
-East Dunbartonshire,23.7
-East Lothian,26.3
-East Renfrewshire,18.6
-City of Edinburgh,323.4
-Falkirk,59.8
-Fife,126.3
-Glasgow City,385.2
-Highland,102.9
-Inverclyde,27.4
-Midlothian,26.9
-Moray,34.5
-North Ayrshire,38.2
-North Lanarkshire,121.3
-Orkney Islands,10.2
-Perth and Kinross,59.8
-Renfrewshire,70.9
-Shetland Islands,13.4
-South Ayrshire,44.4
-South Lanarkshire,115.2
-Stirling,42.1
-West Lothian,74.3
-Eilean Siar,10.7
+E08000037,91.0
+E08000021,179.0
+E08000022,71.6
+E08000023,44.7
+E08000024,115.0
+E06000001,28.4
+E06000002,60.8
+E06000003,39.9
+E06000004,79.6
+E06000005,49.5
+E06000047,162.9
+E06000057,98.6
+E07000026,38.5
+E07000027,28.2
+E07000028,55.1
+E07000029,29.8
+E07000030,24.1
+E07000031,49.6
+E07000117,35.4
+E07000118,40.4
+E07000119,40.1
+E07000120,27.3
+E07000121,53.9
+E07000122,31.5
+E07000123,83.7
+E07000124,30.2
+E07000125,20.8
+E07000126,55.9
+E07000127,44.9
+E07000128,31.0
+E08000001,102.4
+E08000002,65.5
+E08000003,326.3
+E08000004,78.4
+E08000005,73.4
+E08000006,117.8
+E08000007,124.5
+E08000008,67.0
+E08000009,132.7
+E08000010,98.7
+E08000011,57.9
+E08000012,232.6
+E08000013,63.7
+E08000014,88.3
+E08000015,99.2
+E06000049,173.5
+E06000006,60.1
+E06000007,118.9
+E06000050,151.5
+E06000008,61.6
+E06000009,57.2
+E07000163,27.4
+E07000164,38.1
+E07000165,76.4
+E07000166,15.9
+E07000167,22.0
+E07000168,41.4
+E07000169,32.9
+E08000016,71.6
+E08000017,110.5
+E08000018,94.5
+E08000019,244.6
+E08000032,191.4
+E08000033,86.8
+E08000034,151.6
+E08000035,405.7
+E08000036,139.5
+E06000010,116.4
+E06000011,112.4
+E06000012,65.4
+E06000013,67.7
+E06000014,103.6
+E07000032,50.4
+E07000033,28.8
+E07000034,52.4
+E07000035,36.6
+E07000036,37.6
+E07000037,31.9
+E07000038,27.7
+E07000039,31.3
+E07000129,51.8
+E07000130,59.9
+E07000131,35.4
+E07000132,39.7
+E07000133,19.2
+E07000134,52.2
+E07000135,18.0
+E07000136,29.5
+E07000137,42.9
+E07000138,51.8
+E07000139,35.9
+E07000140,33.2
+E07000141,52.0
+E07000142,24.2
+E07000150,29.2
+E07000151,35.1
+E07000152,27.0
+E07000153,40.2
+E07000154,123.9
+E07000155,29.9
+E07000156,33.7
+E07000170,48.5
+E07000171,45.9
+E07000172,37.4
+E07000173,30.5
+E07000174,36.2
+E07000175,44.7
+E07000176,39.2
+E06000015,121.4
+E06000016,158.1
+E06000017,14.1
+E06000018,205.5
+E07000192,35.1
+E07000193,55.2
+E07000194,41.3
+E07000195,46.0
+E07000196,29.3
+E07000197,57.8
+E07000198,28.7
+E07000199,30.7
+E07000218,38.5
+E07000219,42.1
+E07000220,46.1
+E07000221,59.6
+E07000222,80.0
+E07000234,35.6
+E07000235,26.0
+E07000236,36.5
+E07000237,53.2
+E07000238,48.1
+E07000239,33.0
+E08000025,477.6
+E08000026,144.7
+E08000027,109.3
+E08000028,124.9
+E08000029,103.4
+E08000030,98.4
+E08000031,110.9
+E06000019,75.4
+E06000020,78.7
+E06000051,120.0
+E06000021,112.3
+E07000008,91.6
+E07000009,26.8
+E07000010,31.2
+E07000011,71.1
+E07000012,67.0
+E07000066,80.8
+E07000067,49.8
+E07000068,34.4
+E07000069,21.3
+E07000070,84.3
+E07000071,77.5
+E07000072,45.5
+E07000073,39.1
+E07000074,20.6
+E07000075,21.3
+E07000076,38.3
+E07000077,36.7
+E07000095,39.1
+E07000096,60.8
+E07000242,58.4
+E07000098,48.1
+E07000099,47.2
+E07000240,65.3
+E07000243,43.1
+E07000102,34.7
+E07000103,69.6
+E07000241,71.7
+E07000143,43.3
+E07000144,45.4
+E07000145,38.2
+E07000146,51.8
+E07000147,31.0
+E07000148,85.8
+E07000149,48.2
+E07000200,31.1
+E07000201,23.5
+E07000202,66.6
+E07000203,33.3
+E07000204,59.2
+E07000205,47.9
+E07000206,40.3
+E06000031,98.9
+E06000032,82.2
+E06000055,69.6
+E06000056,87.6
+E06000033,64.6
+E06000034,58.4
+E09000001,400.8
+E09000002,49.3
+E09000003,119.9
+E09000004,67.6
+E09000005,109.5
+E09000006,101.9
+E09000007,315.9
+E09000008,115.9
+E09000009,123.1
+E09000010,100.1
+E09000011,71.4
+E09000012,93.9
+E09000013,130.3
+E09000014,63.7
+E09000015,68.1
+E09000016,76.3
+E09000017,193.8
+E09000018,140.4
+E09000019,193.1
+E09000020,125.3
+E09000021,73.4
+E09000022,134.2
+E09000023,63.1
+E09000024,75.7
+E09000025,88.3
+E09000026,71.4
+E09000027,74.3
+E09000028,201.4
+E09000029,70.2
+E09000030,240.4
+E09000031,63.0
+E09000032,110.9
+E09000033,666.3
+E07000004,72.2
+E07000005,32.8
+E07000006,34.0
+E07000007,79.5
+E07000061,39.0
+E07000062,31.4
+E07000063,31.9
+E07000064,25.8
+E07000065,46.5
+E07000084,82.1
+E07000085,47.2
+E07000086,63.7
+E07000087,48.6
+E07000088,19.6
+E07000089,34.9
+E07000090,41.4
+E07000091,67.9
+E07000092,44.7
+E07000093,52.9
+E07000094,74.3
+E07000105,50.5
+E07000106,61.2
+E07000107,56.8
+E07000108,31.5
+E07000109,27.0
+E07000110,70.7
+E07000111,45.5
+E07000112,38.1
+E07000113,45.3
+E07000114,40.2
+E07000115,54.5
+E07000116,50.1
+E07000177,69.3
+E07000178,107.5
+E07000179,57.0
+E07000180,58.3
+E07000181,41.3
+E07000207,57.5
+E07000208,29.0
+E07000209,77.2
+E07000210,47.3
+E07000211,63.9
+E07000212,55.4
+E07000213,36.2
+E07000214,53.7
+E07000215,32.0
+E07000216,50.7
+E07000217,47.5
+E07000223,18.7
+E07000224,42.5
+E07000225,57.7
+E07000226,84.4
+E07000227,51.4
+E07000228,58.4
+E07000229,46.3
+E06000035,87.6
+E06000036,58.3
+E06000037,90.0
+E06000038,97.8
+E06000039,80.3
+E06000040,75.7
+E06000041,70.1
+E06000042,147.0
+E06000043,127.7
+E06000044,107.4
+E06000045,107.3
+E06000046,50.1
+E07000040,45.8
+E07000041,85.5
+E07000042,23.3
+E07000043,42.0
+E07000044,35.0
+E07000045,44.4
+E07000046,18.8
+E07000047,16.6
+E07000048,18.6
+E07000049,30.2
+E07000050,23.5
+E07000051,16.6
+E07000052,49.0
+E07000053,18.3
+E07000078,64.1
+E07000079,39.1
+E07000080,24.0
+E07000081,61.9
+E07000082,46.9
+E07000083,41.3
+E07000187,42.9
+E07000188,41.7
+E07000189,64.1
+E07000190,52.8
+E07000191,12.0
+E06000022,85.0
+E06000023,238.9
+E06000024,77.3
+E06000025,136.5
+E06000052,204.6
+E06000053,1.2
+E06000026,107.8
+E06000027,50.8
+E06000028,77.5
+E06000029,77.0
+E06000030,108.1
+E06000054,186.1
+W06000001,20.8
+W06000002,52.9
+W06000003,41.7
+W06000004,37.9
+W06000005,70.6
+W06000006,54.8
+W06000023,49.7
+W06000008,27.6
+W06000009,43.6
+W06000010,64.2
+W06000011,102.6
+W06000012,46.5
+W06000013,55.8
+W06000014,38.0
+W06000016,73.7
+W06000024,22.1
+W06000018,51.5
+W06000019,20.2
+W06000020,35.6
+W06000021,33.5
+W06000022,70.2
+W06000015,196.1
+S12000033,179.7
+S12000034,101.1
+S12000041,33.7
+S12000035,37.7
+S12000026,39.9
+S12000005,13.7
+S12000039,29.9
+S12000006,55.8
+S12000042,73.2
+S12000008,39.2
+S12000045,23.7
+S12000010,26.3
+S12000011,18.6
+S12000036,323.4
+S12000014,59.8
+S12000015,126.3
+S12000046,385.2
+S12000017,102.9
+S12000018,27.4
+S12000019,26.9
+S12000020,34.5
+S12000021,38.2
+S12000044,121.3
+S12000023,10.2
+S12000024,59.8
+S12000038,70.9
+S12000027,13.4
+S12000028,44.4
+S12000029,115.2
+S12000030,42.1
+S12000040,74.3
+S12000013,10.7
