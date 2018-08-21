@@ -9,7 +9,7 @@ def main():
     data = get_data()
     output = []
     for id, d in data.items():
-        r = op.minimize(ll, [0, 1], d, bounds=op.Bounds([-10, 0], [10, 10]))
+        r = op.minimize(ll, [0, 1], d, bounds=op.Bounds([-np.inf, 0], [np.inf, np.inf]))
         mean = r.x[0]
         sd   = r.x[1]
         output.append([id, mean, sd])
@@ -22,7 +22,7 @@ def main():
 
 def get_data():
     data = {}
-    with open('2017_SIC_Size_Distributions.csv', 'r') as csvfile:
+    with open('Data/2017_SIC_Size_Distributions.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for line in reader:
             try:

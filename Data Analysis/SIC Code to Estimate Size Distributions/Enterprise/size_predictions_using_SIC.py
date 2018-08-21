@@ -36,6 +36,9 @@ def main():
     plt.plot([0, 1],[0, 1])
     plt.legend()
 
+    plt.xlabel('Actual Broad Indistry Size Proportion')
+    plt.ylabel('Predicted Broad Indistry Size Proportion')
+
     plt.savefig('Figures/Broad_Industry_Predicted_proportions.png')
 
     #simulate la distributions
@@ -48,7 +51,7 @@ def main():
             mean = params[str(bg)]['mean']
             sd = params[str(bg)]['sd']
 
-            rvs = lognorm.rvs(sd, size=int(n), scale=np.exp(mean))
+            rvs = lognorm.rvs(sd, size=n, scale=np.exp(mean))
             for s in rvs:
                 size_dist[get_size_band(s)] += 1
         sim_las[la] = size_dist
@@ -57,9 +60,15 @@ def main():
     results = {s : {'x': [], 'y': []} for s in SIZE_BANDS}
     actual_la = get_la_size_dist()
     for la, sizes in actual_la.items():
+        total = 0
+        sim_total = 0
         for s, n in sizes.items():
-            results[s]['x'].append(n)
-            results[s]['y'].append(sim_las[la][s])
+            total += n
+            sim_total += sim_las[la][s]
+
+        for s, n in sizes.items():
+            results[s]['x'].append(n / total)
+            results[s]['y'].append(sim_las[la][s] / sim_total)
 
     plt.figure(1)
     max = 0
@@ -70,11 +79,35 @@ def main():
             max = m
     plt.plot([0, max], [0, max], label='target')
 
+    plt.xlabel('Actual Local Authority Employment Size Band Proportion')
+    plt.ylabel('Predicted Local Authority Employment Size Band Proportion')
+
     plt.legend()
     plt.savefig('Figures/la_size_dist_comparison_actual_against_sic_prediction.png')
 
+    plt.figure(2)
+    for s, r in results.items():
+        plt.hist(r['x'], 20, label=s, density=True)
+    plt.legend()
+
+
+    plt.xlabel('Local Authority Employment Size Band Proportion')
+    plt.ylabel('Density')
+
+    plt.savefig('Figures/actual_la_size_dists.png')
+
+    plt.figure(3)
+    for s, r in results.items():
+        plt.hist(r['y'], 20, label=s, density=True)
+    plt.legend()
+
+
+    plt.xlabel('Predicted Local Authority Employment Size Band Proportion')
+    plt.ylabel('Density')
+    plt.savefig('Figures/predicted_la_size_dists.png')
 
     plt.show()
+
 
 
 def get_size_band(x):
@@ -89,7 +122,7 @@ def ln_cdf(x, mu, sigma):
 
 def get_la_size_dist():
     data = {}
-    with open('Data/enterprises/2017_la_employment_size_dists.csv', 'r') as csvfile:
+    with open('Data/2017_la_employment_size_dists.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for line in reader:
             data[line['la']] = {s : int(line[s]) for s in SIZE_BANDS}
@@ -98,7 +131,7 @@ def get_la_size_dist():
 
 def get_broad_industry_size_dist():
     data = {}
-    with open('Data/enterprises/2017_SIC_Size_Distributions.csv', 'r') as csvfile:
+    with open('Data/2017_SIC_Size_Distributions.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for line in reader:
             try:
@@ -121,10 +154,10 @@ def get_broad_industry_size_dist():
 
 def get_broad_industry_totals_by_la():
     data = {}
-    with open('Data/enterprises/2017_enterprise_broad_group_la_totals.csv', 'r') as csvfile:
+    with open('Data/2017_enterprise_broad_group_la_totals.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for line in reader:
-            data[line['la']] = {str(bg) : line[str(bg)] for bg in BROAD_GROUPS}
+            data[line['la']] = {str(bg) : int(line[str(bg)]) for bg in BROAD_GROUPS}
     return data
 
 def get_broad_industry_params():

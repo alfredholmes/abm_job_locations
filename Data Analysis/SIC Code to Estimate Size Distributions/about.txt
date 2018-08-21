@@ -1,0 +1,3 @@
+These scripts use the size distributions of SIC Codes to try to 
+reproduce the size distribution in each local authority and also 
+reproduce employment statistics 

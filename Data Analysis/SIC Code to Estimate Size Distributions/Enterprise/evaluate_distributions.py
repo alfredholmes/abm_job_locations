@@ -53,7 +53,7 @@ def ln_cdf(x, mu, sigma):
 def get_sic_dists():
     data = {}
     totals = {}
-    with open('2017_SIC_Size_Distributions.csv', 'r') as csvfile:
+    with open('Data/2017_SIC_Size_Distributions.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for line in reader:
             try:
