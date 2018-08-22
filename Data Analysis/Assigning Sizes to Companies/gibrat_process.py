@@ -1,5 +1,7 @@
 #About: This file aims to find parameters for a gibrat process that leads to the empirical distribution of company sizes
 
+#I think likelyhood 2 is wrong but it might work
+
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 import scipy.integrate as integrate
@@ -10,13 +12,12 @@ import csv, datetime as dt
 
 TARGET = np.array([2087030, 299710, 151140, 80575, 25915, 14615, 9825])
 TARGET = TARGET / np.sum(TARGET)
-print(TARGET)
+#print(TARGET)
 ENDPOINTS = [0,5,10,20,50,100,250,np.inf]
 
 ENDPOINTS = [np.log(x) for x in ENDPOINTS]
 ENDPOINTS_WITHOUT_INF = [0,5,10,20,50,100,250,10000]
 WIDTHS = [ENDPOINTS_WITHOUT_INF[i] - ENDPOINTS_WITHOUT_INF[i-1] for i in range(1, len(ENDPOINTS_WITHOUT_INF))]
-print(ENDPOINTS)
 
 def main():
     #methods = [1]
@@ -25,18 +26,26 @@ def main():
     for age, n in ages.items():
         total += n
 
+    print(get_mean_variance(0, 10**-8))
 
-    res = minimize(likelyhood, (0, 0.01), args=ages, bounds=Bounds([-np.inf, 0], [np.inf, np.inf]))
-    print(res)
+
+    res = minimize(likelyhood_1, (0, 0.01), args=(ages,), bounds=Bounds([-0.5, 0], [5, 0.1]))
+    #print(res)
     print(simulate((res.x[0], res.x[1]), ages))
+    print(TARGET)
+
+    with open('parameters.csv', 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(res.x)
 
 
     #print(res)
-def likelyhood(params, ages):
-    print('\t' + str(params))
+def likelyhood_1(params, ages):
+    #print('\t' + str(params))
     proportions = simulate(params, ages)
-    error = (np.minimum(proportions, TARGET) * WIDTHS).mean()
-    return -error
+    error = ((proportions - TARGET) ** 2).mean()
+    #print(error)
+    return error
 
 
 def simulate(params, ages):
@@ -49,14 +58,36 @@ def simulate(params, ages):
     total = 0
     for age, n in ages.items():
         total += n
-        proportions += [n * norm.cdf(endpoints[i], loc=mean, scale=age*sd) - n * norm.cdf(endpoints[i-1], loc=mean, scale=age * sd) for i in range(1, len(endpoints))]
+        if sd == 0:
+            proportions += [n if endpoints[i] > age * mean and endpoints[i-1] < age * mean else 0 for i in range(1, len(endpoints))]
+        else:
+            proportions += [n * norm.cdf(endpoints[i], loc=mean*age, scale=age*sd) - n * norm.cdf(endpoints[i-1], loc=mean*age, scale=age * sd) for i in range(1, len(endpoints))]
 
     return (proportions / total)
 
+def likelyhood_2(params, ages, total):
+    print(params)
+    mean, variance = get_mean_variance(params[0], params[1])
+
+    sd = np.sqrt(variance)
+    p = 0
+    for i, n in enumerate(TARGET):
+        prob = 0
+        for age, m in ages.items():
+            if variance < 10**-10:
+                if mean * age < ENDPOINTS[i+1] and mean * age > ENDPOINTS[i]:
+                    prob += m
+            else:
+                prob += m * (norm.cdf(ENDPOINTS[i+1], loc=mean*age, scale=age*sd) - norm.cdf(ENDPOINTS[i], loc=mean*age, scale=age * sd))
+        #print(p, i, n)
+        p += n * np.log(prob / total)
+
+    print(p)
+    return -p
 
 def get_ages():
     data = {}
-    with open('Business_Creations_And_Deaths_10000_sample.csv', 'r') as csvfile:
+    with open('Business_Creations_And_Deaths.csv', 'r') as csvfile:
         reader = csv.reader(csvfile)
         dead_companies = set()
         for line in reader:
@@ -84,6 +115,8 @@ def get_ages():
     return r
 #functions to calculate E(log(1+\epsilon)) and variance \epsilon from N(mu, sigma)
 def get_mean_variance(mu, sigma):
+    if sigma == 0:
+        return np.log(1+mu), 0
     mean = expectation(mu, sigma)
     variance = integrate.quad(lambda t: (np.log(1+t) ** 2) * norm.pdf(t, loc=mu, scale=sigma), mu - 4 * sigma, mu + 4 * sigma)[0] - mean ** 2
     return mean, variance
