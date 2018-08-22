@@ -1,5 +1,6 @@
 import csv
 from scipy.stats import lognorm
+from scipy.stats import linregress
 import numpy as np
 import matplotlib.pyplot as plt
 import random
@@ -20,6 +21,7 @@ def main():
     predicted = 0
     actual_total = 0
 
+
     for la, n in estimated.items():
         result['y'].append(n)
         result['x'].append(actual[la])
@@ -29,9 +31,11 @@ def main():
         #print(n, actual[la])
 
     print(predicted, actual_total)
+    slope, intercept, _, _, _ = linregress(result['x'], result['y'])
 
     plt.scatter(result['x'], result['y'], label='UK Local Authorities')
     plt.plot(result['x'], result['x'], label='Target', color='black')
+    plt.plot(result['x'], [slope * x + intercept for x in result['x']], label=str(slope) + 'x +' + str(intercept), color='orange')
     plt.legend()
 
     plt.xlabel('Employment (ONS 2016)')

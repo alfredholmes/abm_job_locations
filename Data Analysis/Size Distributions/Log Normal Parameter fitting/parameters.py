@@ -15,7 +15,7 @@ def main():
     data = get_data()
     output = []
     for id, d in data.items():
-        r = op.minimize(ll, [0, 1], d, bounds=op.Bounds([-10, 0], [10, 10]))
+        r = op.minimize(ll, [0, 1], d, bounds=op.Bounds([-numpy.inf, 0], [numpy.inf, numpy.inf]))
         mean = r.x[0]
         sd   = r.x[1]
         output.append([id, mean, sd, ''] + d)
