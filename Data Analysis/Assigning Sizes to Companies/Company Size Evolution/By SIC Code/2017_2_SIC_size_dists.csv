@@ -1,0 +1,89 @@
+SIC,0-4,5-9,10-19,20-49,50-99,100-249,250+,Total
+01 : Crop and animal production; hunting and related service activities,127765,11770,2745,1070,280,120,60,143810
+02 : Forestry and logging,3575,430,160,90,20,5,0,4280
+03 : Fishing and aquaculture,3630,320,140,20,5,0,0,4115
+05 : Mining of coal and lignite,10,5,0,5,5,5,0,30
+06 : Extraction of crude petroleum and natural gas,80,20,10,10,15,10,20,165
+07 : Mining of metal ores,0,5,0,0,0,0,0,5
+08 : Other mining and quarrying,685,290,240,155,40,20,0,1430
+09 : Mining support service activities,245,35,30,30,30,10,20,400
+10 : Manufacture of food products,4130,1755,1230,995,510,420,400,9440
+11 : Manufacture of beverages,1495,280,200,145,50,65,30,2265
+12 : Manufacture of tobacco products,0,0,0,5,0,0,0,5
+13 : Manufacture of textiles,2710,765,455,320,115,75,20,4460
+14 : Manufacture of wearing apparel,2625,665,370,240,65,15,5,3985
+15 : Manufacture of leather and related products,415,140,85,45,20,10,5,720
+16 : Manufacture of wood and of products of wood and cork; except furniture; manufacture of articles of straw and plaiting materials,6555,1295,845,495,155,50,15,9410
+17 : Manufacture of paper and paper products,665,210,225,255,145,125,30,1655
+18 : Printing and reproduction of recorded media,8525,1860,1115,660,205,120,25,12510
+19 : Manufacture of coke and refined petroleum products,45,20,15,20,15,5,10,130
+20 : Manufacture of chemicals and chemical products,1570,470,385,395,240,145,65,3270
+21 : Manufacture of basic pharmaceutical products and pharmaceutical preparations,410,65,40,45,30,40,50,680
+22 : Manufacture of rubber and plastic products,2635,1135,1025,835,425,290,80,6425
+23 : Manufacture of other non-metallic mineral products,2730,855,610,450,195,130,35,5005
+24 : Manufacture of basic metals,1200,235,225,265,115,70,40,2150
+25 : Manufacture of fabricated metal products; except machinery and equipment,17335,4295,3220,2295,755,315,65,28280
+26 : Manufacture of computer; electronic and optical products,3925,890,625,580,270,150,60,6500
+27 : Manufacture of electrical equipment,1590,495,435,445,195,130,50,3340
+28 : Manufacture of machinery and equipment n.e.c.,4400,1375,955,900,390,250,100,8370
+29 : Manufacture of motor vehicles; trailers and semi-trailers,2155,450,285,255,170,140,100,3555
+30 : Manufacture of other transport equipment,1800,235,140,130,90,95,85,2575
+31 : Manufacture of furniture,3900,1070,675,500,175,100,45,6465
+32 : Other manufacturing,6875,1630,720,390,135,75,25,9850
+33 : Repair and installation of machinery and equipment,11930,1415,915,515,180,115,60,15130
+35 : Electricity; gas; steam and air conditioning supply,4250,670,465,215,145,135,115,5995
+36 : Water collection; treatment and supply,375,165,130,140,55,30,35,930
+37 : Sewerage,790,240,160,160,55,25,5,1435
+38 : Waste collection; treatment and disposal activities; materials recovery,4120,1430,1005,880,355,170,40,8000
+39 : Remediation activities and other waste management services,665,150,105,80,10,5,0,1015
+41 : Construction of buildings,83025,7975,3420,1520,575,370,85,96970
+42 : Civil engineering,20485,2680,1330,975,395,260,100,26225
+43 : Specialised construction activities,174470,18755,8285,3730,1015,350,80,206685
+45 : Wholesale and retail trade and repair of motor vehicles and motorcycles,58065,15450,6055,4160,1165,320,40,85255
+46 : Wholesale trade; except of motor vehicles and motorcycles,76345,21685,13990,7730,2250,1020,340,123360
+47 : Retail trade; except of motor vehicles and motorcycles,169365,64560,35330,17430,3750,2475,1370,294280
+49 : Land transport and transport via pipelines,57120,5910,3845,2615,975,655,325,71445
+50 : Water transport,1070,195,130,80,25,20,5,1525
+51 : Air transport,620,125,100,70,40,50,50,1055
+52 : Warehousing and support activities for transportation,18470,4115,2685,1970,890,565,310,29005
+53 : Postal and courier activities,18620,1805,890,1045,710,350,110,23530
+55 : Accommodation,8825,3450,3475,3635,1375,685,140,21585
+56 : Food and beverage service activities,74000,44920,29635,18545,2705,795,145,170745
+58 : Publishing activities,9405,1235,810,535,195,105,85,12370
+59 : Motion picture; video and television programme production; sound recording and music publishing activities,24325,1180,705,575,235,75,35,27130
+60 : Programming and broadcasting activities,1715,160,130,125,35,30,20,2215
+61 : Telecommunications,8305,1405,880,695,285,195,150,11915
+62 : Computer programming; consultancy and related activities,148335,6705,4215,2710,960,470,220,163615
+63 : Information service activities,6750,775,455,240,85,50,45,8400
+64 : Financial service activities; except insurance and pension funding,17310,5580,3565,1630,325,220,310,28940
+65 : Insurance; reinsurance and pension funding; except compulsory social security,6525,200,170,105,80,65,115,7260
+66 : Activities auxiliary to financial services and insurance activities,28085,4560,2295,1350,595,395,280,37560
+68 : Real estate activities,83475,14555,6140,1860,510,375,130,107045
+69 : Legal and accounting activities,62695,9535,5675,2965,940,480,270,82560
+70 : Activities of head offices; management consultancy activities,173880,7815,4225,2300,840,505,310,189875
+71 : Architectural and engineering activities; technical testing and analysis,91895,6800,4150,2340,760,390,145,106480
+72 : Scientific research and development,4260,570,440,365,175,145,105,6060
+73 : Advertising and market research,19140,2020,1235,820,305,175,95,23790
+74 : Other professional; scientific and technical activities,74700,5740,2160,800,175,60,20,83655
+75 : Veterinary activities,2795,1325,1155,560,75,20,5,5935
+77 : Rental and leasing activities,14235,3485,2220,1055,265,135,30,21425
+78 : Employment activities,21030,3425,2700,2490,1660,1365,715,33385
+79 : Travel agency; tour operator and other reservation service and related activities,7180,2625,975,470,175,95,35,11555
+80 : Security and investigation activities,7595,1340,855,630,330,215,150,11115
+81 : Services to buildings and landscape activities,46185,9655,4890,2585,880,520,330,65045
+82 : Office administrative; office support and other business support activities,109855,10595,4265,1615,605,365,220,127520
+84 : Public administration and defence; compulsory social security,10375,2880,3125,3335,1710,1535,1200,24160
+85 : Education,32875,8800,9040,14430,8495,4565,915,79120
+86 : Human health activities,49880,12075,10555,7510,2025,1285,875,84205
+87 : Residential care activities,9230,4615,5840,7445,3450,790,80,31450
+88 : Social work activities without accommodation,27575,13415,12280,8065,2295,955,230,64815
+90 : Creative; arts and entertainment activities,27240,1525,690,330,175,90,20,30070
+91 : Libraries; archives; museums and other cultural activities,2780,1270,855,650,215,115,35,5920
+92 : Gambling and betting activities,4580,5735,440,415,105,80,15,11370
+93 : Sports activities and amusement and recreation activities,20845,5565,4280,3305,1220,560,135,35910
+94 : Activities of membership organisations,17655,4785,2405,1340,380,205,80,26850
+95 : Repair of computers and personal and household goods,7910,870,395,205,70,45,15,9510
+96 : Other personal service activities,58950,16185,4905,1335,205,100,25,81705
+97 : Activities of households as employers of domestic personnel,0,0,0,0,0,0,0,0
+98 : Undifferentiated goods- and services-producing activities of private households for own use,0,0,0,0,0,0,0,0
+99 : Activities of extraterritorial organisations and bodies,0,0,0,0,5,0,0,5
