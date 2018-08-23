@@ -2,7 +2,7 @@
 
 
 import matplotlib.pyplot as plt
-from scipy.stats import norm
+from scipy.stats import norm, lognorm
 import scipy.integrate as integrate
 from scipy.optimize import minimize, Bounds
 
@@ -13,27 +13,28 @@ import csv, datetime as dt
 
 FILES = ['../../Business_Creations_And_Deaths.csv']
 
+#print(TARGET)
+ENDPOINTS = [0,5,10,20,50,100,250,np.inf]
+#ENDPOINTS = [np.log(x) for x in ENDPOINTS]
+
 def main():
     #methods = [1]
     las = get_ages_by_la()
     params = {}
-    local_authority_parameters = get_la_parameters()
-
+    targets = get_targets()
     for la, ages in las.items():
-        if la not in local_authority_parameters:
-            print('LA Missing ' + la)
+        if la not in targets:
+            print('Missing LA ' + la)
             continue
-        la_mean = local_authority_parameters[la]['mean']
-        la_sd = local_authority_parameters[la]['sd']
+        print(la)
         total = 0
-        lin = 0
-        sq = 0
         for age, n in ages.items():
             total += n
-            lin += age * n
-            sq += (age * n) ** 2
-
-        params[la] = [la_mean / (lin / total), la_sd * total / lin]
+        res = minimize(likelyhood, (0, 0.01), args=(ages,targets[la]), bounds=Bounds([-np.inf, 0], [np.inf, np.inf]))
+        if not res.success:
+            print(res)
+        params[la] = res.x
+        print(res.x)
 
     with open('parameters_by_local_authority.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
@@ -41,7 +42,43 @@ def main():
             writer.writerow([sic] + parameters)
 
 
+    #print(res)
+def likelyhood(params, ages, target):
+    proportions = simulate(params, ages)
+    error = ((proportions - target) ** 2).mean()
 
+    #print(error)
+    return error
+
+
+def simulate(params, ages):
+    #log(1 + x) = x - x^2 / 2
+
+    #using linear approx..
+
+    mean = params[0]
+    sd = params[1]
+
+    #print(mean, sd)
+    endpoints = ENDPOINTS
+    target = []
+
+    proportions = np.zeros(len(ENDPOINTS) - 1)
+    total = 0
+    for age, n in ages.items():
+        total += n
+
+        ln_mean = mean * age
+        ln_sd   = mean * sd
+        #to_add = [n * (lognorm.cdf(endpoints[i], ln_sd, loc=np.exp(ln_mean)) - lognorm.cdf(endpoints[i - 1], ln_sd, loc=np.exp(ln_mean))) for i in range(1, len(endpoints))]
+        #to_add = [n * norm.cdf(endpoints[i], loc=mean*age, scale=age*sd) - n * norm.cdf(endpoints[i-1], loc=mean*age, scale=age * sd) for i in range(1, len(endpoints))]
+        #to_add = [f if not math.isnan(f) else 0 for f in to_add]
+
+        proportions += to_add
+
+
+
+    return (proportions / total)
 
 def get_targets():
 
@@ -55,15 +92,6 @@ def get_targets():
             proportions[la] = data / np.sum(data)
 
     return proportions
-
-def get_la_parameters():
-    data = {}
-    with open('la_lognormal_params.csv', 'r') as csvfile:
-        reader = csv.reader(csvfile)
-        for line in reader:
-            data[line[0]] = {'mean': float(line[1]), 'sd': float(line[2])}
-
-    return data
 
 def get_ages_by_la():
     files = ['2017_Company_info/' + str(i) + '.csv' for i in range(0, 10)]
