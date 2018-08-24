@@ -13,6 +13,9 @@ import csv, datetime as dt
 
 FILES = ['../../Business_Creations_And_Deaths.csv']
 
+##### THIS CODE IS WRONG
+##### TODO: FIX CODE
+
 def main():
     #methods = [1]
     las = get_ages_by_la()

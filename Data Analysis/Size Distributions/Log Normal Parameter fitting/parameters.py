@@ -15,9 +15,7 @@ def main():
     data = get_data()
     output = []
     for id, d in data.items():
-        r = op.minimize(ll, [0, 1], d, bounds=op.Bounds([-numpy.inf, 0], [numpy.inf, numpy.inf]))
-        mean = r.x[0]
-        sd   = r.x[1]
+        mean, sd = get_mean_sd(d)
         output.append([id, mean, sd, ''] + d)
         print(mean, sd)
 
@@ -34,7 +32,11 @@ def main():
             writer.writerow(line)
 
 
-
+def get_mean_sd(data):
+    r = op.minimize(ll, [0, 1], data, bounds=op.Bounds([-numpy.inf, 0], [numpy.inf, numpy.inf]))
+    mean = r.x[0]
+    sd   = r.x[1]
+    return mean, sd
 
 
 
