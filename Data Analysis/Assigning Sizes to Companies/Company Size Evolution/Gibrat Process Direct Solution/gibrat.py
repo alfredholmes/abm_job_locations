@@ -15,55 +15,61 @@ def main():
     target_variance = lognorm.var(TARGET[1], scale=np.exp(TARGET[0]))
 
 
-    mu = bisect(lambda x: mean(x, ages, target_mean), 0, 0.03)
-    #mu = bisect(lambda x: mean(x, ages, target_mean), 0, 0.1)
+    mean = calculate_mean(target_mean, ages)
+    variance = calculate_variance(target_variance, mean, ages)
 
-    #var = bisect(lambda x: variance_error(x, mu, ages, target_variance), 0, 0.01)
-
-    #print(mu, np.sqrt(var))
-    #plt.plot([x/500000 for x in range(1000)], [mean(x / 1000000, ages, 0) for x in range(1000)])
-    #plt.plot([0, 1000 / 50000], [target_mean, target_mean])
-    plt.plot([x/10000 for x in range(1000)], [variance(mu, x / 10000, ages) for x in range(1000)])
-    plt.show()
-
-    #var = bisect(lambda x : (x, mu, ages, target_variance), 0, 0.01)
-    #print(var)
-    #var = bisect(lambda x : error(mu, x, ages, target_variance), 0, var)
-    #print(var)
-
-    #print(mu, np.sqrt(var))
+    print(mean, variance)
 
 
-
-    #print(error(mu, var, ages, target_variance))
-
-
-    #print(minimize(error, (0.001, 0.0001), (ages, target_mean, target_variance), bounds=Bounds([-0.5, 0], [0.5, 0.001])))
-def variance_error(x, mean, ages, target):
-    return variance(mean, x, ages) - target
-
-def mean(x, ages, target):
-#    print(x)
+def calculate_mean(target, ages):
     total = 0
-    mean = 0
+    max_age = 0
+
     for age, n in ages.items():
-        mean += n * (1 + x) ** age
+        #print(expectation)
+        if age > max_age:
+            max_age = age
         total += n
-    return mean / total - target
+
+    coefficiencts = np.zeros(max_age + 1)
 
 
-def variance(mean, variance, ages):
+    for age, n in ages.items():
+        coefficiencts[max_age - age] = n / total
+
+    coefficiencts[-1] -= target
+
+    roots = np.roots(coefficiencts)
+    real_roots = [a for a in roots if np.imag(a) == 0]
+
+    closest = ((np.real([real_roots]) - 1) ** 2).argmin()
+    return np.real(real_roots[closest]) - 1
+
+def calculate_variance(target, mean, ages):
     total = 0
-    dist_var = 0
+    max_age = 0
 
     for age, n in ages.items():
+        #print(expectation)
+        if age > max_age:
+            max_age = age
         total += n
+
+    coefficiencts = np.zeros(max_age + 1)
+
+
     for age, n in ages.items():
-        dist_var += (n / total) ** 2 * ((variance + (1 + mean) ** 2) ** age - (1 + mean) ** (2 * age))
+        coefficiencts[max_age - age] = n / total
+        #print(n / total * ((1 + mean) ** (2 * age)))
+        coefficiencts[-1] -= (n ** 2) * (1 + mean) ** (2 * age) / (total ** 2)
 
+    coefficiencts[-1] -= target
 
-    return dist_var / (total ** 2)
+    roots = np.roots(coefficiencts)
+    real_roots = [a for a in roots if np.imag(a) == 0 and np.real(a) - (1 + mean) ** 2 > 0]
 
+    closest = (np.real([real_roots])).argmin()
+    return np.real(real_roots[closest]) - (1 + mean) ** 2
 
 #get the mean and the variance of the national distribution taking the parameters of \epsilon
 

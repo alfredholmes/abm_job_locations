@@ -77,7 +77,7 @@ def main():
 
 def get_params_by_sic():
     data = {}
-    with open('../SIC_Growth_Parameters.csv', 'r') as csvfile:
+    with open('../parameters_by_sic.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for line in reader:
             data[line['SIC']] = {'mean': float(line['mean']), 'sd': float(line['sd'])}

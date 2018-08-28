@@ -65,9 +65,9 @@ def calculate_variance(target, mean, ages):
 
 
     for age, n in ages.items():
-        coefficiencts[max_age - age] = n / total
+        coefficiencts[max_age - age] = (n / total) ** 2
         #print(n / total * ((1 + mean) ** (2 * age)))
-        coefficiencts[-1] -= n * (1 + mean) ** (2 * age) / total
+        coefficiencts[-1] -= (n / total) ** 2 * (1 + mean) ** ((2 * age))
 
     coefficiencts[-1] -= target
 
