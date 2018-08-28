@@ -5,8 +5,6 @@ from scipy.optimize import minimize, Bounds, bisect, newton_krylov, anderson
 import numpy as np
 import csv, datetime as dt
 
-TARGET = [0.24247032943908334, 1.732968915296001]
-
 
 def main():
     las = get_ages_by_la()
@@ -20,8 +18,7 @@ def main():
             continue
 
         target_mean = lognorm.mean(la_params[la]['sd'], scale=np.exp(la_params[la]['mean']))
-        target_variance = lognorm.var(TARGET[1], scale=np.exp(TARGET[0]))
-
+        
 
         mu = bisect(lambda x: mean(x, ages, target_mean), 0, 0.03)
         la_growth_params[la] = mu

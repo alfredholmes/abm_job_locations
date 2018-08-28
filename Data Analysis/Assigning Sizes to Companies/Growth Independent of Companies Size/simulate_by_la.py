@@ -28,15 +28,19 @@ def main():
             if age == 0:
                 continue
             try:
-                total += np.sum(lognorm.rvs(sd * age, loc=np.exp(mean * age), size=n))
+                total += n * (1 + mean) ** age
             except:
-                print(mean * age, mean, age)
-        if total_employment[la] < 3 * total and total < 3 * total_employment[la]:
-            results['x'].append(total_employment[la])
-            results['y'].append(total)
+                pass
+                #print(mean * age, mean, age)
+
+        results['x'].append(total_employment[la])
+        results['y'].append(total)
 
     plt.scatter(results['x'], results['y'])
+    #plt.plot(results['x'], results['x'])
+    plt.savefig('LA_predicted_employment_using_la_fitted_params.png')
     plt.show()
+
 
 def get_total_employment():
     las = {}
@@ -48,10 +52,10 @@ def get_total_employment():
 
 def get_la_params():
     las = {}
-    with open('../parameters_by_local_authority.csv', 'r') as csvfile:
+    with open('../la_growth_means.csv', 'r') as csvfile:
         reader = csv.reader(csvfile)
         for line in reader:
-            las[line[0]] = {'mean': float(line[1]), 'sd': float(line[2])}
+            las[line[0]] = {'mean': float(line[1]), 'sd': float(0)}
     return las
 
 def get_ages_by_la():
