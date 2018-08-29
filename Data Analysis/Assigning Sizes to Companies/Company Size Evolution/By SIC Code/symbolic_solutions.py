@@ -1,11 +1,11 @@
 from scipy.stats import norm, lognorm
+import datetime as dt
 import numpy as np
-import gibrat_process
 import csv
 
 def main():
     sic_params = get_parameters()
-    sics = gibrat_process.get_ages_by_sic()
+    sics = get_ages_by_sic()
     results = {}
     for sic, ages in sics.items():
         if sic not in sic_params:
@@ -26,6 +26,50 @@ def main():
         for sic, data in results.items():
             writer.writerow([sic] + data)
 
+
+def get_ages_by_sic():
+    files = ['Business_Creations_And_Deaths_With_SIC/' + str(i) + '.csv' for i in range(0, 5)]
+    data = {}
+    dead_companies = set()
+    for file in files:
+        with open(file, 'r') as csvfile:
+            reader = csv.reader(csvfile)
+            for line in reader:
+                if line[2] == 'DEATH':
+                    dead_companies.add(line[1])
+                else:
+                    #add sic code to the data
+                    try:
+                        sic = int(line[2][:2])
+                        data[sic] = {}
+                    except:
+                        pass
+
+    for file in files:
+        with open(file, 'r') as csvfile:
+            reader = csv.reader(csvfile)
+            for line in reader:
+                if line[1] not in dead_companies:
+                    try:
+                        sic = int(line[2][:2])
+                        if line[0] in data[sic]:
+                            data[sic][line[0]] += 1
+                        else:
+                            data[sic][line[0]]  = 1
+                    except:
+                        pass
+    now = dt.datetime.now()
+    r = {sic: {} for sic in data}
+
+    for sic, ages in data.items():
+        for date, n in ages.items():
+            then = dt.datetime.strptime(date, '%Y-%m-%d')
+            age = int((now - then).days / 30)
+            if age in r[sic]:
+                r[sic][age] += 1
+            else:
+                r[sic][age] = 1
+    return r
 
 def get_parameters():
     data = {}
@@ -88,6 +132,7 @@ def calculate_variance(target, mean, ages):
 
     closest = (np.real([real_roots])).argmin()
     return np.real(real_roots[closest]) - (1 + mean) ** 2
+
 
 
 if __name__ == '__main__':
