@@ -30,10 +30,10 @@ def main():
         loc = 1 + growth_parameters[sic]['mean']
         scale = growth_parameters[sic]['sd']
         age = company['age']
-        size = norm.rvs(size=age, loc=loc, scale=scale).prod()
+        #size = norm.rvs(size=age, loc=loc, scale=scale).prod()
         #size = lognorm.rvs(ln_sic_params[sic]['sd'], scale=np.exp(ln_sic_params[sic]['mean']))
-        #size = lognorm.rvs(ln_la_params[la]['sd'], scale=np.exp(ln_la_params[la]['mean']))
-        #size = norm.rvs(size=age, scale=la_growth_parameters[la]['sd'], loc=1 + la_growth_parameters[la]['mean']).prod()
+        #size = lognorm.rvs(np.sqrt(ln_la_params[la]['sd']), scale=np.exp(ln_la_params[la]['mean']))
+        size = norm.rvs(size=age, scale=la_growth_parameters[la]['sd'], loc=1 + la_growth_parameters[la]['mean']).prod()
         #size = (1 + la_growth_parameters[la]['mean']) ** age
         employees = sic_multipliers[sic] * size
         if company['LA'] in las:
@@ -52,6 +52,7 @@ def main():
         y.append(n)
         x.append(employment_data[la])
 
+
     plt.scatter(x, y, label='local_authorities')
     #grad, intercept, _, _, _ = linregress(x, y)
     intercept = 0
@@ -59,7 +60,7 @@ def main():
     #print(grad)
     plt.plot(x, grad * np.array(x) + intercept, label='y = ' + str(grad)  + 'x +' + str(intercept), color='black')
     plt.legend()
-    plt.savefig('employment_predictions_sic_growth_process.png')
+    plt.savefig('employment_predictions_la_growth_process.png')
     plt.show()
 
 

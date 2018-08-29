@@ -1,14 +1,15 @@
 import sympy as sp
 import numpy as np
 from scipy.stats import norm, lognorm
+import csv
 
-import gibrat
+import datetime
 
 
 def main():
-    las = gibrat.get_ages_by_la()
-    la_params = gibrat.get_la_parameters()
-
+    date = datetime.datetime.strptime('2017-03-11', '%Y-%m-%d')
+    las = get_ages_by_la(date)
+    la_params = get_la_parameters()
 
 
 
@@ -26,6 +27,14 @@ def main():
         variance = calculate_variance(target_variance, mean, ages)
 
         print(mean, variance)
+
+        results[la]  = [mean, np.sqrt(variance)]
+
+    with open('parameters_by_sic.csv', 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        for sic, data in results.items():
+            writer.writerow([la] + data)
+
 
 def calculate_mean(target, ages):
     total = 0
@@ -76,6 +85,58 @@ def calculate_variance(target, mean, ages):
 
     closest = (np.real([real_roots])).argmin()
     return np.real(real_roots[closest]) - (1 + mean) ** 2
+
+def get_sic_multipliers():
+    data = {}
+    with open('sic_ch_multipliers.csv') as csvfile:
+        reader = csv.reader(csvfile)
+        for line in reader:
+            data[int(line[0])] = float(line[1])
+    return data
+
+def get_la_parameters():
+    params = {}
+    with open('la_local_unit_lognormal_params_2017.csv', 'r') as csvfile:
+        reader = csv.reader(csvfile)
+        for line in reader:
+            params[line[0]] = {'mean': float(line[1]), 'sd': float(line[2])}
+    return params
+
+def get_ages_by_la(date):
+    sic_multipliers = get_sic_multipliers()
+    files = ['2017_Company_info/' + str(i) + '.csv' for i in range(0, 7)]
+    las = {}
+    for file in files:
+        with open(file, 'r') as csvfile:
+            reader = csv.reader(csvfile)
+            for line in reader:
+                try:
+                    sic = int(line[1][:2])
+                    multiplier = sic_multipliers[sic]
+                except:
+                    continue
+                la = line[-1]
+
+                birth = datetime.datetime.strptime(line[2], '%Y-%m-%d')
+                death = datetime.datetime.strptime(line[3], '%Y-%m-%d')
+
+                if (date - birth).days < 0 or (date - death).days > 0:
+                    continue
+
+                age = int((date - birth).days / 28)
+
+                if la in las:
+                    if age in las[la]:
+                        las[la][age] += multiplier
+                    else:
+                        las[la][age]  = multiplier
+                else:
+                    las[la] = {age: multiplier}
+
+    return las
+
+
+
 
 
 

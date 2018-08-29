@@ -26,7 +26,7 @@ def main():
         else:
             results[b]  = 1
 
-    with open('output/la_s_lognormal_params.csv', 'w') as csvfile:
+    with open('output/la_local_unit_lognormal_params_2017.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         for line in output:
             writer.writerow(line)
@@ -42,7 +42,7 @@ def get_mean_sd(data):
 
 def get_data():
     data = {}
-    with open('data/la_company_size_dist_by_id.csv', 'r') as csvfile:
+    with open('data/la_local_unit_size_dist_2017.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for line in reader:
             data[line['la']] = [int(line[s]) for s in SIZES]
