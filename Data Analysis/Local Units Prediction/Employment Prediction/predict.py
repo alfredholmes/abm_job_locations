@@ -17,7 +17,6 @@ def main():
 
     local_unit_totals = get_local_unit_totals()
     predicted_la_totals = {}
-    to_add = {}
 
     print('Calculating sizes...')
     i = 0
@@ -36,38 +35,18 @@ def main():
         scale = growth_parameters[sic]['sd']
         age = company['age']
         #size = norm.rvs(size=age, loc=loc, scale=scale).prod()
-        #size = lognorm.rvs(ln_sic_params[sic]['sd'], scale=np.exp(ln_sic_params[sic]['mean']))
+        size = lognorm.rvs(ln_sic_params[sic]['sd'], scale=np.exp(ln_sic_params[sic]['mean']))
         #size = lognorm.rvs(np.sqrt(ln_la_params[la]['sd']), scale=np.exp(ln_la_params[la]['mean']))
 
 
 
-        if la in to_add:
-            if age in to_add[la]:
-                to_add[la][age] += sic_multipliers[sic] - 1
-            else:
-                to_add[la][age]  = sic_multipliers[sic] - 1
-        else:
-            to_add[la]  = {age: sic_multipliers[sic] - 1}
 
-        if la in predicted_la_totals:
-            predicted_la_totals[la] += 1
-        else:
-            predicted_la_totals[la]  = 1
-
-        size = norm.rvs(size=age, scale=la_growth_parameters[la]['sd'], loc=1 + la_growth_parameters[la]['mean']).prod()
+        #size = norm.rvs(size=age, scale=la_growth_parameters[la]['sd'], loc=1 + la_growth_parameters[la]['mean']).prod()
         #size = (1 + la_growth_parameters[la]['mean']) ** age
         if company['LA'] in las:
-            las[company['LA']] += size
+            las[company['LA']] += size * sic_multipliers[sic]
         else:
-            las[company['LA']]  = size
-
-    for la, ages in to_add.items():
-        for age, n in ages.items():
-            for _ in range(round(n)):
-                predicted_la_totals[la] += 1
-                size = norm.rvs(size=age, scale=la_growth_parameters[la]['sd'], loc=1 + la_growth_parameters[la]['mean']).prod()
-                las[la] += size
-                predicted_la_totals[la] += 1
+            las[company['LA']]  = size * sic_multipliers[sic]
 
 
     employment_data = get_employment_data()
@@ -80,6 +59,9 @@ def main():
         y.append(n)
         x.append(employment_data[la])
 
+        if 5 * x[-1] < y[-1]:
+            print(la) 
+
     plt.figure(0)
     plt.scatter(x, y, label='local_authorities')
     #grad, intercept, _, _, _ = linregress(x, y)
@@ -88,18 +70,8 @@ def main():
     #print(grad)
     plt.plot(x, grad * np.array(x) + intercept, label='y = ' + str(grad)  + 'x +' + str(intercept), color='black')
     plt.legend()
-    plt.savefig('employment_predictions_la_growth_process.png')
+    plt.savefig('employment_predictions_sic_ln_dists_process.png')
 
-    plt.figure(1)
-    x = []
-    y = []
-    for la in local_unit_totals:
-        if la not in predicted_la_totals:
-            continue
-        x.append(local_unit_totals[la]['total'])
-        y.append(predicted_la_totals[la])
-
-    plt.scatter(x, y)
 
     plt.show()
 
@@ -181,7 +153,7 @@ def get_employment_data():
 
 def get_sic_ln_params():
     params = {}
-    with open('sic_lognormal_params.csv', 'r') as csvfile:
+    with open('sic_local_unit_lognormal_params_2012.csv', 'r') as csvfile:
         reader = csv.reader(csvfile)
         for line in reader:
             params[int(line[0])] = {'mean': float(line[1]), 'sd': float(line[2])}
