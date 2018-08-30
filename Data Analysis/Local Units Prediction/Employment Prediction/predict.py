@@ -14,6 +14,11 @@ def main():
     ln_sic_params = get_sic_ln_params()
     ln_la_params = get_la_ln_params()
     la_growth_parameters = get_la_growth_parameters()
+
+    local_unit_totals = get_local_unit_totals()
+    predicted_la_totals = {}
+    to_add = {}
+
     print('Calculating sizes...')
     i = 0
     for id, company in companies.items():
@@ -33,13 +38,36 @@ def main():
         #size = norm.rvs(size=age, loc=loc, scale=scale).prod()
         #size = lognorm.rvs(ln_sic_params[sic]['sd'], scale=np.exp(ln_sic_params[sic]['mean']))
         #size = lognorm.rvs(np.sqrt(ln_la_params[la]['sd']), scale=np.exp(ln_la_params[la]['mean']))
+
+
+
+        if la in to_add:
+            if age in to_add[la]:
+                to_add[la][age] += sic_multipliers[sic] - 1
+            else:
+                to_add[la][age]  = sic_multipliers[sic] - 1
+        else:
+            to_add[la]  = {age: sic_multipliers[sic] - 1}
+
+        if la in predicted_la_totals:
+            predicted_la_totals[la] += 1
+        else:
+            predicted_la_totals[la]  = 1
+
         size = norm.rvs(size=age, scale=la_growth_parameters[la]['sd'], loc=1 + la_growth_parameters[la]['mean']).prod()
         #size = (1 + la_growth_parameters[la]['mean']) ** age
-        employees = sic_multipliers[sic] * size
         if company['LA'] in las:
-            las[company['LA']] += employees
+            las[company['LA']] += size
         else:
-            las[company['LA']]  = employees
+            las[company['LA']]  = size
+
+    for la, ages in to_add.items():
+        for age, n in ages.items():
+            for _ in range(round(n)):
+                predicted_la_totals[la] += 1
+                size = norm.rvs(size=age, scale=la_growth_parameters[la]['sd'], loc=1 + la_growth_parameters[la]['mean']).prod()
+                las[la] += size
+                predicted_la_totals[la] += 1
 
 
     employment_data = get_employment_data()
@@ -52,7 +80,7 @@ def main():
         y.append(n)
         x.append(employment_data[la])
 
-
+    plt.figure(0)
     plt.scatter(x, y, label='local_authorities')
     #grad, intercept, _, _, _ = linregress(x, y)
     intercept = 0
@@ -61,7 +89,21 @@ def main():
     plt.plot(x, grad * np.array(x) + intercept, label='y = ' + str(grad)  + 'x +' + str(intercept), color='black')
     plt.legend()
     plt.savefig('employment_predictions_la_growth_process.png')
+
+    plt.figure(1)
+    x = []
+    y = []
+    for la in local_unit_totals:
+        if la not in predicted_la_totals:
+            continue
+        x.append(local_unit_totals[la]['total'])
+        y.append(predicted_la_totals[la])
+
+    plt.scatter(x, y)
+
     plt.show()
+
+
 
 
 
@@ -98,6 +140,17 @@ def get_sic_growth_parameters():
             data[int(line[0])] = {'mean': float(line[1]), 'sd': float(line[2])}
 
     return data
+
+def get_local_unit_totals():
+    las = {}
+    sizes = ['0-4','4-9','10-19','20-49','49-100','100-249','250+']
+    with open('../Data/ONS/2012_local_units_by_la.csv', 'r') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for line in reader:
+            las[line['id']] = {s: int(line[s]) for s in sizes}
+            las[line['id']]['total'] = line['Total']
+
+    return las
 
 def get_la_growth_parameters():
     data = {}

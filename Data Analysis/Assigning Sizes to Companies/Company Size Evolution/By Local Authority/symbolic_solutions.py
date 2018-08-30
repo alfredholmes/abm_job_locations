@@ -1,7 +1,10 @@
 import sympy as sp
 import numpy as np
 from scipy.stats import norm, lognorm
+import matplotlib.pyplot as plt
 import csv
+
+from scipy.optimize import minimize
 
 import datetime
 
@@ -12,7 +15,7 @@ def main():
     la_params = get_la_parameters()
 
 
-
+    results = {}
     for la, ages in las.items():
         if la not in la_params:
             print(la + ' missing')
@@ -22,10 +25,14 @@ def main():
 
         target_mean = lognorm.mean(la_params[la]['sd'], scale=np.exp(la_params[la]['mean']))
         target_variance = lognorm.var(la_params[la]['sd'], scale=np.exp(la_params[la]['mean']))
-
         mean = calculate_mean(target_mean, ages)
-        variance = calculate_variance(target_variance, mean, ages)
 
+        plt.plot(np.linspace(0, 2, num=1000), [get_dist_variance(x, mean, ages) for x in np.linspace(0,2, num=1000)])
+        plt.show()
+
+
+        variance = calculate_variance(target_variance, mean, ages)
+        #variance = minimize(lambda x: (get_dist_variance(x, mean, ages) - target_variance) ** 2, 0.1).x[0] ** 2
         print(mean, variance)
 
         results[la]  = [mean, np.sqrt(variance)]
@@ -34,6 +41,33 @@ def main():
         writer = csv.writer(csvfile)
         for sic, data in results.items():
             writer.writerow([la] + data)
+
+
+def get_dist_variance(x, mean, ages):
+    total = 0
+    max_age = 0
+
+    for age, n in ages.items():
+        #print(expectation)
+        if age > max_age:
+            max_age = age
+        total += n
+
+    coefficiencts = np.zeros(max_age + 1)
+
+
+    for age_1, n_1 in ages.items():
+        for age_2, n_2 in ages.items():
+            if age_1 == age_2:
+                coefficiencts[max_age - age_1] = n_1 / total
+            coefficiencts[-1] -= (n_1 * n_2 / (total ** 2)) * ((1 + mean) ** age_1) * ((1 + mean) ** age_2)
+
+    variance = 0
+    for i, n in enumerate(coefficiencts):
+        variance += n * (x**2 + (1 + mean ** 2)) ** (max_age - i)
+
+
+    return variance
 
 
 def calculate_mean(target, ages):
@@ -57,8 +91,12 @@ def calculate_mean(target, ages):
     roots = np.roots(coefficiencts)
     real_roots = [a for a in roots if np.imag(a) == 0]
 
+    print(real_roots)
+
     closest = ((np.real([real_roots]) - 1) ** 2).argmin()
-    return np.real(real_roots[closest]) - 1
+    mean =  np.real(real_roots[closest]) - 1
+
+    return mean
 
 def calculate_variance(target, mean, ages):
     total = 0
@@ -73,15 +111,19 @@ def calculate_variance(target, mean, ages):
     coefficiencts = np.zeros(max_age + 1)
 
 
-    for age, n in ages.items():
-        coefficiencts[max_age - age] = (n / total) ** 2
-        #print(n / total * ((1 + mean) ** (2 * age)))
-        coefficiencts[-1] -= (n / total) ** 2 * (1 + mean) ** ((2 * age))
+    for age_1, n_1 in ages.items():
+        for age_2, n_2 in ages.items():
+            if age_1 == age_2:
+                coefficiencts[max_age - age_1] = n_1 / total
+            coefficiencts[-1] -= (n_1 * n_2 / (total ** 2)) * ((1 + mean) ** age_1) * ((1 + mean) ** age_2)
+
 
     coefficiencts[-1] -= target
 
     roots = np.roots(coefficiencts)
-    real_roots = [a for a in roots if np.imag(a) == 0 and np.real(a) - (1 + mean) ** 2 > 0]
+    print([a for a in roots if np.imag(a) == 0])
+    real_roots = [a for a in roots if np.imag(a) == 0 and np.real(a) > (1 + mean) ** 2]
+
 
     closest = (np.real([real_roots])).argmin()
     return np.real(real_roots[closest]) - (1 + mean) ** 2
