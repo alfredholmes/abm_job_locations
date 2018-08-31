@@ -49,7 +49,7 @@ def main():
 
     plt.scatter(x, y)
     plt.plot(x, x)
-    plt.savefig('la_local_unit_predictions_with_ch.png')
+    plt.savefig('la_enterprise_predictions_with_ch.png')
     plt.show()
 
 def get_la_lu_totals():
@@ -65,7 +65,7 @@ def get_la_lu_totals():
 
 def get_sic_multipliers():
     data = {}
-    with open('sic_ch_multipliers.csv', 'r') as csvfile:
+    with open('Data/sic_ch_multipliers.csv', 'r') as csvfile:
         reader = csv.reader(csvfile)
         for line in reader:
             data[int(line[0])] = float(line[1])

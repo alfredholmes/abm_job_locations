@@ -2,6 +2,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 \usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
 
 %opening
 \title{Building a Granular Dataset of UK Companies}
@@ -10,23 +12,64 @@
 \begin{document}
 
 \maketitle
-
-\section{Predcting ONS Data from Companies House}
+\section{Introduction}
+\section{Data}
+\section{Predicting ONS Data from Companies House}
+\subsection{Enterprises}
 \subsection{Local Units}
 Using local unit data one can infer many properties at the local authority and national levels. For example, if the size distribution of local units is known then employment levels can be calculated, and using this granular data one can test possible growth models for companies\footnote{to be explained in later section}.
 \begin{figure}[!ht]
- \caption{Sic code ratio time series and histogram}
+ \caption{SIC code ratio time series and histogram}
  \label{sic_ratio}
 \end{figure}
 
-Since, as shown in figure \ref{sic_ratio}, for each 2 digit SIC code\footnote{This is not true for 4 digit SIC} the ratio of companies house registered enterprises to local units is approximately constant. This suggests that is it reasonable to use these ratios to infer the number of local units from the companies house data.
+Since, as shown in figure \ref{sic_ratio}, for each 2 digit SIC code\footnote{This is not true for 4 digit SIC} the ratio of companies house registered enterprises to local units is approximately constant. This suggests that is it reasonable to use these ratios to infer the number of local units from the companies house data. An important conceptual note is that these ratios need not represent branches of individual companies - the idea being that if there exist $x$ companies with sic code then there exists $\alpha x$ local units does not mean that each company has $\alpha$ branches.
 
 \begin{figure}[!ht]
  \caption{Local unit predictions}
  \label{local_unit_predictions}
 \end{figure}
 
-Doing this creates a far more detailed data set of local units than is given by the ONS data 
+Doing this creates a far more detailed data set of local units than is given by the ONS data since the data is backed by a granular input, so the age and SIC code distributions are known, as well as using the company migration data to infer changes in local units.
+
+\subsubsection{Analysis of Local Unit Properties}
+
+\subsubsection{Local Unit Size Distribution}
+Fitting a log normal distribution to the ONS data for the distribution of local unit sizes predicts the size bands well, and can be used to reproduce the local authority employment statistics. This is not true for SIC codes - suggesting that the size of a company is dependent more on the local area than the type of company that it is, but could also be due to the SIC codes that ONS report differing from the companies house data. As a first approximation, to generate estimated for certain statistics, it is possible to assign each local unit inferred from the companies house data a size pulled from the local authority size distribution. 
+\begin{figure}[!ht]
+ \caption{Local Authority Employment Predictions, growth modes, assigning sizes}
+ \label{la_employment}
+\end{figure}
+\subsection{Testing Growth Models of Companies}
+The data can be used to evaluate different models of company growth.
+\subsubsection{Gibrat Process}
+The hypothesis for the appearance of the log normal distributions of company sizes is due Gibrat. Gibrat proposed that the size of a company after $i$ years is given by
+\begin{equation}
+ X_i = \prod_{j=1}^{i}(1 + \epsilon_j)
+\end{equation}
+where $\epsilon_i \sim N(\alpha, \beta^2)$ and is independent. This can be tested using the granular data, since the size distributions and ages of companies are known, such that if $X$ represents the size of a company picked at random then
+\begin{equation}
+ X = \sum_{i}\mathbf{1}_{Zi}X_i
+\end{equation}
+where $Z$ is a random variable such that $\mathbb{P}(Z = i) = \frac{n_i}{N}$ where $N$ is the total number of companies and $n_i$ is the number of companies with age $i$. Given that the distribution of $X$ is known, the parameters $\alpha$ and $\beta$ can be calculated by matching $\mathbb{E}(X)$ and $\mathrm{Var}(X)$.
+\begin{figure}[!ht]
+ \caption{Results using Gibrat Process}
+ \label{gibrat_local_units}
+\end{figure}
+
+As shown in figure \ref{gibrat_local_units}, this process doesn't work well for predicting the sizes of individual local units. Instead it is better to use the Gibrat process on the enterprises and then give each enterprise a branching threshold, $T$ such that if the size of a company, $S > T$ the company branches. This can be done using the enterprise data from ONS.
+
+\subsubsection{Discussing Better ways of assigning company sizes}
+
+\section{Results}
+\subsection{Dataset}
+\subsection{Employment Migration}
+\subsection{Total Employment}
+\subsection{Total Turnover}
+
+\section{Appendix}
+\subsection{Companies House Enterprises}
+\subsection{Gibrat process parameter fitting}
 
 
 

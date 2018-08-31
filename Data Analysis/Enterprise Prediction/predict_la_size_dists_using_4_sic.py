@@ -62,6 +62,8 @@ def main():
     for s, data in results.items():
         plt.scatter(data['x'], data['y'])
 
+    
+
     plt.show()
 
 

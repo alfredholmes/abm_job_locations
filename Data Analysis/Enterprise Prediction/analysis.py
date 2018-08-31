@@ -28,6 +28,7 @@ def main():
 
 
     gradients = []
+    averages = []
     average_multipliers = {}
     plt.figure(0)
     for sic, data in results.items():
@@ -43,6 +44,7 @@ def main():
         plt.plot(x, y, label=sic, marker='o')
         grad, _, _, _, _ = linregress(x, y)
         gradients.append(grad)
+        averages.append(average_multipliers[sic])
 
     with open('sic_ch_multipliers.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
@@ -52,11 +54,20 @@ def main():
 
 
     #plt.legend()
-
+    plt.xlabel('Year')
+    plt.ylabel('ONS / CH registered company ratio (by sic)')
     plt.savefig('sic_ch_enterprise_ratio_timeseries.png')
     plt.figure(1)
     plt.hist(gradients, 30, density=True)
+    plt.xlabel('Regression line gradient')
+    plt.ylabel('Density')
     plt.savefig('grad_histogram.png')
+
+    plt.figure(2)
+    plt.hist(averages, 30, density=True)
+    plt.xlabel('Average ONS / CH ratio (by sic)')
+    plt.ylabel('Density')
+    plt.savefig('averages_histogram.png')
     plt.show()
 
 
