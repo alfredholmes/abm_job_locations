@@ -15,7 +15,7 @@ def main():
         output.append([id, mean, sd])
         print(mean, sd)
 
-    with open('output/sic_enterprise_lognormal_params_2012.csv', 'w') as csvfile:
+    with open('output/2017_2_sic_enterprise_lognormal_params.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         for line in output:
             writer.writerow(line)
@@ -31,7 +31,7 @@ def get_mean_sd(data):
 
 def get_data():
     data = {}
-    with open('2012_enterprise_size_by_4_sic.csv', 'r') as csvfile:
+    with open('2017_enterprise_size_by_sic.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile)
         for line in reader:
             data[line['SIC']] = [int(line[s]) for s in SIZES]
@@ -39,7 +39,7 @@ def get_data():
 
 
 def ll(param, arr):
-    endpoints = [0,5,10,20,50,100,250,500,1000,numpy.inf]
+    endpoints = [0,5,10,20,50,100,250,numpy.inf]
     s = 0
     for i,x in enumerate(arr):
         #print(x)
