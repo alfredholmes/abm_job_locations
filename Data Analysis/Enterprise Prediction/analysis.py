@@ -93,7 +93,7 @@ def get_total_sic_at_date(date, data):
 
 def get_ch_data():
     data = []
-    files = ['Data/CH/Company_Data/' + str(i) + '.csv' for i in range(0, 5)]
+    files = ['Data/CH/Company_Data/' + str(i) + '.csv' for i in range(0, 7)]
     for file in files:
         with open(file, 'r') as csvfile:
             reader = csv.reader(csvfile)

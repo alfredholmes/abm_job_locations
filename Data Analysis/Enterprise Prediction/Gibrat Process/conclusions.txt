@@ -1,0 +1,3 @@
+The Gibrat process fails to work generally since the variance is too 
+high with the required mean - suggesting that the SIC codes do not give 
+enough information about the size of the company 

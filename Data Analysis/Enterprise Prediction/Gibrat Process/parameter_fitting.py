@@ -18,7 +18,10 @@ def main():
 
     print('done')
 
+    results = {}
+
     for sic, ages in ages_by_sic.items():
+        print(sic)
         if sic not in sic_lognormal_params:
             print('missing sic ' + str(sic))
             continue
@@ -28,8 +31,16 @@ def main():
         target_variance = lognorm.var(sic_lognormal_params[sic]['sd'], scale=np.exp(sic_lognormal_params[sic]['mean']))
 
         mean = find_mean(target_mean, ages)
-        print(mean)
+        #print(mean)
         variance = find_varaince(target_variance, ages, mean)
+
+        results[sic] = [mean, variance]
+
+
+    with open('sic_growth_params.csv', 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        for sic, data in results.items():
+            writer.writerow([sic] + data)
 
 
 def find_mean(target, ages):
@@ -69,7 +80,7 @@ def find_varaince(target, ages, mean):
 
     roots = np.roots(params)
     real_roots = [np.real(r) for r in roots if np.imag(r) == 0]
-    print(real_roots)
+    #print(real_roots)
     real_roots = [r for r in real_roots if r > (1 + mean) ** 2]
     if len(real_roots) == 0:
         return 0
