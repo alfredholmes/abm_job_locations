@@ -14,8 +14,53 @@
 \maketitle
 \section{Introduction}
 Contemporary economic modeling requires detailed granular data. Typically highly granular data is not available due to difficulties collecting such data or privacy issues in releasing the information. In the case of UK companies data, an ideal dataset would contain the size (employment and turnover) along with location through time and branches of the companies operating in the UK. The UK Companies House service provides basic company data on active companies, which can, as detailed in this report, be used to provide the backbone of a dataset. The entities registered on companies house are used for legal purposes for the government to track companies operating in the UK, and this legal information is freely available and so does not contain useful data such as the location of branches, number of employees and turnover information\footnote{For large companies, they are required to publish turnover information, but this is not in a machine readable format}. The ONS does produce detailed agglomerated data, giving size distributions by location and company type, but these distributions do not give data about different companies. Using these distributions, the companies house data and simple models of company growth, it is possible to assign sizes to the companies house entities to compile a detailed granular dataset of UK companies and their branches. This report explains the process of producing that dataset and its evaluation using other ONS data.  
+
 \section{Data}
-Companies House release a monthly snapshot of basic data (Company ID, Address, SIC Code) of active companies on their service. This data is only available for the current month - they do offer the purchase of a DVD with historic data - but previous months (approximately one for each year) can be accessed through websites which archive the internet. There is also an API that can be used to get more detailed data (address changes, number of registered people of significant control) which has been used in this study to get company migrations. These migrations can be inferred by changes in location between two snapshots, but in using the API the exact date of the change of location is known. 
+\subsection{Companies House}
+Companies House release a monthly snapshot of basic data (Company ID, Address, SIC Code) of active companies on their service. This data is only available for the current month - they do offer the purchase of a DVD with historic data - but previous months (approximately one for each year) can be accessed through websites which archive the internet. There is also an API that can be used to get more detailed data (address changes, number of registered people of significant control) which has been used in this study to get company migrations. These migrations can be inferred by changes in location between two snapshots, but in using the API the exact date of the change of location is known. The API is also required to get the correct date of death of companies, since the monthly snapshots only contain active companies.
+
+\subsection{ONS}
+The office of national statistics provide a large range of agglomerated statistics. For use assigning values to companies, it's useful to have one statistic broken down in multiple ways. For example in the business activity, size and location tables, ONS release the number of enterprises with 0-4 employees in each local authority as well as the number of enterprises with 0-4 employees with a certain SIC code. This allows properties to be assigned to companies in a more accurate way since the extra data reduces the size of the solution space of the problem.
+
+\section{Description of Terms}
+Since there are different types of entities in each of the datasets, it is worth defining terms to improve the clarity and precision of descriptions.
+\begin{itemize}
+ \item Company - an entity registered on Companies House
+ \item Enterprise - a business that is reported by ONS. We assume that an enterprise is a collection of companies.
+ \item Local Unit - a site where an enterprise operates, e.g. a branch of a large supermarket chain or the only office of a small firm.
+\end{itemize}
+\section{Predicting Enterprise data from companies}
+\subsection{Assigning Companies to Enterprises}
+Each enterprise is made up of one or more companies. A quick way of choosing the groups of companies that make up an enterprise is to match the addresses. The motivation for this is that enterprises may register companies to handle a fraction of their total business, for example on companies house TESCO is a registered company as well as TESCO Holdings, but in making the assumption that TESCO will be reported as one company, it makes sense to omit the TESCO Holdings. This results in a more linear relationship between the number of companies and enterprises in each local authority.
+\begin{figure}[!ht]
+ \caption{Improvements in grouping enterprises by addresses}
+\end{figure}
+
+After assigning companies to enterprises in this way there is a non trivial number of enterprises missing. This could be because some companies have exempted themselves from reporting to companies house, or an issue with grouping the companies by address. In total for 2017, after the companies have been grouped together there are about 1.6 times as many enterprises as company groups. An effective way to get around this is to assign ratios by SIC code and assume that the enterprises that aren't registered are a representative sample of all the enterprises.
+\begin{figure}
+ \caption{Time series SIC ratios, gradient and average value histograms}
+\end{figure}
+
+
+\subsection{Assigning sizes to Enterprises}
+\label{enterprise_sizes}
+Fitting a log normal distribution to the ONS data for employment size by local authority, and then picking numbers from that distribution to assign to enterprises predicts the total employment, and the sizes of the ONS sizebands well (as expected) but doesn't predict the national SIC size distributions well. The same is true for trying to make predictions using the SIC size distributions, indicating that the size of enterprises depends both on the location and the industry. Unfortunately the ONS doesn't release a dataset of the sizes of companies by SIC by local authority\footnote{Regional size distributions are available but hopefully don't predict things well}. In order to get around this lack of data, it is possible to use the companies house data to get detailed SIC code distributions for each local authority and then force the assigning of companies to respect both the size distributions\footnote{details in the Appendix}. Measuring the accuracy of this solution is difficult.
+\subsection{Model for company growth}
+\subsubsection{Gibrat Process}
+The hypothesis for the appearance of the log normal distributions of company sizes is due Gibrat. Gibrat proposed that the size of a company after $i$ years is given by
+\begin{equation}
+ X_i = \prod_{j=1}^{i}(1 + \epsilon_j)
+ \label{company_size}
+\end{equation}
+where $\epsilon_i \sim N(\alpha, \beta^2)$ and is independent. This can be tested using the granular data, since the size distributions and ages of companies are known, such that if $X$ represents the size of a company picked at random then
+\begin{equation}
+ X = \sum_{i}\mathbf{1}_{Zi}X_i
+ \label{overall_dist}
+\end{equation}
+where $\mathbf{1}$ is an indicator function and $Z$ is a random variable such that $\mathbb{P}(Z = i) = \frac{n_i}{N}$ where $N$ is the total number of companies and $n_i$ is the number of companies with age $i$. Given that the distribution of $X$ is known, the parameters $\alpha$ and $\beta$ can be calculated by matching $\mathbb{E}(X)$ and $\mathrm{Var}(X)$. For local authorities and SIC codes, when the parameter $\alpha$ has been calculated, the variance of $X$ is too high for all values of $\beta$ due to the underlying variance in the age data. Instead, making the assumption that $\alpha$ and $\beta$ depend on the location and SIC code of the enterprise allows the parameters to be calculated using the dataset generated in section \ref{enterprise_sizes}. This model is consistent with the observed log normal distributions\footnote{details in the Appendix}. 
+
+In finding these parameters, the size through time of companies can be predicted. If one had data on the sizes of companies upon exit, then perhaps better predictions could be made about the sizes of enterprises. Also companies house has a three tier (small, medium, large) size description for each company, so this could be used to improve the predictions, but may be difficult to combine with the groups of companies forming enterprises. With extra data it would also be possible to pick a better starting size for enterprises, rather than making the assumption that the starting size is 1.
+
 \section{Predicting ONS Data from Companies House}
 \subsection{Enterprises}
 \subsection{Local Units}
@@ -44,34 +89,38 @@ Fitting a log normal distribution to the ONS data for the distribution of local 
 \end{figure}
 \subsection{Testing Growth Models of Companies}
 The data can be used to evaluate different models of company growth.
-\subsubsection{Gibrat Process}
-The hypothesis for the appearance of the log normal distributions of company sizes is due Gibrat. Gibrat proposed that the size of a company after $i$ years is given by
-\begin{equation}
- X_i = \prod_{j=1}^{i}(1 + \epsilon_j)
-\end{equation}
-where $\epsilon_i \sim N(\alpha, \beta^2)$ and is independent. This can be tested using the granular data, since the size distributions and ages of companies are known, such that if $X$ represents the size of a company picked at random then
-\begin{equation}
- X = \sum_{i}\mathbf{1}_{Zi}X_i
-\end{equation}
-where $Z$ is a random variable such that $\mathbb{P}(Z = i) = \frac{n_i}{N}$ where $N$ is the total number of companies and $n_i$ is the number of companies with age $i$. Given that the distribution of $X$ is known, the parameters $\alpha$ and $\beta$ can be calculated by matching $\mathbb{E}(X)$ and $\mathrm{Var}(X)$.
-\begin{figure}[!ht]
- \caption{Results using Gibrat Process}
- \label{gibrat_local_units}
-\end{figure}
-
-As shown in figure \ref{gibrat_local_units}, this process doesn't work well for predicting the sizes of individual local units. Instead it is better to use the Gibrat process on the enterprises and then give each enterprise a branching threshold, $T$ such that if the size of a company, $S > T$ the company branches. This can be done using the enterprise data from ONS.
 
 \subsubsection{Discussing Better ways of assigning company sizes}
 
 \section{Results}
 \subsection{Dataset}
-\subsection{Employment Migration}
 \subsection{Total Employment}
-\subsection{Total Turnover}
+\subsection{Employment Migration}
 
 \section{Appendix}
+\subsection{The Log Normal Sum Approximation}
 \subsection{Companies House Enterprises}
 \subsection{Gibrat process parameter fitting}
+Assuming (\ref{company_size}) and (\ref{overall_dist})
+\begin{equation}
+ \mathbb{E}(X) = \sum_i\mathbb{E} (\mathbf{1}_{Zi}X_i) = \sum_i\frac{n_i}{N}\mathbb{E}(X_i)  
+\end{equation}
+
+\begin{equation}
+ \mathbb{E}(X_i) = \prod_{j = 1}^i(1 + \epsilon_i) = (1 + \alpha)^i
+\end{equation}
+Assuming $\mathbb{E}(X)$ is known,
+\begin{equation}
+ \mathbb{E}(X) =\sum_i\frac{n_i}{N}(1 + \alpha)^i
+\end{equation}
+is a polynomial in $(1 + \alpha)$ of quite a high order (depending on the time step) which can be solved numerically to find alpha.
+The variance is much the same, given that 
+\begin{align}
+ \mathrm{Var}(X_i) &= \sum_{i,j}\mathrm{Cov}(\mathbf{1}_{Zi}X_i,\mathbf{1}_{Zj}X_j) \\&= \sum_{i,j} \delta_{i,j}\frac{n_i}{N}(\beta^2 + (1+\alpha)^2)^i - \frac{n_in_j}{N^2}(1 + \alpha)^{i + j}
+\end{align}
+which is also a polynomial, this time in $(\beta^2 + (1+\alpha)^2)$, that can be solved numerically knowing $\alpha$. $\beta$ can the be calculated provided that the underlying known ages do not themselves create too much variance in the final distribution.
+
+
 
 
 

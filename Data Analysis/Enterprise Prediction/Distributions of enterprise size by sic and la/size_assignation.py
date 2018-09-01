@@ -9,10 +9,12 @@ import random
 def main():
     print('loading companies...')
     companies = get_company_data(datetime.datetime(2017, 4, 1))
-    print('picking random 100000 companies...')
+    print('picking random 500000 companies...')
     companies = [c for c in companies.values()]
+    #print(len(companies))
     random.shuffle(companies)
-    companies = companies[:100000]
+    companies = companies[:500000]
+    #companies = companies
     print('getting distribution data...')
     size_distributions_by_sic = get_size_distributions_by_sic()
     size_distributions_by_la  = get_size_distributions_by_la()
@@ -24,10 +26,12 @@ def main():
 
     print('processing data...')
 
+    new_companies = []
 
-    for company in companies:
+    for i, company in enumerate(companies):
         la = company['la']
         sic  = company['sic']
+        age = company['age']
         if sic not in sic_multipliers:
             continue
 
@@ -49,6 +53,15 @@ def main():
         else:
             sics[sic]  = multiplier
 
+        base_multiplier = int(multiplier)
+        additional_multiplier = multiplier - base_multiplier
+
+        for _ in range(base_multiplier):
+            new_companies.append({'la': la, 'sic': sic, 'age': age})
+        if random.random() < additional_multiplier:
+            new_companies.append({'la': la, 'sic': sic, 'age': age})
+
+    print(len(new_companies))
 
     sizes_by_la  = {}
     sizes_by_sic = {}
@@ -61,10 +74,12 @@ def main():
         sizes_by_sic[sic] = sorted(lognorm.rvs(size_distributions_by_sic[sic]['sd'], scale=np.exp(size_distributions_by_sic[sic]['mean']), size=n))
 
 
+
+
     print('matching sizes...')
     i = 0
-    new_companies = []
-    for company in companies:
+
+    for company in new_companies:
         i += 1
         #if i % 10000 == 0:
         print(i)
@@ -83,41 +98,30 @@ def main():
             continue
 
     with open('output.csv', 'w') as csvfile:
-        to_save = ['la', 'sic', 'size']
+        to_save = ['la', 'sic', 'size', 'age']
         writer = csv.writer(csvfile)
 
-        for company in companies:
+        for company in new_companies:
             if 'size' in company:
                 writer.writerow([company[s] for s in to_save])
 
 def find_closest(arr_1, arr_2):
-    if len(arr_1) == 0 or len(arr_2) == 0:
-        return
-    x = 0
+    i, j = 0, 0
+    prev_horizontal = False #as in i was last to increase
     min = np.inf
-    for i, s in enumerate(arr_1):
-        while x < len(arr_2):
-            if (s - arr_2[x]) > 0:
-                x += 1
-            else:
-                distance = (s - arr_2[x]) ** 2
-                break
-        current_min = np.inf
-        if x > 0:
-            current_min = (s - arr_2[x-1])
-            current_min_pair = (i, x - 1)
-        if x < len(arr_2):
-            if distance < current_min:
-                current_min = distance
-                current_min_pair = (i, x)
-
-        if current_min < min:
-            min = current_min
-            min_pair = current_min_pair
-
+    min_pair = None
+    while i < len(arr_1) and j < len(arr_2):
+        distance = (arr_1[i] - arr_2[j]) ** 2
+        if distance < min:
+            min = distance
+            min_pair = (i, j)
+        if arr_1[i] < arr_2[j]:
+            i += 1
+            prev_horizontal = True
+        else:
+            j += 1
+            prev_horizontal = False
     return min_pair
-
-
 
 
 def get_company_data(date):
