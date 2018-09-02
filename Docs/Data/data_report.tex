@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage[margin=0.7in]{geometry}
 
 %opening
 \title{Building a Granular Dataset of UK Companies}
@@ -15,23 +16,23 @@
 \section{Introduction}
 Contemporary economic modeling requires detailed granular data. Typically highly granular data is not available due to difficulties collecting such data or privacy issues in releasing the information. In the case of UK companies data, an ideal dataset would contain the size (employment and turnover) along with location through time and branches of the companies operating in the UK. The UK Companies House service provides basic company data on active companies, which can, as detailed in this report, be used to provide the backbone of a dataset. The entities registered on companies house are used for legal purposes for the government to track companies operating in the UK, and this legal information is freely available and so does not contain useful data such as the location of branches, number of employees and turnover information\footnote{For large companies, they are required to publish turnover information, but this is not in a machine readable format}. The ONS does produce detailed agglomerated data, giving size distributions by location and company type, but these distributions do not give data about different companies. Using these distributions, the companies house data and simple models of company growth, it is possible to assign sizes to the companies house entities to compile a detailed granular dataset of UK companies and their branches. This report explains the process of producing that dataset and its evaluation using other ONS data.  
 
-\section{Data}
-\subsection{Companies House}
+\subsection{Data}
+\subsubsection{Companies House}
 Companies House release a monthly snapshot of basic data (Company ID, Address, SIC Code) of active companies on their service. This data is only available for the current month - they do offer the purchase of a DVD with historic data - but previous months (approximately one for each year) can be accessed through websites which archive the internet. There is also an API that can be used to get more detailed data (address changes, number of registered people of significant control) which has been used in this study to get company migrations. These migrations can be inferred by changes in location between two snapshots, but in using the API the exact date of the change of location is known. The API is also required to get the correct date of death of companies, since the monthly snapshots only contain active companies.
 
-\subsection{ONS}
+\subsubsection{ONS}
 The office of national statistics provide a large range of agglomerated statistics. For use assigning values to companies, it's useful to have one statistic broken down in multiple ways. For example in the business activity, size and location tables, ONS release the number of enterprises with 0-4 employees in each local authority as well as the number of enterprises with 0-4 employees with a certain SIC code. This allows properties to be assigned to companies in a more accurate way since the extra data reduces the size of the solution space of the problem.
 
-\section{Description of Terms}
+\subsection{Description of Terms}
 Since there are different types of entities in each of the datasets, it is worth defining terms to improve the clarity and precision of descriptions.
 \begin{itemize}
  \item Company - an entity registered on Companies House
  \item Enterprise - a business that is reported by ONS. We assume that an enterprise is a collection of companies.
  \item Local Unit - a site where an enterprise operates, e.g. a branch of a large supermarket chain or the only office of a small firm.
 \end{itemize}
-\section{Predicting Enterprise data from companies}
+\section{Predicting Enterprise and Local Unit size distributions from companies}
 \subsection{Assigning Companies to Enterprises}
-Each enterprise is made up of one or more companies. A quick way of choosing the groups of companies that make up an enterprise is to match the addresses. The motivation for this is that enterprises may register companies to handle a fraction of their total business, for example on companies house TESCO is a registered company as well as TESCO Holdings, but in making the assumption that TESCO will be reported as one company, it makes sense to omit the TESCO Holdings. This results in a more linear relationship between the number of companies and enterprises in each local authority.
+Each enterprise is made up of one or more companies. A quick way of choosing the groups of companies that make up an enterprise is to match the addresses. The motivation for this is that enterprises may register companies to handle a fraction of their total business, for example on companies house TESCO is a registered company as well as TESCO Holdings, but in making the assumption that TESCO will be reported as one enterprise, it makes sense to omit the TESCO Holdings. This results in a more linear relationship between the number of companies and enterprises in each local authority.
 \begin{figure}[!ht]
  \caption{Improvements in grouping enterprises by addresses}
 \end{figure}
@@ -60,48 +61,28 @@ where $\epsilon_i \sim N(\alpha, \beta^2)$ and is independent. This can be teste
 where $\mathbf{1}$ is an indicator function and $Z$ is a random variable such that $\mathbb{P}(Z = i) = \frac{n_i}{N}$ where $N$ is the total number of companies and $n_i$ is the number of companies with age $i$. Given that the distribution of $X$ is known, the parameters $\alpha$ and $\beta$ can be calculated by matching $\mathbb{E}(X)$ and $\mathrm{Var}(X)$. For local authorities and SIC codes, when the parameter $\alpha$ has been calculated, the variance of $X$ is too high for all values of $\beta$ due to the underlying variance in the age data. Instead, making the assumption that $\alpha$ and $\beta$ depend on the location and SIC code of the enterprise allows the parameters to be calculated using the dataset generated in section \ref{enterprise_sizes}. This model is consistent with the observed log normal distributions\footnote{details in the Appendix}. 
 
 In finding these parameters, the size through time of companies can be predicted. If one had data on the sizes of companies upon exit, then perhaps better predictions could be made about the sizes of enterprises. Also companies house has a three tier (small, medium, large) size description for each company, so this could be used to improve the predictions, but may be difficult to combine with the groups of companies forming enterprises. With extra data it would also be possible to pick a better starting size for enterprises, rather than making the assumption that the starting size is 1.
-
-\section{Predicting ONS Data from Companies House}
-\subsection{Enterprises}
-\subsection{Local Units}
-Using local unit data one can infer many properties at the local authority and national levels. For example, if the size distribution of local units is known then employment levels can be calculated, and using this granular data one can test possible growth models for companies\footnote{to be explained in later section}.
-\begin{figure}[!ht]
- \caption{SIC code ratio time series and histogram}
- \label{sic_ratio}
-\end{figure}
-
-Since, as shown in figure \ref{sic_ratio}, for each 2 digit SIC code\footnote{This is not true for 4 digit SIC} the ratio of companies house registered enterprises to local units is approximately constant. This suggests that is it reasonable to use these ratios to infer the number of local units from the companies house data. An important conceptual note is that these ratios need not represent branches of individual companies - the idea being that if there exist $x$ companies with sic code then there exists $\alpha x$ local units does not mean that each company has $\alpha$ branches.
-
-\begin{figure}[!ht]
- \caption{Local unit predictions}
- \label{local_unit_predictions}
-\end{figure}
-
-Doing this creates a far more detailed data set of local units than is given by the ONS data since the data is backed by a granular input, so the age and SIC code distributions are known, as well as using the company migration data to infer changes in local units.
-
-\subsubsection{Analysis of Local Unit Properties}
-
-\subsubsection{Local Unit Size Distribution}
-Fitting a log normal distribution to the ONS data for the distribution of local unit sizes predicts the size bands well, and can be used to reproduce the local authority employment statistics. This is not true for SIC codes - suggesting that the size of a company is dependent more on the local area than the type of company that it is, but could also be due to the SIC codes that ONS report differing from the companies house data. As a first approximation, to generate estimated for certain statistics, it is possible to assign each local unit inferred from the companies house data a size pulled from the local authority size distribution. 
-\begin{figure}[!ht]
- \caption{Local Authority Employment Predictions, growth modes, assigning sizes}
- \label{la_employment}
-\end{figure}
-\subsection{Testing Growth Models of Companies}
-The data can be used to evaluate different models of company growth.
-
-\subsubsection{Discussing Better ways of assigning company sizes}
-
+\subsection{Local Units From Enterprises}
+In order to measure useful quantities, like employment, it is important to have data on the local units. In the case of employment per local authority, there is a strong linear relationship between the number of local units and the number of enterprises in each local authority. The interpretation of this is that in areas with more registered companies (and therefore more enterprises) there is more economic activity which results in more local units being present, not that on average a company has $\alpha$ local units in the local authority that it is registered. %TODO: find evidence for this
+Using this approach the number of local units can be calculated from companies data.
 \section{Results}
 \subsection{Dataset}
 \subsection{Total Employment}
 \subsection{Employment Migration}
 
 \section{Appendix}
-\subsection{The Log Normal Sum Approximation}
-\subsection{Companies House Enterprises}
+\subsection{Size Bands and Log Normal parameter fitting}
+The ONS typically release enterprise and local unit size data in bands, so they give the number of companies, $n_i$ with size $x \in [a_i, a_{i+1})$ by some other parameter (SIC code or location). Assuming a log normal distribution where the size X of a company is such that $\log X \sim \mathcal{N}(\mu, \sigma^2)$, $\mu$ and $\sigma$ can be calculated by maximising the log likelihood, given by
+\begin{equation}
+ l(\mu, \sigma) = \sum_i n_i \log \left( \Phi \left( \frac{\log a_{i + 1} - \mu}{\sigma} \right) - \Phi \left( \frac{\log a_{i} - \mu}{\sigma} \right) \right)
+\end{equation}
+since $\mathbb{P}(a_i < X < a_{i + 1}) = \mathbb{P}(\log a_i < \log X < \log a_{i + 1}) = \Phi \left( \frac{\log a_{i + 1} - \mu}{\sigma} \right) - \Phi \left( \frac{\log a_{i} - \mu}{\sigma} \right)$. \\
+For the employment size distributions of enterprises and local units the the fitted parameters predict the ratios $\frac{n_i}{N}$ well and in the case of local authorities the distributions predict the total employment well so it is perhaps reasonable to assume that the actual distribution is log normal. Whether it is possible for other distributions (Yule or other fat tailed distributions) to reproduce these results is something worth testing, but for the purposes of predicting enterprise and local unit sizes, the log normal distribution seems to work well.
+
+\subsection{Log Normal Sum Approximation}
+Given an indexed set of random variables $\{X_i\}$ such that $\log X_i = \mathcal{N}(\mu_i, {\sigma_i}^2)$ an important question for this study is whether the random variable $X = \sum_i\mathbf{1}_{Zi}X_i$ has a distribution that is approximately log normal, and whether there exist non trivial requirements of the distribution ${(\mu_i, \sigma_i)}$ given the distribution of $Z$ for $X$ to be log normally distributed\footnote{A trivial example is that $\forall i, \ (\mu_i, \sigma_i) = (\mu, \sigma)$, so $X = kX_i$ and is therefore log normally distributed.}. If this were the case then the fact that there is a conservation of the log normal distributions and that the distribution of $Z$ is known, then a more accurate prediction of ${(\mu_i, \sigma_i)}$ could be calculated to get a better prediction of company size.
+Running simulations with the given data, to make sure that the parameter choice is relevant, results in $X$ being approximately log normally distributed for both the local authority distributions and SIC distributions. %TODO: expand and test this claim, hopefully say something interesing
 \subsection{Gibrat process parameter fitting}
-Assuming (\ref{company_size}) and (\ref{overall_dist})
+Assuming equations (\ref{company_size}) and (\ref{overall_dist})
 \begin{equation}
  \mathbb{E}(X) = \sum_i\mathbb{E} (\mathbf{1}_{Zi}X_i) = \sum_i\frac{n_i}{N}\mathbb{E}(X_i)  
 \end{equation}
@@ -113,10 +94,10 @@ Assuming $\mathbb{E}(X)$ is known,
 \begin{equation}
  \mathbb{E}(X) =\sum_i\frac{n_i}{N}(1 + \alpha)^i
 \end{equation}
-is a polynomial in $(1 + \alpha)$ of quite a high order (depending on the time step) which can be solved numerically to find alpha.
+is a polynomial in $(1 + \alpha)$ of quite a high order (depending on the time step) which can be solved numerically to find $\alpha$.
 The variance is much the same, given that 
 \begin{align}
- \mathrm{Var}(X_i) &= \sum_{i,j}\mathrm{Cov}(\mathbf{1}_{Zi}X_i,\mathbf{1}_{Zj}X_j) \\&= \sum_{i,j} \delta_{i,j}\frac{n_i}{N}(\beta^2 + (1+\alpha)^2)^i - \frac{n_in_j}{N^2}(1 + \alpha)^{i + j}
+ \mathrm{Var}(X_i) &= \sum_{i,j}\mathrm{Cov}(\mathbf{1}_{Zi}X_i,\mathbf{1}_{Zj}X_j) \\&= \sum_{i,j} \delta_{ij}\frac{n_i}{N}(\beta^2 + (1+\alpha)^2)^i - \frac{n_in_j}{N^2}(1 + \alpha)^{i + j}
 \end{align}
 which is also a polynomial, this time in $(\beta^2 + (1+\alpha)^2)$, that can be solved numerically knowing $\alpha$. $\beta$ can the be calculated provided that the underlying known ages do not themselves create too much variance in the final distribution.
 
