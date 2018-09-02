@@ -4,67 +4,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def main():
+    colours = {'0-4': 'red', '5-9': 'blue', '10-19': 'orange', '20-49': 'green', '50-99': 'yellow', '100-249': 'purple', '250+': 'pink'}
+
     company_data = [analysis.get_companies(i) for i in range(1, 3)]
-    regions = get_regions()
-
-    size_dists = get_regional_size_distributions()
-
-    size_bands = ['0-4', '5-9', '10-19', '20-49', '50-99', '100-249', '250+']
-    upper_limits = [5, 10, 20, 50, 100, 250, np.inf]
-
     for i, companies in enumerate(company_data):
+        results = regional_analysis(companies)
         plt.figure(i)
-        sizes = {}
-        for company in companies:
-            region = regions[company['la']]
-            sic = int(company['sic'])
-            size = int(company['size'])
-            for j, s in enumerate(upper_limits):
-                if size < s:
-                    size_band = size_bands[j]
-                    break
-            else:
-                size_band = size_bands[-1]
-
-            if sic in sizes:
-                if region in sizes[sic]:
-                    if size_band in sizes[sic][region]:
-                        sizes[sic][region][size_band] += 1
-                    else:
-                        sizes[sic][region][size_band]  = 1
-                else:
-                    sizes[sic][region] = {size_band: 1}
-            else:
-                sizes[sic] = {region: {size_band: 1}}
-
-        #print(sizes)
-
-        results  = {s: {'x': [], 'y': [], 'a':[]} for s in size_bands}
-        colours = {'0-4': 'red', '5-9': 'blue', '10-19': 'orange', '20-49': 'green', '50-99': 'yellow', '100-249': 'purple', '250+': 'pink'}
-
-        for sic, regions_sizes in sizes.items():
-            if sic not in size_dists:
-                print(str(sic) + 'sic missing')
-                continue
-            for region, size_dist in regions_sizes.items():
-                if region not in size_dists[sic]:
-                    #print(region + ' region missing')
-                    continue
-                total = 0
-                for n in size_dist.values():
-                    total += n
-                for size, n in size_dist.items():
-                    if size_dists[sic][region]['Total'] == 0:
-                        results[size]['x'].append(0)
-                    else:
-                        results[size]['x'].append(size_dists[sic][region][size] / size_dists[sic][region]['Total'])
-
-                    results[size]['y'].append(n / total)
-                    results[size]['a'].append(total)
         for size, data in results.items():
             data['a'] = np.array(data['a']) / np.max(data['a'])
             for j in range(len(data['x'])):
-                plt.scatter(data['x'][j], data['y'][j], label=sic, alpha=data['a'][j], color=colours[size])
+                plt.scatter(data['x'][j], data['y'][j], label=size, alpha=data['a'][j], color=colours[size])
         plt.plot([0, 1], [0, 1], label='y=x')
         plt.xlabel('Actual proportion')
         plt.ylabel('Assigned proportion')
@@ -73,6 +22,64 @@ def main():
 
     plt.show()
 
+def regional_analysis(companies):
+    regions = get_regions()
+
+    size_dists = get_regional_size_distributions()
+
+    size_bands = ['0-4', '5-9', '10-19', '20-49', '50-99', '100-249', '250+']
+    upper_limits = [5, 10, 20, 50, 100, 250, np.inf]
+
+    sizes = {}
+
+    for company in companies:
+        region = regions[company['la']]
+        sic = int(company['sic'])
+        size = int(company['size'])
+        for j, s in enumerate(upper_limits):
+            if size < s:
+                size_band = size_bands[j]
+                break
+        else:
+            size_band = size_bands[-1]
+
+        if sic in sizes:
+            if region in sizes[sic]:
+                if size_band in sizes[sic][region]:
+                    sizes[sic][region][size_band] += 1
+                else:
+                    sizes[sic][region][size_band]  = 1
+            else:
+                sizes[sic][region] = {size_band: 1}
+        else:
+            sizes[sic] = {region: {size_band: 1}}
+
+    #print(sizes)
+
+    results  = {s: {'x': [], 'y': [], 'a':[]} for s in size_bands}
+
+
+    for sic, regions_sizes in sizes.items():
+        if sic not in size_dists:
+            print(str(sic) + 'sic missing')
+            continue
+        for region, size_dist in regions_sizes.items():
+            if region not in size_dists[sic]:
+                #print(region + ' region missing')
+                continue
+            total = 0
+            for n in size_dist.values():
+                total += n
+            for size, n in size_dist.items():
+                if size_dists[sic][region]['Total'] == 0:
+                    results[size]['x'].append(0)
+                else:
+                    results[size]['x'].append(size_dists[sic][region][size] / size_dists[sic][region]['Total'])
+
+                results[size]['y'].append(n / total)
+                results[size]['a'].append(size_dists[sic][region]['Total'])
+
+    return results
 
 
 def get_regions():
