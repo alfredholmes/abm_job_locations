@@ -12,7 +12,11 @@
 \date{September 2018}
 \begin{document}
 
+
 \maketitle
+\begin{abstract}Given employment size distributions of enterprises by location and industry individually, and granular company registry data, it is possible to produce a detailed granular dataset of UK companies (containing the age, employment size, number of branches and location through time of each company) by assuming a simple growth model. To study the accuracy of the size assignments, it is possible to develop simulations to test the ability of the assignment methods to reproduce model parameters. 
+\end{abstract}
+ 
 \section{Introduction}
 Contemporary economic modeling requires detailed granular data. Typically highly granular data is not available due to difficulties collecting such data or privacy issues in releasing the information. In the case of UK companies data, an ideal dataset would contain the size (employment and turnover) along with location through time and branches of the companies operating in the UK. The UK Companies House service provides basic company data on active companies, which can, as detailed in this report, be used to provide the backbone of a dataset. The entities registered on companies house are used for legal purposes for the government to track companies operating in the UK, and this legal information is freely available and so does not contain useful data such as the location of branches, number of employees and turnover information\footnote{For large companies, they are required to publish turnover information, but this is not in a machine readable format}. The ONS does produce detailed agglomerated data, giving size distributions by location and company type, but these distributions do not give data about different companies. Using these distributions, the companies house data and simple models of company growth, it is possible to assign sizes to the companies house entities to compile a detailed granular dataset of UK companies and their branches. This report explains the process of producing that dataset and its evaluation using other ONS data.  
 
@@ -28,7 +32,8 @@ Since there are different types of entities in each of the datasets, it is worth
 \begin{itemize}
  \item Company - an entity registered on Companies House
  \item Enterprise - a business that is reported by ONS. We assume that an enterprise is a collection of companies.
- \item Local Unit - a site where an enterprise operates, e.g. a branch of a large supermarket chain or the only office of a small firm.
+ \item Local Unit - a site where an enterprise operates, e.g. a branch of a large supermarket chain or the only location from which a small firm operates.
+ \item Local Authority - a connected area of land the UK governed by a council. At the time of writing, local authorities have a population of 170 000 people and 7 000 enterprises on average.
 \end{itemize}
 \section{Predicting Enterprise and Local Unit size distributions from companies}
 \subsection{Assigning Companies to Enterprises}
@@ -53,7 +58,7 @@ The hypothesis for the appearance of the log normal distributions of company siz
  X_i = \prod_{j=1}^{i}(1 + \epsilon_j)
  \label{company_size}
 \end{equation}
-where $\epsilon_i \sim N(\alpha, \beta^2)$ and is independent. This can be tested using the granular data, since the size distributions and ages of companies are known, such that if $X$ represents the size of a company picked at random then
+where $\epsilon_i \sim \mathcal{N}(\alpha, \beta^2)$ and is independent. This can be tested using the granular data, since the size distributions and ages of companies are known, such that if $X$ represents the size of a company picked at random then
 \begin{equation}
  X = \sum_{i}\mathbf{1}_{Zi}X_i
  \label{overall_dist}
@@ -79,7 +84,7 @@ since $\mathbb{P}(a_i < X < a_{i + 1}) = \mathbb{P}(\log a_i < \log X < \log a_{
 For the employment size distributions of enterprises and local units the the fitted parameters predict the ratios $\frac{n_i}{N}$ well and in the case of local authorities the distributions predict the total employment well so it is perhaps reasonable to assume that the actual distribution is log normal. Whether it is possible for other distributions (Yule or other fat tailed distributions) to reproduce these results is something worth testing, but for the purposes of predicting enterprise and local unit sizes, the log normal distribution seems to work well.
 
 \subsection{Log Normal Sum Approximation}
-Given an indexed set of random variables $\{X_i\}$ such that $\log X_i = \mathcal{N}(\mu_i, {\sigma_i}^2)$ an important question for this study is whether the random variable $X = \sum_i\mathbf{1}_{Zi}X_i$ has a distribution that is approximately log normal, and whether there exist non trivial requirements of the distribution ${(\mu_i, \sigma_i)}$ given the distribution of $Z$ for $X$ to be log normally distributed\footnote{A trivial example is that $\forall i, \ (\mu_i, \sigma_i) = (\mu, \sigma)$, so $X = kX_i$ and is therefore log normally distributed.}. If this were the case then the fact that there is a conservation of the log normal distributions and that the distribution of $Z$ is known, then a more accurate prediction of ${(\mu_i, \sigma_i)}$ could be calculated to get a better prediction of company size.
+Given an indexed set of random variables $\{X_i\}$ such that $\log X_i \sim \mathcal{N}(\mu_i, {\sigma_i}^2)$ an important question for this study is whether the random variable $X = \sum_i\mathbf{1}_{Zi}X_i$ has a distribution that is approximately log normal, and whether there exist non trivial requirements of the distribution ${(\mu_i, \sigma_i)}$ given the distribution of $Z$ for $X$ to be log normally distributed\footnote{A trivial example is that $\forall i, \ (\mu_i, \sigma_i) = (\mu, \sigma)$, so $X = kX_i$ and is therefore log normally distributed.}. If this were the case then the fact that there is a conservation of the log normal distributions and that the distribution of $Z$ is known, then a more accurate prediction of ${(\mu_i, \sigma_i)}$ could be calculated to get a better prediction of company size.
 Running simulations with the given data, to make sure that the parameter choice is relevant, results in $X$ being approximately log normally distributed for both the local authority distributions and SIC distributions. %TODO: expand and test this claim, hopefully say something interesing
 \subsection{Gibrat process parameter fitting}
 Assuming equations (\ref{company_size}) and (\ref{overall_dist})
@@ -97,9 +102,9 @@ Assuming $\mathbb{E}(X)$ is known,
 is a polynomial in $(1 + \alpha)$ of quite a high order (depending on the time step) which can be solved numerically to find $\alpha$.
 The variance is much the same, given that 
 \begin{align}
- \mathrm{Var}(X_i) &= \sum_{i,j}\mathrm{Cov}(\mathbf{1}_{Zi}X_i,\mathbf{1}_{Zj}X_j) \\&= \sum_{i,j} \delta_{ij}\frac{n_i}{N}(\beta^2 + (1+\alpha)^2)^i - \frac{n_in_j}{N^2}(1 + \alpha)^{i + j}
+ \mathrm{Var}(X) &= \sum_{i,j}\mathrm{Cov}(\mathbf{1}_{Zi}X_i,\mathbf{1}_{Zj}X_j) \\&= \sum_{i,j} \delta_{ij}\frac{n_i}{N}(\beta^2 + (1+\alpha)^2)^i - \frac{n_in_j}{N^2}(1 + \alpha)^{i + j}
 \end{align}
-which is also a polynomial, this time in $(\beta^2 + (1+\alpha)^2)$, that can be solved numerically knowing $\alpha$. $\beta$ can the be calculated provided that the underlying known ages do not themselves create too much variance in the final distribution.
+which is also a polynomial, this time in $(\beta^2 + (1+\alpha)^2)$, that can be solved numerically knowing $\alpha$. $\beta$ can then be calculated provided that the underlying known ages do not themselves create too much variance in the final distribution, such that solving the above polynomial implies that $\beta^2 < 0$ which is generally the case if the assumption is made that $\alpha$ and $\beta$ depend only on location or only on SIC code.
 
 
 

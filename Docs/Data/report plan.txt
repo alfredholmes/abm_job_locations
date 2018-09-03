@@ -1,0 +1,34 @@
+Granular Data set of UK companies
+Introduction:
+	Data:
+		Companies House, ONS
+	Description of Terms
+
+Predicting the Number of Enterprises and Local Units with Companies:
+	Companies imply enterprises:
+		Same Addresses
+	Assigning Sizes to Enterprises:
+		Method and stastical evaluation using the model
+	Model for company growth:
+		Parameters depend on both SIC and Local Authority (too much variance from ages)
+
+Local Units from Enterprises:
+	Predicting the number of local units using enterprises
+		Data on proportions
+	Employment from local units and employment from enterprises
+	Branching of enterprises:
+		Possibility of inffering location choices of branches	
+
+Results:
+	Dataset description
+	Total Employment predictions
+	Employment migration
+	Growth Rates
+	General workflow to build a granular dataset
+
+Appendix:
+	Size bands and lognormal parameter fitting
+	Log normal sum approximation
+	Gibrat process parameter fitting
+
+

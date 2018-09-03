@@ -12,8 +12,10 @@ def main():
     var = np.var(np.log(size_array), ddof=1)
     plt.figure(0)
     plt.hist(size_array, 50, density=True)
-    plt.plot(np.linspace(0, 4), lognorm.pdf(np.linspace(0, 4), np.sqrt(var), scale=np.exp(mean)), label='lognorm, mean: ' + str(mean) + ', var: ' + str(var))
+    plt.plot(np.linspace(0, 4), lognorm.pdf(np.linspace(0, 4), np.sqrt(var), scale=np.exp(mean)), label='Fitted lognormal pdf')
     plt.xlabel('Size')
+    plt.legend()
+
     plt.savefig('simulated global distribution uniform parameters.png')
     plt.figure(1)
     size_cross_section = sizes[0]
@@ -26,10 +28,14 @@ def main():
     var  = np.var(np.log(size_array_cross_section), ddof=1)
 
     plt.hist(size_array_cross_section, 50, density=True)
-    plt.plot(np.linspace(0, 4), lognorm.pdf(np.linspace(0, 4), np.sqrt(var), scale=np.exp(mean)), label='lognorm, mean: ' + str(mean) + ', var: ' + str(var))
+    plt.plot(np.linspace(0, 4), lognorm.pdf(np.linspace(0, 4), np.sqrt(var), scale=np.exp(mean)), label='Fitted lognormal pdf')
+    plt.legend()
     plt.xlabel('Size')
-    plt.savefig('simulated crossectional distribution uniform parameters.png')
+    plt.savefig('simulated crossectional distribution normal parameters.png')
     plt.show()
+
+
+
 
 def generate_parameters(a, b):
     parameters = {}
@@ -48,7 +54,7 @@ def generate_sizes(parameters, a, b, n):
         id_1 = random.randint(0, a - 1)
         id_2 = random.randint(0, b - 1)
         #print(parameters[a][b][1])
-        size = lognorm.rvs(parameters[id_1 ][id_2][1], scale=np.exp(parameters[id_1][id_2][0]))
+        size = lognorm.rvs(parameters[id_1][id_2][1], scale=np.exp(parameters[id_1][id_2][0]))
         size_array.append(size)
 
         if id_1 in sizes:

@@ -6,10 +6,37 @@ import matplotlib.pyplot as plt
 
 
 def main():
-    a = 50
-    b = 50
+    _, _,_, results, random_results, mean_distances, random_mean_distances, variance_distances, random_variance_distances = parameter_recovery(200000, 50, 50)
+
+
+    plt.figure(0)
+    plt.hist(results, 50, density=True, label='recovery')
+    plt.hist(random_results, 50, density=True, alpha=0.5, label='random')
+    plt.legend()
+    plt.xlabel('Euclidian distance in parameter space')
+    plt.savefig('recovery distance histogram 200000 normal with random.png')
+
+    plt.figure(1)
+    plt.hist(mean_distances, 50, density=True, label='recovery')
+    plt.hist(random_mean_distances, 50, density=True, alpha=0.5, label='random')
+    plt.legend()
+    plt.plot([0, 0], [0, 1.4])
+    plt.xlabel('difference between recovery mean and actual')
+    plt.savefig('mean distance histogram normal with random.png')
+
+    plt.figure(2)
+    plt.hist(variance_distances, 50, density=True, label='recovery')
+    plt.hist(random_variance_distances, 50, density=True, alpha=0.5, label='random')
+    plt.legend()
+    plt.plot([0, 0], [0, 30])
+    plt.xlabel('difference between recovery variance and actual')
+    plt.savefig('variance distance histogram normal with random.png')
+
+    plt.show()
+
+def parameter_recovery(n, a, b):
     parameters = simulation.generate_parameters(a, b)
-    sizes, _ = simulation.generate_sizes(parameters, a, b, 200000)
+    sizes, _ = simulation.generate_sizes(parameters, a, b, n)
 
     #assume log norm dist and find params of those distributions
     lognorm_dist_params_by_a, lognorm_dist_params_by_b = get_log_normal_params(sizes, a, b)
@@ -80,40 +107,16 @@ def main():
             if j not in new_sizes[i]:
                 continue
             mean, var = get_log_normal_params_from_array(new_sizes[i][j])
-            results.append((parameters[i][j][0] - mean) ** 2 + (parameters[i][j][1] - var) ** 2)
+            results.append((parameters[i][j][0] - mean) ** 2 + (parameters[i][j][1] ** 2 - var) ** 2)
             p = multivariate_normal.rvs([0.001, 0.1], cov=[[0.1, 0], [0, 0.0001]])
-            random_results.append((parameters[i][j][0] - p[0]) ** 2 + (parameters[i][j][1] - p[1]) ** 2)
+            random_results.append((parameters[i][j][0] - p[0]) ** 2 + (parameters[i][j][1] ** 2 - p[1]) ** 2)
             mean_distances.append(parameters[i][j][0] - mean)
             random_mean_distances.append(parameters[i][j][0] - p[0])
 
-            variance_distances.append(parameters[i][j][1] - var)
-            random_variance_distances.append(parameters[i][j][1] - p[1])
+            variance_distances.append(parameters[i][j][1] ** 2 - var)
+            random_variance_distances.append(parameters[i][j][1] ** 2 - p[1])
 
-    plt.figure(0)
-    plt.hist(results, 50, density=True, label='recovery')
-    plt.hist(random_results, 50, density=True, alpha=0.5, label='random')
-    plt.legend()
-    plt.xlabel('Euclidian distance in parameter space')
-    plt.savefig('recovery distance histogram 200000 normal with random.png')
-
-    plt.figure(1)
-    plt.hist(mean_distances, 50, density=True, label='recovery')
-    plt.hist(random_mean_distances, 50, density=True, alpha=0.5, label='random')
-    plt.legend()
-    plt.plot([0, 0], [0, 1.4])
-    plt.xlabel('difference between recovery mean and actual')
-    plt.savefig('mean distance histogram normal with random.png')
-
-    plt.figure(2)
-    plt.hist(variance_distances, 50, density=True, label='recovery')
-    plt.hist(random_variance_distances, 50, density=True, alpha=0.5, label='random')
-    plt.legend()
-    plt.plot([0, 0], [0, 30])
-    plt.xlabel('difference between recovery variance and actual')
-    plt.savefig('variance distance histogram normal with random.png')
-    plt.show()
-
-
+    return parameters, sizes, new_sizes, results, random_results, mean_distances, random_mean_distances, variance_distances, random_variance_distances
 
 
 def get_log_normal_params(sizes, a, b):
