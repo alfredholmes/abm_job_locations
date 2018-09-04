@@ -113,8 +113,8 @@ def parameter_recovery(n, a, b):
             mean_distances.append(parameters[i][j][0] - mean)
             random_mean_distances.append(parameters[i][j][0] - p[0])
 
-            variance_distances.append(parameters[i][j][1] ** 2 - var)
-            random_variance_distances.append(parameters[i][j][1] ** 2 - p[1])
+            variance_distances.append(parameters[i][j][1] - var)
+            random_variance_distances.append(parameters[i][j][1] - p[1])
 
     return parameters, sizes, new_sizes, results, random_results, mean_distances, random_mean_distances, variance_distances, random_variance_distances
 

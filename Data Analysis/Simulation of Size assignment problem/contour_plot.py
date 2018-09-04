@@ -4,7 +4,7 @@ import numpy as np
 
 
 def main():
-    parameters, sizes, new_sizes, results, random_results, mean_distances, random_mean_distances, variance_distances, random_variance_distances = parameter_recovery.parameter_recovery(50000, 50, 50)
+    parameters, sizes, new_sizes, results, random_results, mean_distances, random_mean_distances, variance_distances, random_variance_distances = parameter_recovery.parameter_recovery(200000, 50, 50)
 
     new_params = calculate_new_params(new_sizes)
 
@@ -23,11 +23,18 @@ def main():
         for j, d in data.items():
             a.append(d[0])
             b.append(d[1])
+    plt.subplot(1, 2, 1)
+    plt.hist2d(a, b, 40, range=[[-1, 1], [0.0, 0.15]])
+    plt.ylabel('variance')
+    plt.title('Parameters')
+    plt.xlabel('mean')
+    frame = plt.subplot(1, 2, 2)
+    plt.hist2d(x, y, 40, range=[[-1, 1], [0.0, 0.15]])
+    frame.get_yaxis().set_visible(False)
+    plt.title('Recovered Parameters')
+    plt.xlabel('mean')
+    plt.savefig('contour.png')
 
-    plt.figure(0)
-    plt.hist2d(x, y, 40)
-    plt.figure(1)
-    plt.hist2d(a, b, 40)
     plt.show()
 
 def calculate_new_params(data):
