@@ -48,15 +48,15 @@ def main():
     means = np.ones(len(local_authorities) + len(sic_codes)) * 0.003
 
     means = root(expectation, np.ones(len(local_authorities) + len(sic_codes)) * 0.003, args=(np.array(target_means), bins, local_authorities, sic_codes), method='lm', jac=expectation_jacobian).x
-    variances = root(variance, np.ones(len(local_authorities) + len(sic_codes)) * 0.001, args=(np.array(target_variances), means, bins, local_authorities, sic_codes), method='lm', jac=variance_jacobian).x
+    variances = root(variance, np.ones(len(local_authorities) + len(sic_codes)) * 0.1, args=(np.array(target_variances), means, bins, local_authorities, sic_codes), method='lm', jac=variance_jacobian).x
 
-    #print(mean, variances)
+    print(mean, variances)
 
     with open('parameters.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(local_authorities + sic_codes)
         writer.writerow(means)
-        #writer.writerow(variances)
+        writer.writerow(variances)
 
 
 
@@ -111,15 +111,18 @@ def variance(params, target, means, age_bins, local_authorities, sic_codes):
                 totals[la_index] += n
                 totals[total_las + sic_index] += n
 
-                variances[la_index] += n * (params[la_index] ** 2 + params[total_las + sic_index] ** 2) ** age
+                variances[la_index]
+                var = n * (params[la_index] ** 2 + params[total_las + sic_index] ** 2 + (1 + means[la_index] + means[total_las])**2) ** age
+                variances[la_index] += var
+                variances[total_las + sic_index] += var
                 age_vector[la_index].append(n * (1 + means[la_index] + means[total_las + sic_index]) ** age)
-
+                age_vector[total_las + sic_index].append(n * (1 + means[la_index] + means[total_las + sic_index]) ** age)
     for i, arr in enumerate(age_vector):
         covariances -= np.outer(arr, arr).sum()
 
-    variances = variances / totals + covariances / totals ** 2
+    variances = variances / totals + covariances / (totals) ** 2
 
-
+    print(np.mean(variances))
 
     print(np.mean((variances - target) ** 2))
 
