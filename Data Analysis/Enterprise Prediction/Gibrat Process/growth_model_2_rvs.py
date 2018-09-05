@@ -43,8 +43,8 @@ def main():
 
     print('done')
 
-    for x in target_variances:
-        print(x)
+    #for x in target_variances:
+    #    print(x)
 
     #print((np.array(target_means) ** 2).mean())
 
@@ -60,7 +60,11 @@ def main():
         for i, sic in enumerate(sic_codes):
             means[len(local_authorities) + i] = float(means_from_file[str(sic)])
         print('done')
-    variances = root(variance, np.ones(len(local_authorities) + len(sic_codes)) * 0.001, args=(np.array(target_variances), means, bins, local_authorities, sic_codes), method='lm', jac=variance_jacobian).x
+    print('calculating covariance constants...')
+    covariances = calculate_covariances(bins, local_authorities, sic_codes, means)
+    print(covariances)
+    print('done')
+    variances = root(variance, np.ones(len(local_authorities) + len(sic_codes)) * 0.001, args=(np.array(target_variances), means, covariances, bins, local_authorities, sic_codes), method='lm', jac=variance_jacobian).x
 
     print(mean, variances)
 
@@ -103,21 +107,11 @@ def expectation(params, target, age_bins, local_authorities, sic_codes):
     return expectations / bins - target
 
 
-def variance(params, target, means, age_bins, local_authorities, sic_codes):
+def variance(params, target, means, covariances, age_bins, local_authorities, sic_codes):
     variances = np.zeros(len(local_authorities) + len(sic_codes))
     totals = np.zeros(len(local_authorities) + len(sic_codes))
     covariances = np.zeros(len(local_authorities) + len(sic_codes))
     total_las = len(local_authorities)
-
-    max_age = 0
-    for la, sic_bin in age_bins.items():
-        for sic, ages in sic_bin.items():
-            for age in ages:
-                if age > max_age:
-                    max_age = age
-
-    age_vector = [np.zeros(max_age + 1) for _ in range(len(local_authorities) + len(sic_codes))]
-
 
     for la, sic_bin in age_bins.items():
         la_index = local_authorities.index(la)
@@ -131,22 +125,62 @@ def variance(params, target, means, age_bins, local_authorities, sic_codes):
                 var = n * (params[la_index] ** 2 + params[total_las + sic_index] ** 2 + (1 + means[la_index] + means[total_las])**2) ** age
                 variances[la_index] += var
                 variances[total_las + sic_index] += var
-                age_vector[la_index][age] += (n * (1 + means[la_index] + means[total_las + sic_index]) ** age)
-                age_vector[total_las + sic_index][age] += (n * (1 + means[la_index] + means[total_las + sic_index]) ** age)
-
-    for i, arr in enumerate(age_vector):
-        #print(len(arr))
-        mat = np.outer(arr, arr)
-        covariances[i] -= np.sum(mat)
 
 
-    variances = variances / totals + covariances / (totals) ** 2
+    variances = variances / totals - covariances
 
 
     print(np.mean((variances - target) ** 2))
 
     return variances - target
 
+def calculate_covariances(age_bins, local_authorities, sic_codes, means):
+    covariances = np.zeros(len(local_authorities) + len(sic_codes))
+    totals = np.zeros(len(local_authorities) + len(sic_codes))
+
+    max_age = 0
+    for la, sic_bin in age_bins.items():
+        for sic, ages in sic_bin.items():
+            for age in ages:
+                if age > max_age:
+                    max_age = age
+
+
+    for i, la in enumerate(local_authorities):
+        print(la)
+        sic_vectors = []
+        for sic in sic_codes:
+            sic_index = sic_codes.index(sic)
+            ages = np.zeros(max_age + 1)
+            if sic in age_bins[la]:
+                for age, n in age_bins[la][sic].items():
+                    ages[age] = n * (1 + means[i] + means[len(local_authorities) + sic_index]) ** age
+                    totals[i] += n
+
+            sic_vectors.append(ages)
+
+        for j in range(len(sic_codes)):
+            for k in range(len(sic_codes)):
+                covariances[i] += np.sum(np.outer(sic_vectors[j], sic_vectors[k]))
+
+    for i, sic in enumerate(sic_codes):
+        print(sic)
+        la_vectors = []
+        for la in local_authorities:
+            la_index = local_authorities.index(la)
+            ages = np.zeros(max_age + 1)
+            if sic in age_bins[la]:
+                for age, n in age_bins[la][sic].items():
+                    ages[age] = n * (1 + means[la_index] + means[len(local_authorities) + i]) ** age
+                    totals[len(local_authorities) + i] += n
+            la_vectors.append(ages)
+        for j in range(len(local_authorities)):
+            for k in range(len(local_authorities)):
+                covariances[len(local_authorities) + i] += np.sum(np.outer(la_vectors[j], la_vectors[k]))
+
+
+
+    return covariances  / totals ** 2
 
 def load_means():
     means = {}
