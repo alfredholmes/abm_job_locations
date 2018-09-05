@@ -172,9 +172,9 @@ def expectation_jacobian(params, target, age_bins, local_authorities, sic_codes)
 
 
             for age, n in ages.items():
-                size_deriv = age * n * (1 + params[la_index] + params[number_of_local_authorities + sc_index] + (1 + means[la_index] + means[number_of_local_authorities + sic_index]) ** 2) ** (age - 1)
+                size_deriv = age * n * (1 + params[la_index] + params[number_of_local_authorities + sc_index]) ** (age - 1)
                 jacobian[la_index][la_index] += 2 * params[la_index] * size_deriv
-                jacobian[number_of_local_authorities + sc_index][number_of_local_authorities + sc_index] += 2 * params[number_of_local_authorities + sc_index] * size_deriv
+                jacobian[number_of_local_authorities + sc_index][number_of_local_authorities + sc_index] += size_deriv
 
                 jacobian[la_index][number_of_local_authorities + sc_index] += size_deriv
                 jacobian[number_of_local_authorities + sc_index][la_index] += size_deriv
@@ -219,8 +219,8 @@ def variance_jacobian(params, target, means, age_bins, local_authorities, sic_co
                 jacobian[la_index][la_index] += (n / totals_by_la[la]) * 2 * la_param * d_var
                 jacobian[total_las + sic_index][total_las + sic_index] += (n / totals_by_sic[sic]) * 2 * sic_param * d_var
 
-                jacobian[la_index][total_las + sic_index] += (n / totals_by_la[la]) * 2 * la_param * d_var
-                jacobian[total_las + sic_index][la_index] += (n / totals_by_sic[sic]) * 2 * sic_param * d_var
+                jacobian[la_index][total_las + sic_index] += (n / totals_by_la[la]) * 2 * sic_param * d_var
+                jacobian[total_las + sic_index][la_index] += (n / totals_by_sic[sic]) * 2 * la_param * d_var
 
 
     return jacobian
