@@ -160,9 +160,11 @@ def calculate_covariances(age_bins, local_authorities, sic_codes, means):
             sic_vectors.append(ages)
 
         for j in range(len(sic_codes)):
-            for k in range(len(sic_codes)):
-                covariances[i] += np.sum(np.outer(sic_vectors[j], sic_vectors[k]))
-
+            for k in range(j, len(sic_codes)):
+                if j == k:
+                    covariances[i] += np.sum(np.outer(sic_vectors[j], sic_vectors[k]))
+                else:
+                    covariances[i] += 2 * np.sum(np.outer(sic_vectors[j], sic_vectors[k]))
     for i, sic in enumerate(sic_codes):
         print(sic)
         la_vectors = []
@@ -175,9 +177,11 @@ def calculate_covariances(age_bins, local_authorities, sic_codes, means):
                     totals[len(local_authorities) + i] += n
             la_vectors.append(ages)
         for j in range(len(local_authorities)):
-            for k in range(len(local_authorities)):
-                covariances[len(local_authorities) + i] += np.sum(np.outer(la_vectors[j], la_vectors[k]))
-
+            for k in range(j, len(local_authorities)):
+                if j == k:
+                    covariances[len(local_authorities) + i] += np.sum(np.outer(la_vectors[j], la_vectors[k]))
+                else:
+                    covariances[len(local_authorities) + i] += 2 * np.sum(np.outer(la_vectors[j], la_vectors[k]))
 
 
     return covariances  / totals ** 2
