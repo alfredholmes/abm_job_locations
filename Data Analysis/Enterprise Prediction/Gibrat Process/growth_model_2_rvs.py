@@ -172,9 +172,9 @@ def expectation_jacobian(params, target, age_bins, local_authorities, sic_codes)
 
 
             for age, n in ages.items():
-                size_deriv = age * n * (1 + params[la_index] + params[number_of_local_authorities + sc_index]) ** (age - 1)
-                jacobian[la_index][la_index] += size_deriv
-                jacobian[number_of_local_authorities + sc_index][number_of_local_authorities + sc_index] += size_deriv
+                size_deriv = age * n * (1 + params[la_index] + params[number_of_local_authorities + sc_index] + (1 + means[la_index] + means[number_of_local_authorities + sic_index]) ** 2) ** (age - 1)
+                jacobian[la_index][la_index] += 2 * params[la_index] * size_deriv
+                jacobian[number_of_local_authorities + sc_index][number_of_local_authorities + sc_index] += 2 * params[number_of_local_authorities + sc_index] * size_deriv
 
                 jacobian[la_index][number_of_local_authorities + sc_index] += size_deriv
                 jacobian[number_of_local_authorities + sc_index][la_index] += size_deriv
