@@ -5,6 +5,7 @@ from scipy.optimize import fsolve, root
 
 
 def main():
+    calculate_means = False
 
     print('Getting local authority and SIC code expectations')
     la_target_means, la_target_variances = get_targets_by_la()
@@ -42,13 +43,24 @@ def main():
 
     print('done')
 
+    for x in target_variances:
+        print(x)
+
     #print((np.array(target_means) ** 2).mean())
 
     #print(fsolve(expectation, np.zeros(len(local_authorities) + len(sic_codes)) * 0.00000001, args=(target_means, bins, local_authorities, sic_codes)))
-    means = np.ones(len(local_authorities) + len(sic_codes)) * 0.003
-
-    means = root(expectation, np.ones(len(local_authorities) + len(sic_codes)) * 0.003, args=(np.array(target_means), bins, local_authorities, sic_codes), method='lm', jac=expectation_jacobian).x
-    variances = root(variance, np.ones(len(local_authorities) + len(sic_codes)) * 0.1, args=(np.array(target_variances), means, bins, local_authorities, sic_codes), method='lm', jac=variance_jacobian).x
+    if calculate_means:
+        means = root(expectation, np.ones(len(local_authorities) + len(sic_codes)) * 0.003, args=(np.array(target_means), bins, local_authorities, sic_codes), method='lm', jac=expectation_jacobian).x
+    else:
+        print('Loading means...')
+        means_from_file = load_means()
+        means = np.zeros(len(local_authorities) + len(sic_codes))
+        for i, la in enumerate(local_authorities):
+            means[i] = float(means_from_file[la])
+        for i, sic in enumerate(sic_codes):
+            means[len(local_authorities) + i] = float(means_from_file[str(sic)])
+        print('done')
+    variances = root(variance, np.ones(len(local_authorities) + len(sic_codes)) * 0.001, args=(np.array(target_variances), means, bins, local_authorities, sic_codes), method='lm', jac=variance_jacobian).x
 
     print(mean, variances)
 
@@ -96,11 +108,15 @@ def variance(params, target, means, age_bins, local_authorities, sic_codes):
     totals = np.zeros(len(local_authorities) + len(sic_codes))
     covariances = np.zeros(len(local_authorities) + len(sic_codes))
     total_las = len(local_authorities)
-    age_vector = [[] for _ in range(len(local_authorities) + len(sic_codes))]
 
+    max_age = 0
+    for la, sic_bin in age_bins.items():
+        for sic, ages in sic_bin.items():
+            for age in ages:
+                if age > max_age:
+                    max_age = age
 
-
-
+    age_vector = [np.zeros(max_age + 1) for _ in range(len(local_authorities) + len(sic_codes))]
 
 
     for la, sic_bin in age_bins.items():
@@ -115,21 +131,30 @@ def variance(params, target, means, age_bins, local_authorities, sic_codes):
                 var = n * (params[la_index] ** 2 + params[total_las + sic_index] ** 2 + (1 + means[la_index] + means[total_las])**2) ** age
                 variances[la_index] += var
                 variances[total_las + sic_index] += var
-                age_vector[la_index].append(n * (1 + means[la_index] + means[total_las + sic_index]) ** age)
-                age_vector[total_las + sic_index].append(n * (1 + means[la_index] + means[total_las + sic_index]) ** age)
+                age_vector[la_index][age] += (n * (1 + means[la_index] + means[total_las + sic_index]) ** age)
+                age_vector[total_las + sic_index][age] += (n * (1 + means[la_index] + means[total_las + sic_index]) ** age)
+
     for i, arr in enumerate(age_vector):
-        covariances -= np.outer(arr, arr).sum()
+        #print(len(arr))
+        mat = np.outer(arr, arr)
+        covariances[i] -= np.sum(mat)
+
 
     variances = variances / totals + covariances / (totals) ** 2
 
-    print(np.mean(variances))
 
     print(np.mean((variances - target) ** 2))
 
     return variances - target
 
 
+def load_means():
+    means = {}
+    with open('parameters.csv', 'r') as csvfile:
+        reader = csv.DictReader(csvfile)
+        means = next(reader)
 
+    return means
 
 def expectation_jacobian(params, target, age_bins, local_authorities, sic_codes):
     size = len(local_authorities) + len(sic_codes)
@@ -241,9 +266,11 @@ def get_targets_by_sic():
                 continue
 
             mean, variance = get_mean_varaince_of_lognorm(mu, sigma)
-            if mean < 500:
+            if mean < 500 and variance < 500000:
                 means[sic] = mean
                 variances[sic] = variance
+
+
     return means, variances
 
 def get_targets_by_la():
@@ -259,8 +286,10 @@ def get_targets_by_la():
 
             mean, variance = get_mean_varaince_of_lognorm(mu, sigma)
 
-            means[la] = mean
-            variances[la] = variance
+            if mean < 500 and variance < 500000:
+
+                means[la] = mean
+                variances[la] = variance
 
     return means, variances
 
