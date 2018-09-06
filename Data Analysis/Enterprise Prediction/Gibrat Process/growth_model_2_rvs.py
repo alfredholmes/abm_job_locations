@@ -2,6 +2,7 @@ import csv, datetime
 import numpy as np
 from scipy.stats import lognorm
 from scipy.optimize import fsolve, root
+from multiprocessing import Pool
 
 
 def main():
@@ -62,6 +63,9 @@ def main():
         print('done')
     print('calculating covariance constants...')
     covariances = calculate_covariances(bins, local_authorities, sic_codes, means)
+    with open('covariances.csv', 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(covariances)
     print(covariances)
     print('done')
     variances = root(variance, np.ones(len(local_authorities) + len(sic_codes)) * 0.001, args=(np.array(target_variances), means, covariances, bins, local_authorities, sic_codes), method='lm', jac=variance_jacobian).x
@@ -72,6 +76,7 @@ def main():
         writer = csv.writer(csvfile)
         writer.writerow(local_authorities + sic_codes)
         writer.writerow(means)
+        writer.writerow(covariances)
         writer.writerow(variances)
 
 
@@ -140,51 +145,26 @@ def calculate_covariances(age_bins, local_authorities, sic_codes, means):
 
     max_age = 0
     for la, sic_bin in age_bins.items():
+        la_index = local_authorities.index(la)
         for sic, ages in sic_bin.items():
-            for age in ages:
+            sic_index = sic_codes.index(sic)
+            for age, n in ages.items():
                 if age > max_age:
                     max_age = age
+                totals[la_index] += n
+                totals[len(local_authorities) + sic_index] += n
 
 
-    for i, la in enumerate(local_authorities):
-        print(la)
-        sic_vectors = []
-        for sic in sic_codes:
-            sic_index = sic_codes.index(sic)
-            ages = np.zeros(max_age + 1)
-            if sic in age_bins[la]:
-                for age, n in age_bins[la][sic].items():
-                    ages[age] = n * (1 + means[i] + means[len(local_authorities) + sic_index]) ** age
-                    totals[i] += n
-
-            sic_vectors.append(ages)
-
-        for j in range(len(sic_codes)):
-            for k in range(j, len(sic_codes)):
-                if j == k:
-                    covariances[i] += np.sum(np.outer(sic_vectors[j], sic_vectors[k]))
-                else:
-                    covariances[i] += 2 * np.sum(np.outer(sic_vectors[j], sic_vectors[k]))
-    for i, sic in enumerate(sic_codes):
-        print(sic)
-        la_vectors = []
-        for la in local_authorities:
-            la_index = local_authorities.index(la)
-            ages = np.zeros(max_age + 1)
-            if sic in age_bins[la]:
-                for age, n in age_bins[la][sic].items():
-                    ages[age] = n * (1 + means[la_index] + means[len(local_authorities) + i]) ** age
-                    totals[len(local_authorities) + i] += n
-            la_vectors.append(ages)
-        for j in range(len(local_authorities)):
-            for k in range(j, len(local_authorities)):
-                if j == k:
-                    covariances[len(local_authorities) + i] += np.sum(np.outer(la_vectors[j], la_vectors[k]))
-                else:
-                    covariances[len(local_authorities) + i] += 2 * np.sum(np.outer(la_vectors[j], la_vectors[k]))
+    with Pool() as p:
+        #input = [(i, la, max_age, local_authorities, sic_codes, age_bins, means) for i, la in enumerate(local_authorities)]
+        #covariances = p.map(la_covariance, input)
+        input = [(i, sic, max_age, local_authorities, sic_codes, age_bins, means) for i, sic in enumerate(sic_codes)]
+        covariances += p.starmap(sic_covariance, input)
+    #covariances = [la_covariance(la, max_age, sic_codes, age_bins, means) for la in local_authorities]
+    #covariances += [sic_covariance(sic, max_age, local_authorities, age_bins) for sic in sic_codes]
 
 
-    return covariances  / totals ** 2
+    return np.divide(covariances, totals ** 2)
 
 def load_means():
     means = {}
@@ -193,6 +173,49 @@ def load_means():
         means = next(reader)
 
     return means
+
+def la_covariance(i, la, max_age, local_authorities, sic_codes, age_bins, means):
+    s = 0
+    sic_vectors = []
+    print(la)
+    for sic in sic_codes:
+        sic_index = sic_codes.index(sic)
+        ages = np.zeros(max_age + 1)
+        if sic in age_bins[la]:
+            for age, n in age_bins[la][sic].items():
+                ages[age] = n * (1 + means[i] + means[len(local_authorities) + sic_index]) ** age
+
+        sic_vectors.append(ages)
+
+
+    for j in range(len(sic_codes)):
+        print(j)
+        s += np.sum(np.outer(sic_vectors[j], sic_vectors[k]))
+        for k in range(j + 1, len(sic_codes)):
+                s += 2 * np.sum(np.outer(sic_vectors[j], sic_vectors[k]))
+
+    return s
+
+
+def sic_covariance(i, sic, max_age, local_authorities, sic_codes, age_bins, means):
+    s = 0
+    la_vectors = []
+    for la in local_authorities:
+        la_index = local_authorities.index(la)
+        ages = np.zeros(max_age + 1)
+        if sic in age_bins[la]:
+            for age, n in age_bins[la][sic].items():
+                ages[age] = n * (1 + means[la_index] + means[len(local_authorities) + i]) ** age
+        la_vectors.append(ages)
+    for j in range(len(local_authorities)):
+        print(j)
+        for k in range(j, len(local_authorities)):
+            if j == k:
+                s += np.sum(np.outer(la_vectors[j], la_vectors[k]))
+            else:
+                s += 2 * np.sum(np.outer(la_vectors[j], la_vectors[k]))
+
+    return s
 
 def expectation_jacobian(params, target, age_bins, local_authorities, sic_codes):
     size = len(local_authorities) + len(sic_codes)
@@ -224,7 +247,7 @@ def expectation_jacobian(params, target, age_bins, local_authorities, sic_codes)
 
     return np.divide(jacobian, totals)
 
-def variance_jacobian(params, target, means, age_bins, local_authorities, sic_codes):
+def variance_jacobian(params, target, means, covariances, age_bins, local_authorities, sic_codes):
     size = len(local_authorities) + len(sic_codes)
     jacobian = np.zeros((size, size))
 
