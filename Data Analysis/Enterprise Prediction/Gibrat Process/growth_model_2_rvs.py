@@ -189,7 +189,7 @@ def la_covariance(i, la, max_age, local_authorities, sic_codes, age_bins, means)
 
 
     for j in range(len(sic_codes)):
-        print(j)
+        #print(j)
         s += np.sum(np.outer(sic_vectors[j], sic_vectors[j]))
         for k in range(j + 1, len(sic_codes)):
                 s += 2 * np.sum(np.outer(sic_vectors[j], sic_vectors[k]))
@@ -208,7 +208,7 @@ def sic_covariance(i, sic, max_age, local_authorities, sic_codes, age_bins, mean
                 ages[age] = n * (1 + means[la_index] + means[len(local_authorities) + i]) ** age
         la_vectors.append(ages)
     for j in range(len(local_authorities)):
-        print(j)
+        #print(j)
         s += np.sum(np.outer(la_vectors[j], la_vectors[j]))
         for k in range(j + 1, len(local_authorities)):
             s += 2 * np.sum(np.outer(la_vectors[j], la_vectors[k]))
