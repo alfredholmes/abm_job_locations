@@ -47,8 +47,12 @@ def main():
         x.append(la_totals[la])
         y.append(n)
 
-    plt.scatter(x, y)
-    plt.plot(x, x)
+    plt.scatter(x, y, label='local authorities')
+    plt.plot(x, x, label='y=x')
+    plt.xlabel('ONS')
+    plt.ylabel('Predction')
+    #plt.title('Using SIC ratios to predict number of enterprises per local authority')
+    plt.legend()
     plt.savefig('la_enterprise_predictions_with_ch.png')
     plt.show()
 
