@@ -28,7 +28,7 @@ def main():
     #print(likelihood_jacobian(initial, age_bins, sizes_by_la, sizes_by_sic, local_authorities, sic_codes))
     #print(likelihood(initial, age_bins, sizes_by_la, sizes_by_sic, local_authorities, sic_codes))
 
-    result = minimize(likelihood, initial, args=(age_bins, sizes_by_la, sizes_by_sic, local_authorities, sic_codes), jac=likelihood_jacobian)
+    result = minimize(lambda x: -likelihood(x, age_bins, sizes_by_la, sizes_by_sic, local_authorities, sic_codes), initial, jac=lambda x: -likelihood_jacobian(x, age_bins, sizes_by_la, sizes_by_sic, local_authorities, sic_codes))
     with open('param_fit.csv', 'r') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(local_authorities + sic_codes)
