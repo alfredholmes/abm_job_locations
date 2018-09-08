@@ -22,11 +22,16 @@ def main():
 
 
 def get_mean_sd(data):
-    r = op.minimize(ll, [0, 1], data, bounds=op.Bounds([-numpy.inf, 0], [numpy.inf, numpy.inf]))
+    data = numpy.divide(data, numpy.sum(data))
+    start = (0.24247032943908334, 1.732968915296001)
+    r = op.minimize(ll, start, data, bounds=op.Bounds([-numpy.inf, 0], [numpy.inf, numpy.inf]))
     mean = r.x[0]
     sd   = r.x[1]
-    return mean, sd
 
+    if sps.lognorm.var(sd, scale=numpy.exp(mean)) < 200:
+        return mean, sd
+    else:
+        return start
 
 
 def get_data():

@@ -7,7 +7,7 @@ from multiprocessing import Pool
 
 def main():
     calculate_means = True
-    calculate_covariances = True
+    #calculate_covariances = True
 
     print('Getting local authority and SIC code expectations')
     la_target_means, la_target_variances = get_targets_by_la()
@@ -36,17 +36,15 @@ def main():
     print('done')
 
     print('Sorting Companies...')
-    bins = {la: {sic: {} for sic in sic_codes} for la in local_authorities}
-    for company in companies:
-        if company['age'] in bins[company['la']][company['sic']]:
-            bins[company['la']][company['sic']][company['age']] += 1
-        else:
-            bins[company['la']][company['sic']][company['age']] = 1
+    bins = sort_companies(companies, local_authorities, sic_codes)
 
     print('done')
+#    print(expectation(np.zeros(len(local_authorities) + len(sic_codes)), np.array(target_means), bins, local_authorities, sic_codes))
 
     if calculate_means:
-        means = root(expectation, np.ones(len(local_authorities) + len(sic_codes)) * 0.003, args=(np.array(target_means), bins, local_authorities, sic_codes), method='lm', jac=expectation_jacobian).x
+        means = root(expectation, np.ones(len(local_authorities) + len(sic_codes)) * 0.00003, args=(np.array(target_means), bins, local_authorities, sic_codes), method='lm', jac=expectation_jacobian).x
+        for i, x in enumerate(expectation(means, np.array(target_means), bins, local_authorities, sic_codes)):
+            print(x + target_means[i], target_means[i])
     else:
         print('Loading means...')
         means_from_file = load_means()
@@ -57,19 +55,19 @@ def main():
             means[len(local_authorities) + i] = float(means_from_file[str(sic)])
         print('done')
 
-    if calculate_covariances:
-        print('Calculating covariance constants...')
-        covariances = calculate_covariances(bins, local_authorities, sic_codes, means)
-        print('done')
-    else:
-        print('Loading covariance constants..')
-        cvs_from_file = load_means()
-        covariances = np.zeros(len(local_authorities) + len(sic_codes))
-        for i, la in enumerate(local_authorities):
-            covariances[i] = float(cvs_from_file[la])
-        for i, sic in enumerate(sic_codes):
-            covariances[len(local_authorities) + i] = float(cvs_from_file[str(sic)])
-        print('done')
+
+    print('Calculating covariance constants...')
+    covariances = calculate_covariances(bins, local_authorities, sic_codes, means)
+    print('done')
+#    else:
+#        print('Loading covariance constants..')
+#        cvs_from_file = load_means()
+#        covariances = np.zeros(len(local_authorities) + len(sic_codes))
+#        for i, la in enumerate(local_authorities):
+#            covariances[i] = float(cvs_from_file[la])
+#        for i, sic in enumerate(sic_codes):
+#            covariances[len(local_authorities) + i] = float(cvs_from_file[str(sic)])
+#        print('done')
 
     #print([x for x in variance(np.zeros(len(local_authorities) + len(sic_codes)), np.array(target_variances), means, covariances, bins, local_authorities, sic_codes) if x > 0])
 
@@ -78,8 +76,15 @@ def main():
     print(means, variances)
 
 
-
-
+def sort_companies(companies, local_authorities, sic_codes):
+    
+    bins = {la: {sic: {} for sic in sic_codes} for la in local_authorities}
+    for company in companies:
+        if company['age'] in bins[company['la']][company['sic']]:
+            bins[company['la']][company['sic']][company['age']] += 1
+        else:
+            bins[company['la']][company['sic']][company['age']] = 1
+    return bins
 
 def expectation(params, target, age_bins, local_authorities, sic_codes):
     expectations = np.zeros(len(local_authorities) + len(sic_codes))
@@ -208,6 +213,7 @@ def la_covariance(i, la, max_age, local_authorities, sic_codes, age_bins, means)
 
 def sic_covariance(i, sic, max_age, local_authorities, sic_codes, age_bins, means):
     s = 0
+    print(sic)
     la_vectors = []
     for la in local_authorities:
         la_index = local_authorities.index(la)
@@ -337,7 +343,7 @@ def get_targets_by_sic():
 
             mean, variance = get_mean_varaince_of_lognorm(mu, sigma)
 
-            print(sic, mean, variance, mu, sigma)
+            #print(sic, mean, variance, mu, sigma)
 
             means[sic] = mean
             variances[sic] = variance
@@ -363,7 +369,7 @@ def get_targets_by_la():
             means[la] = mean
             variances[la] = variance
 
-            print(la, mean, variance, mu, sigma)
+            #print(la, mean, variance, mu, sigma)
 
 
 
