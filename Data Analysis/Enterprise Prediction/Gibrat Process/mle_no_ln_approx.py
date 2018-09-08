@@ -153,19 +153,25 @@ def likelihood_jacobian(params, age_bins, sizes_by_la, sizes_by_sic, local_autho
         denominator += sub_denominator
         totals += sub_totals
 
-    age_coefficients = np.zeros((len(local_authorities) + len(sic_codes), len(sizes)))
+    age_coefficients = np.zeros(len(params), len(sizes)))
+
+    half_param_length = int(len(params) / 2)
 
     for la, size_bins in sizes_by_la.items():
         index = local_authorities.index(la)
         for size, n in size_bins.items():
             size_index = sizes.index(size)
             age_coefficients[index][size_index] = n
+            age_coefficients[index + half_param_length][size_index] = n
+
 
     for sic, size_bins in sizes_by_sic.items():
         index = len(local_authorities) + sic_codes.index(sic)
         for size, n in size_bins.items():
             size_index = sizes.index(size)
             age_coefficients[index][size_index] = n
+            age_coefficients[index + half_param_length][size_index] = n
+
 
     for mat in numerator:
         for i in range(len(mat)):
