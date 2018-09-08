@@ -137,7 +137,7 @@ def likelihood_jacobian(params, age_bins, sizes_by_la, sizes_by_sic, local_autho
     """
     sizes = ['0-4', '5-9', '10-19', '20-49', '50-99', '100-249', '250+']
 
-    jacobian = np.zeros((len(params), len(params)))
+    jacobian = np.zeros((len(params)))
     totals = np.zeros(len(params))
 
     with Pool() as p:
@@ -153,7 +153,7 @@ def likelihood_jacobian(params, age_bins, sizes_by_la, sizes_by_sic, local_autho
         denominator += sub_denominator
         totals += sub_totals
 
-    age_coefficients = np.zeros(len(params), len(sizes)))
+    age_coefficients = np.zeros((len(params), len(sizes)))
 
     half_param_length = int(len(params) / 2)
 
