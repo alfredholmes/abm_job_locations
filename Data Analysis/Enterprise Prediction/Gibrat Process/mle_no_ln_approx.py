@@ -24,12 +24,13 @@ def main():
     print('done')
     scale = 0.01
     initial = np.ones((2 * len(sic_codes) + 2 * len(local_authorities))) * scale
-    initial = np.divide(initial, [1] * (len(sic_codes) + len(local_authorities)) + [0.1] * (len(sic_codes) + len(local_authorities)))
+    initial = np.divide(initial, [1] * (len(sic_codes) + len(local_authorities)) + [10] * (len(sic_codes) + len(local_authorities)))
     #print(likelihood_jacobian(initial, age_bins, sizes_by_la, sizes_by_sic, local_authorities, sic_codes))
     #print(likelihood(initial, age_bins, sizes_by_la, sizes_by_sic, local_authorities, sic_codes))
 
     result = minimize(lambda x: -likelihood(x, age_bins, sizes_by_la, sizes_by_sic, local_authorities, sic_codes), initial, jac=lambda x: -likelihood_jacobian(x, age_bins, sizes_by_la, sizes_by_sic, local_authorities, sic_codes))
-    with open('param_fit.csv', 'r') as csvfile:
+    print(result)
+    with open('param_fit.csv', 'w') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(local_authorities + sic_codes)
         writer.writerow(result.x)
@@ -243,24 +244,24 @@ def inner_summand_jacobian(params, age_bins, sizes_by_la, sizes_by_sic, local_au
                     denominator[half_param_length + sic_index][i] += n * s
 
                     numerator[la_index][la_index][i] += n * t * (-age * params[la_index])
-                    numerator[la_index][sic_index][i] += n * t * (-age * params[sic_index])
-                    numerator[la_index][half_param_length + la_index][i] += n * u
-                    numerator[la_index][half_param_length + sic_index][i] += n * v
+                    numerator[la_index][sic_index][i] += n * t * (-age * params[la_index])
+                    #numerator[la_index][half_param_length + la_index][i] += n * u
+                    #numerator[la_index][half_param_length + sic_index][i] += n * v
 
+                    numerator[sic_index][la_index][i] += n * t * (-age * params[sic_index])
                     numerator[sic_index][sic_index][i] += n * t * (-age * params[sic_index])
-                    numerator[sic_index][la_index][i] += n * t * (-age * params[la_index])
-                    numerator[sic_index][half_param_length + la_index][i] += n * u
-                    numerator[sic_index][half_param_length + sic_index][i] += n * v
+                    #numerator[sic_index][half_param_length + la_index][i] += n * u
+                    #numerator[sic_index][half_param_length + sic_index][i] += n * v
 
-                    numerator[half_param_length + la_index][sic_index][i] += n * t * (-age * params[sic_index])
-                    numerator[half_param_length + la_index][la_index][i] += n * t * (-age * params[la_index])
+                    #numerator[half_param_length + la_index][sic_index][i] += n * t * (-age * params[sic_index])
+                    #numerator[half_param_length + la_index][la_index][i] += n * t * (-age * params[la_index])
                     numerator[half_param_length + la_index][half_param_length + la_index][i] += n * u
-                    numerator[half_param_length + la_index][half_param_length + sic_index][i] += n * v
+                    numerator[half_param_length + la_index][half_param_length + sic_index][i] += n * u
 
-                    numerator[half_param_length + sic_index][sic_index][i] += n * t * (-age * params[sic_index])
-                    numerator[half_param_length + sic_index][la_index][i] += n * t * (-age * params[la_index])
-                    numerator[half_param_length + sic_index][half_param_length + sic_index][i] += n * u
-                    numerator[half_param_length + sic_index][half_param_length + la_index][i] += n * u
+                    #numerator[half_param_length + sic_index][sic_index][i] += n * t * (-age * params[sic_index])
+                    #numerator[half_param_length + sic_index][la_index][i] += n * t * (-age * params[la_index])
+                    numerator[half_param_length + sic_index][half_param_length + sic_index][i] += n * v
+                    numerator[half_param_length + sic_index][half_param_length + la_index][i] += n * v
 
                     lower = upper
 
