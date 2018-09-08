@@ -135,6 +135,7 @@ def likelihood_jacobian(params, age_bins, sizes_by_la, sizes_by_sic, local_autho
     outputs:
         jacobian matrix
     """
+    sizes = ['0-4', '5-9', '10-19', '20-49', '50-99', '100-249', '250+']
 
     jacobian = np.zeros((len(params), len(params)))
     totals = np.zeros(len(params))
