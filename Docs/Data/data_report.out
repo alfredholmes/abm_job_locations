@@ -1,20 +1,15 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
-\BOOKMARK [2][-]{subsection.1.1}{Data}{section.1}% 2
-\BOOKMARK [3][-]{subsubsection.1.1.1}{Companies House}{subsection.1.1}% 3
-\BOOKMARK [3][-]{subsubsection.1.1.2}{ONS}{subsection.1.1}% 4
-\BOOKMARK [2][-]{subsection.1.2}{Description of Terms}{section.1}% 5
-\BOOKMARK [1][-]{section.2}{Predicting Enterprise and Local Unit size distributions from companies}{}% 6
-\BOOKMARK [2][-]{subsection.2.1}{Assigning Companies to Enterprises}{section.2}% 7
-\BOOKMARK [2][-]{subsection.2.2}{Assigning sizes to Enterprises}{section.2}% 8
-\BOOKMARK [2][-]{subsection.2.3}{Model for company growth}{section.2}% 9
-\BOOKMARK [2][-]{subsection.2.4}{Local Units From Enterprises}{section.2}% 10
-\BOOKMARK [1][-]{section.3}{Results}{}% 11
-\BOOKMARK [2][-]{subsection.3.1}{Dataset}{section.3}% 12
-\BOOKMARK [2][-]{subsection.3.2}{Total Employment}{section.3}% 13
-\BOOKMARK [2][-]{subsection.3.3}{Employment Migration}{section.3}% 14
-\BOOKMARK [1][-]{section.4}{Appendix}{}% 15
-\BOOKMARK [2][-]{subsection.4.1}{Size Bands and Log Normal parameter fitting}{section.4}% 16
-\BOOKMARK [2][-]{subsection.4.2}{Log Normal Sum Approximation}{section.4}% 17
-\BOOKMARK [2][-]{subsection.4.3}{Gibrat process parameter fitting}{section.4}% 18
-\BOOKMARK [2][-]{subsection.4.4}{Model of Company Growth}{section.4}% 19
-\BOOKMARK [3][-]{subsubsection.4.4.1}{Parameter Fitting}{subsection.4.4}% 20
+\BOOKMARK [2][-]{subsection.1.1}{Companies House}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{ONS}{section.1}% 3
+\BOOKMARK [2][-]{subsection.1.3}{Description of Terms}{section.1}% 4
+\BOOKMARK [1][-]{section.2}{Matching Enterprises and Companies}{}% 5
+\BOOKMARK [2][-]{subsection.2.1}{Assigning Companies to Enterprises}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.2}{Enterprises Size Distributions}{section.2}% 7
+\BOOKMARK [1][-]{section.3}{Assigning Employees}{}% 8
+\BOOKMARK [1][-]{section.4}{Assigning Employment Sizes}{}% 9
+\BOOKMARK [1][-]{section.5}{Results}{}% 10
+\BOOKMARK [2][-]{subsection.5.1}{Dataset}{section.5}% 11
+\BOOKMARK [2][-]{subsection.5.2}{Total Employment}{section.5}% 12
+\BOOKMARK [2][-]{subsection.5.3}{Employment Migration}{section.5}% 13
+\BOOKMARK [1][-]{section.6}{Appendix}{}% 14
+\BOOKMARK [2][-]{subsection.6.1}{Size Bands and Log Normal parameter fitting}{section.6}% 15

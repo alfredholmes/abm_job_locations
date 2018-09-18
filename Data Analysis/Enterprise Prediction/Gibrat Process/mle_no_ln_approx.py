@@ -245,21 +245,13 @@ def inner_summand_jacobian(params, age_bins, sizes_by_la, sizes_by_sic, local_au
 
                     numerator[la_index][la_index][i] += n * t * (-age * params[la_index])
                     numerator[la_index][sic_index][i] += n * t * (-age * params[la_index])
-                    #numerator[la_index][half_param_length + la_index][i] += n * u
-                    #numerator[la_index][half_param_length + sic_index][i] += n * v
 
                     numerator[sic_index][la_index][i] += n * t * (-age * params[sic_index])
                     numerator[sic_index][sic_index][i] += n * t * (-age * params[sic_index])
-                    #numerator[sic_index][half_param_length + la_index][i] += n * u
-                    #numerator[sic_index][half_param_length + sic_index][i] += n * v
 
-                    #numerator[half_param_length + la_index][sic_index][i] += n * t * (-age * params[sic_index])
-                    #numerator[half_param_length + la_index][la_index][i] += n * t * (-age * params[la_index])
                     numerator[half_param_length + la_index][half_param_length + la_index][i] += n * u
                     numerator[half_param_length + la_index][half_param_length + sic_index][i] += n * u
 
-                    #numerator[half_param_length + sic_index][sic_index][i] += n * t * (-age * params[sic_index])
-                    #numerator[half_param_length + sic_index][la_index][i] += n * t * (-age * params[la_index])
                     numerator[half_param_length + sic_index][half_param_length + sic_index][i] += n * v
                     numerator[half_param_length + sic_index][half_param_length + la_index][i] += n * v
 
